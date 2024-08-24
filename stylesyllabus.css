@@ -1,0 +1,27 @@
+.syllabus0{
+    display: grid;
+    padding: 10px;
+    gap: 10px;    
+}
+.syllabus1{
+    width: 100%;
+    display: grid;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 5px;
+    gap: 5px;
+    background-color:darkcyan;
+}
+.syllabus11{
+    background-color: rgb(239, 99, 99);
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 5px;
+}
+.syllabus12{
+    background-color: beige;
+    border: 1px solid black;
+    border-radius: 10px;
+    padding: 5px;
+}

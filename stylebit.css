@@ -1,0 +1,15 @@
+.container{
+    display: grid;
+    gap: 10px;
+    padding: 10px;
+}
+.box1 , .box2 , .box3 , .box4{
+    text-align: center;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: rgb(176, 247, 247);
+}
+.img11{
+    height: 100%;
+    width: 100%;
+}

@@ -1,0 +1,21 @@
+.transport0{
+    display: grid;
+    padding: 10px;
+    gap:10px;
+}
+.transport1{
+    display:grid;
+    width: 100%;
+    border:1px solid black;
+    border-radius: 10px;
+}
+.transport11{
+    text-align: center;
+}
+.transport12{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    justify-content: space-between;
+    text-align: center;
+    padding: 5px;
+}

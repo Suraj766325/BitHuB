@@ -1,0 +1,270 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    width: 100%;
+    height: 100%;
+}
+
+header {
+    background-color: rgb(57, 111, 187); 
+    color: #fff;
+}
+
+a {
+    color: inherit; /* Keeps the link color the same as surrounding text */
+    text-decoration: none; /* Removes the underline */
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    height: 60px;
+}
+
+.logo {
+    font-size: 1.5em;
+}
+
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+}
+
+.nav-links li {
+    margin: 0 15px;
+}
+
+.nav-links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1em;
+}
+
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+.menu-toggle {
+    display: none;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+
+img{
+    height: 50px;
+    width: 50px;
+}
+.photo{
+    height: 500px ;
+    background-image: url(1.jpg);
+    background-size: cover;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center ;
+    font-weight: bolder;
+}
+.phototext{
+    background-color: rgba(68, 96, 222, 0.5) ;
+    
+}
+
+
+
+
+.main{
+    border: 1px solid black;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 7fr 3fr;
+    grid-template-rows: repeat(16, auto);
+    padding: 10px;
+    justify-content: center;
+    background-color: beige;
+    row-gap: 5px;
+}
+.main1{
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: rgb(235, 113, 113);
+    font-size: medium;
+    padding: 5px;
+    padding-left: 20%;
+}
+.main1click{
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: rgb(228, 228, 109);
+    text-align: center;
+}
+
+
+
+
+.footer{
+    background-color: rgb(57, 111, 187); 
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding: 10px;
+    justify-content: space-between;
+    color: white;
+    font-family:'Times New Roman', Times, serif;
+}
+.footer1 , .footer2{
+    display: grid;
+    grid-template-columns: 2fr 8fr;
+    gap: 5px;
+}
+
+.surajsatyamphoto{
+    height: 80%;
+    width: 80%;
+}
+
+
+
+
+/* some stupid work start */
+.custom-list {
+    list-style-type: none; /* Remove default bullets */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+  }
+  
+  .custom-list li {
+    position: relative; /* Allows positioning of the pseudo-element */
+    padding-left: 40px; /* Space for the custom icon */
+    margin-bottom: 10px; /* Space between list items */
+  }
+  
+  .custom-list .item-1::before {
+    content: ""; /* Empty content to display the image */
+    position: absolute; /* Position the icon */
+    left: 0; /* Align to the left */
+    top: 50%; /* Vertically center the icon */
+    transform: translateY(-50%); /* Adjust vertical alignment */
+    width: 25px; /* Width of the icon */
+    height: 25px; /* Height of the icon */
+    background-image: url('user.png'); /* Path to the first icon image */
+    background-size: contain; /* Scale the image to fit the container */
+    background-repeat: no-repeat; /* Prevent image from repeating */
+  }
+  
+  .custom-list .item-2::before {
+    content: ""; /* Empty content to display the image */
+    position: absolute; /* Position the icon */
+    left: 0; /* Align to the left */
+    top: 50%; /* Vertically center the icon */
+    transform: translateY(-50%); /* Adjust vertical alignment */
+    width: 25px; /* Width of the icon */
+    height: 25px; /* Height of the icon */
+    background-image: url('email.png'); /* Path to the second icon image */
+    background-size: contain; /* Scale the image to fit the container */
+    background-repeat: no-repeat; /* Prevent image from repeating */
+  }
+  
+  .custom-list .item-3::before {
+    content: ""; /* Empty content to display the image */
+    position: absolute; /* Position the icon */
+    left: 0; /* Align to the left */
+    top: 50%; /* Vertically center the icon */
+    transform: translateY(-50%); /* Adjust vertical alignment */
+    width: 30px; /* Width of the icon */
+    height: 30px; /* Height of the icon */
+    background-image: url('branch.png'); /* Path to the third icon image */
+    background-size: contain; /* Scale the image to fit the container */
+    background-repeat: no-repeat; /* Prevent image from repeating */
+  }
+
+  
+.footer121{
+    width: 100%;
+    display: flex;
+    gap: 10px;
+}
+.insta{
+    height: 30px;
+    width: 30px;
+}
+  /* some stupid work end */
+
+
+  /* reserve start here */
+  .reserve{
+    margin-top: 5px;
+    /* background-color: #5CDDFF; */
+    background-color: rgb(69, 69, 199);
+    padding: 10px;
+    font-style: italic;
+    font-weight: 700;
+    text-align: center;
+    color: rgb(200, 196, 196);
+  }
+  /* reseve end here */
+
+
+
+
+
+
+@media (max-width: 768px) {
+
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        background-color: #333;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-links li {
+        margin: 10px 0;
+        text-align: center;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .photo{
+        height: 350px ;
+    }
+
+    .footer{
+        background-color: white;
+        grid-template-columns: 1fr; 
+        grid-template-rows: repeat(2, auto);
+        row-gap: 5px;
+        padding: 0px;
+    }
+    .footer1{
+        background-color: rgb(57, 111, 187);
+        padding: 10px; 
+    }
+    .footer2{
+        background-color: rgb(57, 111, 187);
+        padding: 10px; 
+    }
+}
+
+
+
+.main1:hover{
+    background-color: rgb(60, 60, 120);
+    color: white;
+}
+
+
+
+
