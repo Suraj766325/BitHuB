@@ -51,15 +51,18 @@ input[type="submit"]:hover {
 }
 
 .nameq {
-    padding: 5px;
+    padding: 7px;
+
     border-radius: 5px;
     border: none;
+    outline:none;
 }
 
 .rollq {
     padding: 5px;
     border-radius: 5px;
     border: none;
+    outline:none;
 }
 
 .formq {
@@ -68,6 +71,7 @@ input[type="submit"]:hover {
 }
 
 .submitq {
+    outline:none;
     background: conic-gradient(at 125% 50%, #b78cf7, #ff7c94, #ffcf0d, #ff7c94, #b78cf7);
 }
 
