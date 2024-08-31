@@ -1,3 +1,6 @@
+*{
+    box-sizing: border-box;
+}
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -26,7 +29,10 @@ nav {
 .logo {
     font-size: 1.5em;
 }
-
+.logo1{
+    display: flex;
+    justify-content: space-around;
+}
 .nav-links {
     list-style: none;
     margin: 0;
@@ -106,20 +112,7 @@ img{
 
 
 
-.footer{
-    background-color: rgb(57, 111, 187); 
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 10px;
-    justify-content: space-between;
-    color: white;
-    font-family:'Times New Roman', Times, serif;
-}
-.footer1 , .footer2{
-    display: grid;
-    grid-template-columns: 2fr 8fr;
-    gap: 5px;
-}
+
 
 .surajsatyamphoto{
     height: 80%;
@@ -129,67 +122,71 @@ img{
 
 
 
-/* some stupid work start */
-.custom-list {
-    list-style-type: none; /* Remove default bullets */
-    padding: 0; /* Remove default padding */
-    margin: 0; /* Remove default margin */
-  }
-  
-  .custom-list li {
-    position: relative; /* Allows positioning of the pseudo-element */
-    padding-left: 40px; /* Space for the custom icon */
-    margin-bottom: 10px; /* Space between list items */
-  }
-  
-  .custom-list .item-1::before {
-    content: ""; /* Empty content to display the image */
-    position: absolute; /* Position the icon */
-    left: 0; /* Align to the left */
-    top: 50%; /* Vertically center the icon */
-    transform: translateY(-50%); /* Adjust vertical alignment */
-    width: 25px; /* Width of the icon */
-    height: 25px; /* Height of the icon */
-    background-image: url('user.png'); /* Path to the first icon image */
-    background-size: contain; /* Scale the image to fit the container */
-    background-repeat: no-repeat; /* Prevent image from repeating */
-  }
-  
-  .custom-list .item-2::before {
-    content: ""; /* Empty content to display the image */
-    position: absolute; /* Position the icon */
-    left: 0; /* Align to the left */
-    top: 50%; /* Vertically center the icon */
-    transform: translateY(-50%); /* Adjust vertical alignment */
-    width: 25px; /* Width of the icon */
-    height: 25px; /* Height of the icon */
-    background-image: url('email.png'); /* Path to the second icon image */
-    background-size: contain; /* Scale the image to fit the container */
-    background-repeat: no-repeat; /* Prevent image from repeating */
-  }
-  
-  .custom-list .item-3::before {
-    content: ""; /* Empty content to display the image */
-    position: absolute; /* Position the icon */
-    left: 0; /* Align to the left */
-    top: 50%; /* Vertically center the icon */
-    transform: translateY(-50%); /* Adjust vertical alignment */
-    width: 30px; /* Width of the icon */
-    height: 30px; /* Height of the icon */
-    background-image: url('branch.png'); /* Path to the third icon image */
-    background-size: contain; /* Scale the image to fit the container */
-    background-repeat: no-repeat; /* Prevent image from repeating */
-  }
 
-  
-.footer121{
-    width: 100%;
+
+
+
+
+
+
+
+.footer1{    
     display: flex;
-    gap: 10px;
+    width: 100%;    
+    flex-wrap: wrap;
+    font-family: Arial, sans-serif;
+    background:conic-gradient(from 90deg at 40% -25%, #ffd700, #f79d03, #ee6907, #e6390a, #de0d0d, #d61039, #cf1261, #c71585, #cf1261, #d61039, #de0d0d, #ee6907, #f79d03, #ffd700, #ffd700, #ffd700);
+    justify-content: space-around;
+    padding: 10px;
+    border: 1px solid black;
 }
+.profile-card {
+    width: 30%;
+    /* background:conic-gradient(from 90deg at bottom right, cyan, rebeccapurple); */
+    border-radius: 10px;
+    border: 1px solid black;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 20px;
+    background:conic-gradient(at top right, lightcyan, lightblue);
+}
+.profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: fill;
+    margin: 0 auto;
+}
+.name {
+    font-size: 1.5em;
+    margin: 10px 0;
+    color: #333;
+}
+.title {
+    font-size: 1.2em;
+    color:rgb(194, 40, 40);
+    margin: 5px 0;
+}
+.description {
+    font-size: 0.9em;
+    color: black;
+    line-height: 1.5;
+}
+
+
+
+
+
+
+
+
+
+
+
+
 .insta{
-    height: 30px;
-    width: 30px;
+    height: 35px;
+    width: 35px;
 }
   /* some stupid work end */
 
@@ -241,21 +238,15 @@ img{
         height: 350px ;
     }
 
-    .footer{
-        background-color: white;
-        grid-template-columns: 1fr; 
-        grid-template-rows: repeat(2, auto);
-        row-gap: 5px;
-        padding: 0px;
-    }
+
     .footer1{
-        background-color: rgb(57, 111, 187);
-        padding: 10px; 
+        width: 100%;
+        gap: 8px;
     }
-    .footer2{
-        background-color: rgb(57, 111, 187);
-        padding: 10px; 
+    .profile-card {
+        width: 100% ;
     }
+
 }
 
 
@@ -267,4 +258,18 @@ img{
 
 
 
+
+.bithub1{
+    font-family: "Pacifico",cursive;
+    font-size: 35px ;
+    font-weight: bolder;
+    color: white;
+    text-shadow : 6px 8px 8px black;
+    display: flex;
+    align-items: center;
+    text-align: center;
+      width: 100px;
+      height: 15px;
+      transition: transform 4s ease 1.5s;
+}
 

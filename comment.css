@@ -1,0 +1,92 @@
+* {
+    box-sizing: border-box;
+    margin: 0px;
+}
+
+body {
+    width: 100%;
+    font-family: Verdana;
+    font-size: 17px;
+}
+
+.container {
+    background-color: #f2f2f2;
+    border: 1px solid lightgray;
+    border-radius: 4px;
+
+}
+select,
+textarea {
+    width: 100%;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+
+
+.main_heading {
+    text-align: center;
+}
+
+input[type="submit"] {
+    background-color: gray;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+}
+
+input[type="submit"]:hover {
+    background-color: #4caf84;
+}
+
+.sec-cont {
+    background: conic-gradient(from -.5turn at bottom right, deeppink, cyan, rebeccapurple);
+}
+
+.head1 {
+    background: conic-gradient(at top right, lightcyan, lightblue);
+}
+
+.nameq {
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+}
+
+.rollq {
+    padding: 5px;
+    border-radius: 5px;
+    border: none;
+}
+
+.formq {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.submitq {
+    background: conic-gradient(at 125% 50%, #b78cf7, #ff7c94, #ffcf0d, #ff7c94, #b78cf7);
+}
+
+.c1{
+    padding: 10px;
+}
+
+/* .submitq{
+    color:black;
+    background:conic-gradient(from -90deg at top left, black, white);
+}
+.submitq:hover{
+    color: white;
+    background:conic-gradient(from -90deg at 75% -25%, sienna, purple) ;
+} */
+
+@media(max-width:768) {
+    .msgq {
+        width: 80%;
+
+    }
+}
