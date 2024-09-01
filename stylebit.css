@@ -1,15 +1,92 @@
-.container{
-    display: grid;
-    gap: 10px;
-    padding: 10px;
-}
-.box1 , .box2 , .box3 , .box4{
+.bcontainer {
     text-align: center;
-    border: 1px solid black;
-    border-radius: 10px;
-    background-color: rgb(176, 247, 247);
-}
-.img11{
-    height: 100%;
     width: 100%;
+    font-style: italic;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+  
+}
+
+.bflex {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 20px;
+    justify-content: space-around;
+    padding-bottom: 10px;
+}
+
+.bgrid-item {
+ /* background-color: #fff;  */
+ 
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.bgrid-item h2 {
+    margin-top: 0;
+    color: #333;
+}
+
+.bgrid-item p {
+    margin: 10px 0 0;
+    color: #555;
+}
+.gr1{
+  width: 30%;
+    background:conic-gradient(from .5turn at center left, lime, cyan) ;
+}
+.gr2{
+  width: 30%;
+    background:conic-gradient(at bottom left, deeppink, cyan) ;
+}
+.gr3{
+  width: 30%;
+    background:conic-gradient(from -90deg at top left, black, white) ;
+}
+.gr4{
+  width: 30%;
+    background:conic-gradient(from .5turn at 50% 110%, white, orange) ;
+}
+.gr5{
+  width: 30%;
+    background:conic-gradient(from -90deg at 50% 105%, white, orchid);
+}
+.gr6{
+  width: 30%;
+    background: conic-gradient(from -135deg at -10% center, #ffa500, #ff7715, #ff522a, #ff3f47, #ff5482, #ff69b4);
+}
+.bgrid-item:hover{
+    transform: scale(1.03);
+}
+.bgrid-container p{
+    color: black;
+}
+
+
+@media (max-width: 768px) {
+  .gr1{
+    width: 90%;
+  }
+  .gr2{
+    width: 90%;
+  }
+  .gr3{
+    width: 90%;
+  }
+  .gr4{
+    width: 90%;
+  }
+  .gr5{
+    width: 90%;
+  }
+  .gr6{
+    width: 90%;
+  }
+
 }
