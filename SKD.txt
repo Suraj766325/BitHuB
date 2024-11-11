@@ -1,0 +1,426 @@
+Half adder 
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity Half_Adder is
+    Port ( A : in  STD_LOGIC;
+           B : in  STD_LOGIC;
+           Sum : out  STD_LOGIC;
+           Carry : out  STD_LOGIC);
+end Half_Adder;
+
+architecture Behavioral of Half_Adder is
+begin
+    Sum <= A xor B;  
+    Carry <= A and B; 
+end Behavioral;
+
+
+TEST BENCH
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity tb_Half_Adder is
+end tb_Half_Adder;
+
+architecture behavior of tb_Half_Adder is
+    signal A : STD_LOGIC := '0';
+    signal B : STD_LOGIC := '0';
+    signal Sum : STD_LOGIC;
+    signal Carry : STD_LOGIC;
+
+begin
+    uut: Half_Adder Port Map (A => A, B => B, Sum => Sum, Carry => Carry);
+    process
+    begin
+        
+        A <= '0'; B <= '0';
+        wait for 10 ns;
+
+        A <= '0'; B <= '1';  
+        wait for 10 ns;
+
+        A <= '1'; B <= '0';  
+        wait for 10 ns;
+
+        A <= '1'; B <= '1';  
+        wait for 10 ns;
+
+        wait;
+    end process;
+end behavioral;
+
+
+full adder
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity Full_Adder is
+    Port ( A : in  STD_LOGIC;
+           B : in  STD_LOGIC;
+           Cin : in  STD_LOGIC;
+           Sum : out  STD_LOGIC;
+           Cout : out  STD_LOGIC);
+end Full_Adder;
+
+architecture Behavioral of Full_Adder is
+begin
+    Sum <= A xor B xor Cin;  
+    Cout <= (A and B) or (B and Ciin) or (Cin and A);
+end Behavioral;
+
+
+tb
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity tb_Full_Adder is
+end tb_Full_Adder;
+
+architecture behavioral of tb_Full_Adder is
+    signal A : STD_LOGIC := '0';
+    signal B : STD_LOGIC := '0';
+    signal Cin : STD_LOGIC := '0';
+    signal Sum : STD_LOGIC;
+    signal Cout : STD_LOGIC;
+
+begin
+    
+    uut: entity work.Full_Adder
+ Port Map (A => A, B => B, Cin => Cin, Sum => Sum, Cout => Cout);
+
+  
+process
+    begin
+        A <= '0'; B <= '0'; Cin <= '0';  
+        wait for 10 ns;
+
+        A <= '0'; B <= '0'; Cin <= '1';  
+        wait for 10 ns;
+
+        A <= '0'; B <= '1'; Cin <= '0';  
+        wait for 10 ns;
+
+        A <= '0'; B <= '1'; Cin <= '1';  
+        wait for 10 ns;
+
+        A <= '1'; B <= '0'; Cin <= '0';  
+        wait for 10 ns;
+
+        A <= '1'; B <= '0'; Cin <= '1';  
+        wait for 10 ns;
+
+        A <= '1'; B <= '1'; Cin <= '0';  
+        wait for 10 ns;
+
+        A <= '1'; B <= '1'; Cin <= '1';  
+        wait for 10 ns;
+    end process;
+end behavioral;
+
+
+EXOR & nand
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity nand_xor_gate is
+    Port ( A : in  STD_LOGIC;
+           B : in  STD_LOGIC;
+           Nand_op : out  STD_LOGIC
+          xor_op : out  STD_LOGIC); 
+end nand_xor_gate;
+
+architecture Behavioral of nand_xor_gate is
+
+begin
+nand_op<=a nand b;
+xor_op<= a xor b;
+end Behavioral;
+
+tb
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity nand_xor_gate_tb  is
+end nand_xor_gate_tb ;
+
+architecture behavior of nand_xor_gate _tbis
+
+  signal A : STD_LOGIC := '0';
+    signal B : STD_LOGIC := '0';
+    signal nand_op : STD_LOGIC;
+    signal xor_op : STD_LOGIC);
+begin
+uut: entity work.nand_xor_gate
+portmap(a=>a, b=>b,nand_op=>nand_op, xor_op=>xor_op);
+process
+begin
+A <= '0'; B <= '0';
+        wait for 10 ns;
+A <= '0'; B <= '1';
+        wait for 10 ns;
+A <= '1'; B <= '0';
+        wait for 10 ns;
+A <= '1'; B <= '1';
+        wait for 10 ns;
+
+    end process;
+
+end behavior;
+
+
+miutiplexer
+
+Port (I: in STD_LOGIC_vector(7 downto 0);
+
+S: in STD_LOGIC_vector( 2 downto 0);
+
+O: out STD_LOGIC);
+
+end mux;
+
+architecture Behavioral of mux is
+
+begin
+
+O<=((not S(3)) and (not 5(1)) and (not S(0)) and I(0)) {{not 5(2)) and (not S(1)) and 5(0) and I(1)) or ((not 5(2)) and 5(1) and (not 5(0)) and I(2)) or ((not 5(2)) and S(1) and S(0) and I{3)) or (5(2) and (not S(1)) and (not 5(0)) and I(4)) or { 5(2) and (not 5(1)) and S(0) and I(5)) or (S(2) and 5(1) and (not S(0)) and I(6)) or (S(2) and 5(1) and S(0) and I(7));
+
+end Behavioral;
+
+TB
+
+entity mux_th is
+--port ():
+end mux_tb;
+
+Architecture Behavioral of mux_th is
+
+signal I: STD LOGIC_VECTOR (7 downto 0);
+
+signal 3: STD_LOGIC_VECTOR (2 downto 0);
+
+ signal : STD_LOGIC;
+begin
+
+uut: entity work.mux
+
+port map(I=>I, S=>S, 0=>0);
+
+process begin
+
+I<="01011011";
+
+S<="000"; wait for 20 ns;
+
+S<="001" wait for 20 ns;
+
+S<="010": wait for 20 ns;
+
+S<="011"; wait for 20 ns;
+
+S<="100" wait for 20 ns;
+
+S<="101"; wait for 20 ns;
+
+S<="110"; wait for 20 ns;
+
+S<="111"; wait for 20 ns;
+
+end process;
+end Behavioral;
+
+DEMUX
+
+entity demux is
+
+Port (D: in STD_LOGIC;
+
+S: in STD_LOGIC_vector (1 downto 0);
+
+Y: out STD_LOGIC_vector (3 downto 0));
+
+end demux;
+
+architecture Behavioral of demux is
+
+begin
+
+OY(0)<= ((not 5(1)) and (not S(0)) and D);
+
+(1)<=((not 5(1)) and S{0) and D);
+
+(2)<=(5(1) and (not S(0)) and D);
+
+(3)<= 5(1) and S(0) and D):
+
+end Behavioral;
+
+
+TB
+
+entity demux_tb is
+
+--Port 1:
+
+end demux_tb;
+
+architecture Behavioral of demux_tb is
+
+signal D: STD LOGIC;
+
+signal 5: STD_LOGIC_VECTOR(1 downto 0);
+
+signal Y: STD_LOGIC_VECTOR (3) downto 0);
+
+begin
+
+uut: entity work.demux
+
+port map (D=>D, 5=>S, Y=>Y);
+
+process begin
+
+D<='0';S<="00"; wait for 20ns; D<='0';S<="01"; wait for 20ns: D<='0';S<="10"; wait for 20ns; D<='0';S<="11"; wait for 20ns; D='1';S<="00"; wait for 20ns; D<='1';S<="01"; wait for 20ns; D<='1';S<="10"; wait for 20ns; D<='1';S<="11"; wait for 20ns;
+
+end process:
+
+MAGNITUDE COMPARATOR
+
+entity comparatorr is
+
+Port (A: in STD LOGIC VECTOR (3 downto 0);
+
+B: in STD LOGIC VECTOR (3 downto 0);
+
+E: inout STD LOGIC_VECTOR (3 downto 0);
+
+A_E_B: out STD_LOGIC:
+
+A_G_B: out STD_LOGIC:
+
+A_L_B: out STD_LOGIC);
+
+end comparatorr;
+
+architecture Behavioral of comparatorr is
+
+begin
+
+E(3)<-A(3) xnor B(3): E(2)<=A(2) xnor B(2) ;E(1)<-A(1) xnor B(1) E(0)<-A(0) xnor B(0);
+
+A_E_B<-E (3) and E(2) and E(1) and E(0);
+
+A_G_B<-(A(3) and (not B(3))) or (E(3) and A(2) and (not B(2))) or (E(3) and E(2) and (1) and (not B(1))) or
+
+(E(3) and E (2) and E(1) and A(0) and (not B(0)));
+
+A_L_B<=((not A(3)) and B(3)) or (E (3) and (not A(2)) and B(2)) or (E(3) and E(2) and (not A(1)) and B(1)) or
+
+(E(3) and E(2) and E(1) and (not (0)) and B(0));
+
+end Behavioral:
+
+
+TB
+
+entity comparatorr_th is
+
+Port():
+
+Gen. comparatorr_tb;
+
+architecture Behavioral of comparatorr_tb is
+
+signal A: STD_LOGIC_VECTOR (3 downto 0);
+
+signal B: STD LOGIC VECTOR (3 downto 0);
+
+signal A_E_B: STD LOGIC:
+
+signal AGB: STD LOGIC:
+
+signal A_L_B: STD_LOGIC:
+
+begin
+
+Juut entity work.comparatorr
+
+port map (A=>A, B=>B, A_E_B=>A_E_B, A_L_B=>A_L_B, A_G_B=>A_G_B);
+
+process begin
+
+A<="1111": B<="1111"; wait for 20ns;
+
+A<="1111"; B<="0000"; wait for 20ns;
+
+A<="0000"; B<="1111"; wait for 20ns;
+
+end process;
+
+end Behavioral:
+
+UP DOWN COUNTER
+Entity updown_counter is
+	Port( clk : in STD_LOGIC;
+	          Rst : in STD_LOGIC;
+	           Up_down : in STD_LOGIC;
+	           Q : out STD_LOGIC_VECTOR(3 downto 0);
+		Temp : inout STD_LOGIC_VECTOR(3 downto 0);
+End updown_counter;
+Architecture behavioral of updown_counter is
+
+Begin
+Process(clk,rst)
+Begin
+if(rising_edge(clk)) then
+if(rst =’1’ then
+Temp<=”0000”;
+elseif up_down = ‘1’ then
+Temp<=Temp + 1;
+Elseif up_down = ‘0’ then
+Temp<=Temp-1;
+End if;
+End if;
+End process;
+Q<=Temp
+End behavioral;
+
+
+TEST BENCH : 
+
+Entity updown_counter_tb is
+End updown_counter_tb;
+Architecture behavioral of updown_counter_tb;
+ Signal clk : STD_LOGIC;
+Signal rst : STD_LOGIC;
+Signal up_down : STD_LOGIC;
+Signal Q : STD_LOGIC_VECTOR(3 downto 0);
+Begin
+
+Uut : entity work.updown_counter
+Port(clk<=clk, rst<=rst,up_down<=up_down, Q,=Q);
+Process begin
+Clk<=’0’; wait for 10ns;
+Clk<=’1’; wait for 10ns;
+End process;
+Stim_proc : process
+Begin
+Rst<=’1’;
+Up_down<=’1’;
+Wait for 20ns;
+Rst<=’0’;
+Wait for 20ns;
+Up_down<=’0’;
+Wait;
+end process;
+
+end behavioral
+
+
+
+
