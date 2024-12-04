@@ -21,7 +21,7 @@ let sudhanshuprofile=`<img src="sudhanshu.jpeg" alt="Profile Picture" class="pro
             <p class="title">Web Developer</p>
             <p class="description"> Creativity is intelligence having fun.</p>
           <div class="logo1">
-            <a href="https://www.linkedin.com/in/soumyadeep-ghosh-0aa16531b?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BJL%2BExp4CS16v7JGE4OkhTw%3D%3D  " target="_blank"><img class="insta" src="linkedin.png" alt=""></a>
+            <a href="https://www.linkedin.com/in/sudhanshu-kumar-a3ba18281?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank"><img class="insta" src="linkedin.png" alt=""></a>
             <a href="https://www.instagram.com/k_sudhanshu04?igsh=bGZ3NTdqa2tlaHh5" target="_blank"><img class="insta"  src="instagram.png" alt=""></a>
             <a href="mailto:btech10879.23@bitmesra.ac.in" target="_blank"><img class="insta"  src="email.png" alt=""></a>
           </div>`;
