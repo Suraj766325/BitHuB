@@ -91,6 +91,9 @@
 
         const scriptUrl = "https://script.google.com/macros/s/AKfycbzjJr-y91dwvaMEs5iQlUL7Cl-h0A-amLfQz02d5ulrLjiGu4MQ0QVZ92yDcn9xweLWLg/exec"; 
 
+        document.getElementById("responseMessage").innerText = "Thank you for your feedback!"; 
+        form.reset();
+        
         fetch(scriptUrl, {
             method: "POST",
             body: formData
@@ -98,8 +101,6 @@
         .then(response => response.text())
         .then(data => {
             console.log("Success:", data);
-            document.getElementById("responseMessage").innerText = "Thank you for your feedback!"; 
-            form.reset();
         })
         .catch(error => {
             console.error("Error:", error);
