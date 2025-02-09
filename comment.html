@@ -43,45 +43,70 @@
 <!-- end top padding -->
 
 
-     <!-- background starts here -->
+<!-- background starts here -->
 
 
 
 
 
 
-     <div class="container">
-        <form class="formq" action="" method="get">
-          <div class="head1">
-              <h1 class="main_heading"><u>Reach Us</u></h1>
-          </div>
+    <div class="container">
+    <form id="feedbackForm" class="formq">
+        <div class="head1">
+            <h1 class="main_heading"><u>Reach Us</u></h1>
+        </div>
 
- 
-             <div style="padding: 12px;" class="sec-cont">
-             <p>Name: <input type="text" name="name"class="Nameq" style="padding:4px ;  border-radius: 5px; border: none;" placeholder="Enter Your Name" required> </p>
-             <br>
-      
-             <p>Roll No: <input class="rollq" type="text" name="name" placeholder="Roll No." required> </p>
-             <br>
-          <label>Give your Feedback:</label>
-          <input type="radio" id="option1" name="feedback" value="Option 1">
-          <label for="option1">Positive</label>
-          <input type="radio" id="option2" name="feedback" value="Option 2">
-          <label for="option2">Negative</label>
-          <input type="radio" id="option3" name="feedback" value="Option 3">
-          <label for="option3">Neutral</label>
+        <div class="sec-cont">
+            <p>Name: <input type="text" name="name" class="Nameq" placeholder="Enter Your Name" required></p>
+            <br>
 
-          <br>
-          <br>
+            <p>Roll No: <input type="text" name="roll" class="rollq" placeholder="Roll No." required></p>
+            <br>
 
-      <textarea class="msgq" name="address" id="address"   rows="8" placeholder="some message here..."></textarea></p>
- 
-      <input class="submitq" type="submit" value="Submit">
-      
-      </form>
-      </div>
+            <label>Give your Feedback:</label>
+            <br>
+            <input type="radio" id="positive" name="feedback" value="Positive" required> <label for="positive">Positive</label>
+            <input type="radio" id="negative" name="feedback" value="Negative"> <label for="negative">Negative</label>
+            <input type="radio" id="neutral" name="feedback" value="Neutral"> <label for="neutral">Neutral</label>
 
+            <br>
+            <br>
 
+            <textarea class="msgq" name="message" id="message" rows="8" placeholder="Some message here..."></textarea>
+
+            <input class="submitq" type="submit" value="Submit">
+
+        </div>
+    </form>
+</div>
+
+<p id="responseMessage" style="color: green;"></p>
+
+<script>
+    const form = document.getElementById("feedbackForm");
+    form.addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+
+        const scriptUrl = "https://script.google.com/macros/s/AKfycbzjJr-y91dwvaMEs5iQlUL7Cl-h0A-amLfQz02d5ulrLjiGu4MQ0QVZ92yDcn9xweLWLg/exec"; 
+
+        fetch(scriptUrl, {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log("Success:", data);
+            document.getElementById("responseMessage").innerText = "Thank you for your feedback!"; 
+            form.reset();
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            document.getElementById("responseMessage").innerText = "An error occurred. Please try again later."; 
+        });
+    });
+</script>
 
 
 
@@ -100,7 +125,6 @@
 
 
      <!-- background ends here -->
-
 
 
 
