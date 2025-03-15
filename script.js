@@ -59,7 +59,7 @@ setInterval(() => {
 images[0].classList.add('active');
 
 
-//necessary for footer
+//necessary for footer (By Anurag Kumar Verma )
 
 const contributorProfiles = document.querySelectorAll('.contributor-profile');
 
