@@ -359,3 +359,294 @@ font-weight: bold;
       transition: transform 4s ease 1.5s;
 }
 
+/*necessary for footer*/
+
+#project-contributors-bar {
+    
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to right, #f6d365, #fda085); /* Gradient background */
+    padding: 20px 0;
+    text-align: center;
+  }
+  
+  .contributor-list-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px; /* Space between contributor cards */
+  }
+  
+  .contributor-profile {
+    background-color: #e0e0e0; /* Light gray background */
+    border-radius: 10px;
+    padding: 20px;
+    width: 250px; /* Adjust width as needed */
+    text-align: center;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  }
+  
+  .contributor-profile:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Shadow on hover */
+  }
+  
+  .profile-picture {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover; /* Ensure images fit within the circle */
+    margin-bottom: 10px;
+  }
+  
+  .person-name {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+  }
+  
+  .person-role {
+    font-size: 1em;
+    color: #555;
+    margin-bottom: 10px;
+  }
+  
+  .person-bio {
+    font-size: 0.9em;
+    color: #777;
+    margin-bottom: 15px;
+  }
+  
+  .social-links {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .social-image {
+    width: 25px; /* Adjust the size of the images */
+    height: 25px;
+    display: block; /* Ensures proper sizing */
+  }
+  
+  .social-icon {
+    background-color: #fff;
+    border-radius: 50%;
+    width: 35px; /* Adjust the size of the icon container */
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    padding: 5px; /* Add some padding to the icon container */
+  }
+
+
+
+/*footer animation*/
+
+
+
+
+
+.contributor-profile {
+    position: relative;
+    transition: transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+  
+  .contributor-profile.expanded {
+    transform: scale(1.5);
+    z-index: 10;
+    position: relative;
+    overflow: hidden; /* Important for clip-path */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    border-radius: 30px; /* More rounded corners */
+    /*clip-path: polygon(0 0, 100% 0, 100% 80%, 0 100%);*/
+  }
+  
+  .contributor-profile .profile-picture {
+    transition: transform 0.5s ease-in-out;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+  
+  .contributor-profile.expanded .profile-picture {
+    transform: scale(2);
+    border-radius: 0; /* No rounding in expanded state */
+    width: 100%; /* Full width */
+    height: auto; /* Auto height */
+    flex-grow: 1; /* Take up remaining space */
+  }
+  
+  .contributor-profile .person-name {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .contributor-profile .person-role {
+    font-size: 1em;
+    color: #555;
+    margin-bottom: 10px;
+  }
+  
+  .contributor-profile .person-bio {
+    font-size: 0.9em;
+    color: #777;
+    margin-bottom: 15px;
+  }
+  
+  .social-links {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .social-image {
+    width: 25px;
+    height: 25px;
+    display: block;
+  }
+  
+  .social-icon {
+    background-color: #fff;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    padding: 5px;
+  }
+  
+  /* Footer Animation */
+  
+
+.contributor-profile {
+    position: relative;
+    transition: transform 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+  
+  .contributor-profile.expanded {
+    transform: scale(1.5);
+    z-index: 10;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    display: flex;
+    flex-direction: column;
+    border-radius: 30px; /* More rounded corners */
+  }
+  
+  .contributor-profile .profile-picture {
+    transition: transform 0.5s ease-in-out;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+  
+  .contributor-profile.expanded .profile-picture {
+    transform: scale(2);
+    border-radius: 50%; /* Rounded image in expanded state */
+    width: 100%;
+    height: auto;
+    flex-grow: 1;
+  }
+  
+  .contributor-profile .person-name {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .contributor-profile .person-role {
+    font-size: 1em;
+    color: #555;
+    margin-bottom: 10px;
+  }
+  
+  .contributor-profile .person-bio {
+    font-size: 0.9em;
+    color: #777;
+    margin-bottom: 15px;
+  }
+  
+  .social-links {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .social-image {
+    width: 25px;
+    height: 25px;
+    display: block;
+  }
+  
+  .social-icon {
+    background-color: #fff;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    padding: 5px;
+  }
+  
+  /* Footer Animation */
+  
+  .contributor-profile .person-name {
+    position: static;
+    transform: none;
+    background: none;
+    color: inherit;
+    padding: 0;
+    opacity: 1;
+    text-align: center;
+  }
+  
+  .contributor-profile.expanded .person-name {
+    position: absolute;
+    bottom: 0px;
+    left: 0;
+    width: 100%;
+    transform: none;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 15px 0;
+    border-radius: 0 0 30px 30px;
+    text-align: center;
+  }
+  
+  .contributor-profile.expanded .person-role,
+  .contributor-profile.expanded .person-bio,
+  .contributor-profile.expanded .social-links {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  
