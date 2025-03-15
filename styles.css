@@ -454,14 +454,14 @@ font-weight: bold;
 }
 
 /* Add media query for smartphone view */
-@media (max-width: 768px) { /* Adjust breakpoint as needed */
+@media (max-width: 768px) { 
   .contributor-list-container {
-    flex-direction: column; /* Stack items vertically */
-    align-items: center; /* Center items horizontally */
+    flex-direction: column; 
+    align-items: center; 
   }
 }
 
-  
+
 
 .contributor-profile {
     position: relative;
