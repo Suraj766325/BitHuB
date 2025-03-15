@@ -446,6 +446,21 @@ font-weight: bold;
 
 /*footer animation (By Anurag Kumar Verma ) */
 
+
+.contributor-list-container {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* Add media query for smartphone view */
+@media (max-width: 768px) { /* Adjust breakpoint as needed */
+  .contributor-list-container {
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center items horizontally */
+  }
+}
+
   
 
 .contributor-profile {
