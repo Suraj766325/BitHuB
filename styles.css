@@ -578,16 +578,16 @@ font-weight: bold;
   }
   
   #project-contributors-bar {
-  background-image: url('madhubani-black-ink.jpg');
+  background-image: url('bg_footer.gif');
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
     position: relative;
     overflow: hidden;
-    background-blend-mode: luminosity; /* Crucial for the black ink effect */
+    background-blend-mode: luminosity; 
 }
 
 .contributor-list-container {
     position: relative;
-    z-index: 1; /* Ensure content is above the background */
+    z-index: 1; 
 }
