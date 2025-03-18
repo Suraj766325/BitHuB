@@ -202,7 +202,7 @@ img{
     /* background-color: #5CDDFF; */
     background-color: rgb(69, 69, 199);
     padding: 10px;
-    font-style: italic;
+    /*font-style: italic;*/
     font-weight: 700;
     text-align: center;
     color: rgb(200, 196, 196);
@@ -577,3 +577,17 @@ font-weight: bold;
     transform: scale(0.5);
   }
   
+  #project-contributors-bar {
+  background-image: url('madhubani-black-ink.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+    background-blend-mode: luminosity; /* Crucial for the black ink effect */
+}
+
+.contributor-list-container {
+    position: relative;
+    z-index: 1; /* Ensure content is above the background */
+}
