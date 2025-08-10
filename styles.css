@@ -604,7 +604,7 @@ font-weight: bold;
 }
 
 /* For screens larger than 760px */
-@media (min-width: 760px) {
+@media (min-width: 600px) {
   .contributor-profile {
     width: 30%;
   }
@@ -615,7 +615,7 @@ font-weight: bold;
 }
 
 /* For screens smaller than 760px */
-@media (max-width: 759px) {
+@media (max-width: 600px) {
   .contributor-profile {
     width: 100%;
   }
