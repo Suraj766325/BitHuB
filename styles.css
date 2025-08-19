@@ -591,3 +591,36 @@ font-weight: bold;
     position: relative;
     z-index: 1; 
 }
+
+
+
+
+
+.contributor-list-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px; /* spacing between profiles */
+}
+
+/* For screens larger than 760px */
+@media (min-width: 600px) {
+  .contributor-profile {
+    width: 30%;
+  }
+  .contributor-list-container {
+    flex-direction: row;
+    justify-content: center;
+  }
+}
+
+/* For screens smaller than 760px */
+@media (max-width: 600px) {
+  .contributor-profile {
+    width: 100%;
+  }
+  .contributor-list-container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
