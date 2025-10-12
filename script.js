@@ -143,3 +143,24 @@ contributorProfiles.forEach(profile => {
         profile.style.boxShadow = 'none';
     });
 });
+
+// Profile picture enlarge on click
+const profilePictures = document.querySelectorAll('.profile-picture');
+
+profilePictures.forEach(picture => {
+    picture.addEventListener('click', (e) => {
+        e.stopPropagation(); // Prevent event from bubbling to parent
+        
+        // Toggle enlarged class
+        picture.classList.toggle('enlarged');
+    });
+});
+
+// Close enlarged picture when clicking outside
+document.addEventListener('click', (e) => {
+    if (!e.target.classList.contains('profile-picture')) {
+        profilePictures.forEach(picture => {
+            picture.classList.remove('enlarged');
+        });
+    }
+});
