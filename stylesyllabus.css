@@ -1,27 +1,44 @@
+/* Dark Theme for Content Pages */
 .syllabus0{
     display: grid;
     padding: 10px;
-    gap: 10px;    
+    gap: 10px;
+    background: transparent;
 }
 .syllabus1{
     width: 100%;
     display: grid;
-    border: 1px solid black;
+    border: 1px solid rgba(0, 212, 255, 0.3);
     border-radius: 10px;
     padding: 5px;
     gap: 5px;
-    background-color:darkcyan;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(26, 26, 46, 0.7) 100%);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 .syllabus11{
-    background-color: rgb(239, 99, 99);
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(9, 9, 121, 0.2) 100%);
+    color: #ffffff;
     text-align: center;
-    border: 1px solid black;
+    border: 1px solid rgba(0, 212, 255, 0.4);
     border-radius: 10px;
-    padding: 5px;
+    padding: 10px;
+    font-weight: 600;
 }
 .syllabus12{
-    background-color: beige;
-    border: 1px solid black;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(26, 26, 46, 0.5) 100%);
+    color: #ffffff;
+    border: 1px solid rgba(0, 212, 255, 0.2);
     border-radius: 10px;
-    padding: 5px;
+    padding: 10px;
+}
+.syllabus12 a {
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+.syllabus12 a:hover {
+    color: #00d4ff;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
 }
