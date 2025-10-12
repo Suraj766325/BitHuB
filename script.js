@@ -5,7 +5,83 @@ document.addEventListener('DOMContentLoaded', () => {
     menuToggle.addEventListener('click', () => {
         navLinks.classList.toggle('active');
     });
+
+    // Add scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Observe elements for scroll animations (excluding course cards)
+    document.querySelectorAll('.contributor-profile').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+
+    // Removed animations for immediate display
+    // Course grids show immediately without animation
+
+    // Crazy divider animations
+    const dividerObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.animation = 'dividerExplode 2s ease-out forwards';
+            }
+        });
+    }, { threshold: 0.5 });
+
+    document.querySelectorAll('.crazy-divider').forEach(divider => {
+        dividerObserver.observe(divider);
+    });
+
+    // Parallax effect disabled to prevent space issues
+    // window.addEventListener('scroll', () => {
+    //     const scrolled = window.pageYOffset;
+    //     const slider = document.querySelector('.slider-container');
+    //     if (slider) {
+    //         slider.style.transform = `translateY(${scrolled * 0.5}px)`;
+    //     }
+    // });
+
+    // Particle effect (simple)
+    createParticles();
 });
+
+function createParticles() {
+    const particleContainer = document.createElement('div');
+    particleContainer.style.position = 'fixed';
+    particleContainer.style.top = '0';
+    particleContainer.style.left = '0';
+    particleContainer.style.width = '100%';
+    particleContainer.style.height = '100%';
+    particleContainer.style.pointerEvents = 'none';
+    particleContainer.style.zIndex = '1';
+    document.body.appendChild(particleContainer);
+
+    for (let i = 0; i < 50; i++) {
+        const particle = document.createElement('div');
+        particle.style.position = 'absolute';
+        particle.style.width = '2px';
+        particle.style.height = '2px';
+        particle.style.background = '#00d4ff';
+        particle.style.borderRadius = '50%';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animation = 'float 10s linear infinite';
+        particleContainer.appendChild(particle);
+    }
+}
 
 
 
@@ -19,14 +95,6 @@ let currentSlide = 0;
 function showNextSlide() {
     images[currentSlide].classList.remove('active');
     currentSlide = (currentSlide + 1) % images.length;
-    images[currentSlide].classList.add('active');
-    radioButtons[currentSlide].checked = true;
-}
-
-// Function to show the previous slide
-function showPreviousSlide() {
-    images[currentSlide].classList.remove('active');
-    currentSlide = (currentSlide - 1 + images.length) % images.length;
     images[currentSlide].classList.add('active');
     radioButtons[currentSlide].checked = true;
 }
@@ -53,41 +121,25 @@ slider.addEventListener('click', () => {
 // Start the slideshow
 setInterval(() => {
     showNextSlide();
-}, 3000);
+}, 4000);
 
 // Show the first slide
-images[0].classList.add('active');
+if (images.length > 0) {
+    images[0].classList.add('active');
+}
 
 
-//necessary for footer (By Anurag Kumar Verma )
-
+// Contributor profiles hover effect
 const contributorProfiles = document.querySelectorAll('.contributor-profile');
 
 contributorProfiles.forEach(profile => {
-  profile.addEventListener('mouseenter', () => {
-    profile.style.transform = 'translateY(-5px)';
-    profile.style.boxShadow = '0 5px 15px rgba(0, 0, 0, 0.2)';
-  });
-
-  profile.addEventListener('mouseleave', () => {
-    profile.style.transform = 'translateY(0)';
-    profile.style.boxShadow = 'none';
-  });
-
-  profile.addEventListener('click', () => {
-    contributorProfiles.forEach(otherProfile => {
-      if (otherProfile !== profile) {
-        otherProfile.classList.remove('expanded');
-      }
+    profile.addEventListener('mouseenter', () => {
+        profile.style.transform = 'translateY(-15px) rotate(2deg) scale(1.05)';
+        profile.style.boxShadow = '0 20px 40px rgba(0, 212, 255, 0.3)';
     });
-    profile.classList.toggle('expanded');
-  });
-});
 
-document.addEventListener('click', (event) => {
-  if (!event.target.closest('.contributor-profile')) {
-    contributorProfiles.forEach(profile => {
-      profile.classList.remove('expanded');
+    profile.addEventListener('mouseleave', () => {
+        profile.style.transform = 'translateY(0) rotate(0deg) scale(1)';
+        profile.style.boxShadow = 'none';
     });
-  }
 });

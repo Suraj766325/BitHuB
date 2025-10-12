@@ -1,21 +1,41 @@
+/* Dark Theme for Transport Page */
 .transport0{
     display: grid;
     padding: 10px;
     gap:10px;
+    background: transparent;
 }
 .transport1{
     display:grid;
     width: 100%;
-    border:1px solid black;
+    border: 1px solid rgba(0, 212, 255, 0.3);
     border-radius: 10px;
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(26, 26, 46, 0.7) 100%);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    color: #ffffff;
 }
 .transport11{
     text-align: center;
+    color: #ffffff;
+    font-weight: 600;
+    padding: 10px;
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(9, 9, 121, 0.2) 100%);
+    border-bottom: 1px solid rgba(0, 212, 255, 0.3);
 }
 .transport12{
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     justify-content: space-between;
     text-align: center;
-    padding: 5px;
+    padding: 10px;
+    color: #ffffff;
+}
+.transport12 a {
+    color: #ffffff;
+    font-weight: 600;
+    text-decoration: none;
+}
+.transport12 a:hover {
+    color: #00d4ff;
 }
