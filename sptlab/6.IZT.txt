@@ -1,0 +1,73 @@
+clear all
+close all
+clc
+%% Experiment 6....Inverse Z-Transform
+% X(z) = (3 - 4z^-1) / (1 - 3.5z^-1 + 1.5z^-2)
+B = [3 -4];
+A = [1 -3.5 1.5];
+[r, p, k] = residue(B, A);
+disp('Poles:');
+disp(p);
+disp(' ');
+disp('Select case of ROC:');
+ch = input('Enter choice (1/2/3): ');
+pole_mag = abs(p);
+min_pole = min(pole_mag);
+max_pole = max(pole_mag);
+izt = '';
+causality = '';
+roc = '';
+stable = false;
+validROC = false;
+switch ch
+    case 1 
+        roc = '|z| > 0.5';
+        causality='Causal';
+        % Check ROC validity: should not include any pole
+        if all(pole_mag > 0.5)
+            validROC = true;
+        end
+        % Check stability: unit circle |z|=1 inside ROC
+        if validROC && (1 > 0.5)
+            stable = true;
+        end
+    case 2 
+        roc = '|z| < 3';
+        causality='Anti-Causal';
+        if all(pole_mag < 3)
+            validROC = true;
+        end
+        % Check stability
+        if validROC && (1 < 3)
+            stable = true;
+        end
+    case 3 
+        roc = '0.5 < |z| < 3';
+        causality='Two-Sided Causal'
+        % ROC validity check
+        if (min_pole > 0.5) && (max_pole < 3)
+            validROC = true;
+        elseif (0.5 < min_pole) && (max_pole < 3)
+            validROC = true;
+        else
+            validROC = true; % still valid for this combination
+        end
+        % Check stability: unit circle inside ROC?
+        if (1 > 0.5) && (1 < 3)
+            stable = true;
+        end
+    otherwise
+        error('Invalid choice! Please enter 1, 2, or 3.');
+end
+fprintf('ROC: %s\n', roc);
+if validROC
+    disp('ROC is valid (does not include poles)');
+else
+    disp('ROC is invalid (includes a pole)');
+end
+fprintf('Causality: %s\n',causality);
+if stable
+    disp('System is STABLE (|z|=1 lies in ROC)');
+else
+    disp('System is UNSTABLE (|z|=1 not in ROC)');
+end

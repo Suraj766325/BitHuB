@@ -1,0 +1,38 @@
+%% Exp-9: N-point DFT and FFT
+
+clc; clear; close all;
+
+% Input signal
+x = 0:50;             
+N = length(x);
+
+% Manual computation of DFT
+y = zeros(1, N);
+for k = 0:N-1
+    for n = 0:N-1
+        y(k+1) = y(k+1) + x(n+1) * exp(-1j*2*pi*k*n/N);
+    end
+end
+
+% FFT computation
+X = fft(x);
+
+% Inverse FFT
+xx = ifft(X);
+
+% Plot results
+figure
+subplot(5,1,1)
+stem(0:N-1, x); title('Input Signal x(n)');
+
+subplot(5,1,2)
+stem(0:N-1, fftshift(abs(y))); title('Magnitude Spectrum (DFT)');
+
+subplot(5,1,3)
+stem(0:N-1, angle(y)); title('Phase Spectrum (DFT)');
+
+subplot(5,1,4)
+stem(0:N-1, fftshift(abs(X))); title('Magnitude Spectrum (FFT)');
+
+subplot(5,1,5)
+stem(0:N-1, real(xx)); title('Reconstructed x(n) using IFFT');

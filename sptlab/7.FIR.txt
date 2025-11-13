@@ -1,0 +1,48 @@
+%% Exp-7: Linear Phase FIR Filter
+clc; clear; close all;
+
+% Impulse response (symmetric → linear phase FIR)
+h = [1 2 3 4 3 2 1];
+M = length(h);
+
+% Input signal
+x = [0 1 2 3 4 5 6];
+Lx = length(x);
+
+% Zero-padding input for full convolution length
+x_padded = [x zeros(1, M-1)];
+L = length(x_padded);
+
+% Generate shifted versions of x(n)
+x_shift = zeros(M, L);
+for i = 1:M
+    x_shift(i, i:L) = x_padded(1:L - i + 1);
+end
+
+% Multiply and sum for manual convolution
+for i = 1:M
+    y(i, :) = h(i) * x_shift(i, :);
+end
+op = sum(y);     % Manual convolution output (full length)
+
+% Display results
+disp('Input signal x(n):');
+disp(x);
+disp('Impulse response h(n):');
+disp(h);
+disp('Shifted versions of x(n):');
+disp(x_shift);
+disp('Output using manual FIR computation:');
+disp(op);
+
+% Built-in convolution
+conv1 = conv(x, h);
+disp('Output using MATLAB conv():');
+disp(conv1);
+
+% Plot comparison
+figure;
+subplot(2,1,1);
+stem(op, 'filled'); title('Output using Manual FIR Computation');
+subplot(2,1,2);
+stem(conv1, 'filled'); title('Output using Built-in Convolution');

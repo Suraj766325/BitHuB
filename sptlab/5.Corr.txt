@@ -1,0 +1,49 @@
+clear all
+close all
+clc
+%% Experiment 5.... Auto and Crosscorrelation
+x=[1 1 1 1 1 1 1];
+y=[6 5 4 3 2 1 0];
+N1=length(x);
+N2=length(y);
+% Built-in function
+Rxx_builtin=int32(xcorr(x,x));
+Rxy_builtin=int32(xcorr(x,y));
+disp('Built-in Rxx:'); disp(Rxx_builtin);
+disp('Built-in Rxy:'); disp(Rxy_builtin);
+% Manual Calculation
+x_rev = fliplr(x);
+Lx = N1+N1-1;
+Rxx_manual = zeros(1, Lx);
+for n = 1:Lx
+    for k = 1:N1
+        if (n-k+1>0 && n-k+1<=N1)
+            Rxx_manual(n)=Rxx_manual(n)+(x(k) * x_rev(n - k + 1));
+        end
+    end
+end
+h = fliplr(y);
+N = N1+N2-1;
+Rxy_manual = zeros(1, N);
+for n = 1:N
+    for k = 1:N1
+        if (n-k+1 > 0 && n-k+1<=N2)
+            Rxy_manual(n)=Rxy_manual(n) + (x(k)*h(n-k+1));
+        end
+    end
+end
+disp("Manual Rxx:"); disp(Rxx_manual);
+disp('Manual Rxy:'); disp(Rxy_manual);
+%Plotting
+subplot(2,1,1);
+stem(Rxx_builtin);
+stem(Rxx_manual);
+title('Autocorrelation R_{xx}');
+xlabel('Sample index');
+ylabel('Amplitude');
+subplot(2,1,2);
+stem(Rxy_builtin);
+stem(Rxy_manual);
+title('Cross-correlation R_{xy}');
+xlabel('Sample index');
+ylabel('Amplitude');

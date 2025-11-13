@@ -1,0 +1,86 @@
+clc; clear all; close all;
+
+%% Experiment 1..... Familiarization with MATLAB
+
+A = 1; w = 0.2*pi; phi = 0;
+N = 2*pi/w;
+n = 0:0.1:2*N;                     % Two periods, dense sampling
+
+% Sine and Cosine
+x_sin = A*sin(w*n + phi);
+x_cos = A*cos(w*n + phi);
+
+n_seq = -10:10;
+len = length(n_seq);
+
+% ----- Unit Step -----
+u = zeros(1,len);
+for i = 1:len
+    if n_seq(i) >= 0
+        u(i) = 1;
+    end
+end
+
+% ----- Ramp -----
+r = zeros(1,len);
+for i = 1:len
+    if n_seq(i) >= 0
+        r(i) = n_seq(i);
+    end
+end
+
+% ----- Exponential Decrease (a = 0.5) -----
+a1 = 0.5;
+exp_dec = zeros(1,len);
+for i = 1:len
+    if n_seq(i) >= 0
+        exp_dec(i) = a1^n_seq(i);
+    end
+end
+
+% ----- Exponential Increase (a = 1.5) -----
+a2 = 1.5;
+exp_inc = zeros(1,len);
+for i = 1:len
+    if n_seq(i) >= 0
+        exp_inc(i) = a2^n_seq(i);
+    end
+end
+
+% ----- Unit Sample -----
+delta = zeros(1,len);
+for i = 1:len
+    if n_seq(i) == 0
+        delta(i) = 1;
+    end
+end
+
+figure;
+
+subplot(4,2,1);
+stem(n, x_sin, 'filled');
+grid on; title('Discrete Sine Wave'); xlabel('n'); ylabel('Amplitude');
+
+subplot(4,2,2);
+stem(n, x_cos, 'filled');
+grid on; title('Discrete Cosine Wave'); xlabel('n'); ylabel('Amplitude');
+
+subplot(4,2,3);
+stem(n_seq, u, 'filled');
+grid on; title('Unit Step Sequence'); xlabel('n'); ylabel('Amplitude');
+
+subplot(4,2,4);
+stem(n_seq, r, 'filled');
+grid on; title('Ramp Sequence'); xlabel('n'); ylabel('Amplitude');
+
+subplot(4,2,5);
+stem(n_seq, exp_inc, 'filled');
+grid on; title('Exponential Increase (a = 1.5)'); xlabel('n'); ylabel('Amplitude');
+
+subplot(4,2,6);
+stem(n_seq, exp_dec, 'filled');
+grid on; title('Exponential Decrease (a = 0.5)'); xlabel('n'); ylabel('Amplitude');
+
+subplot(4,2,7);
+stem(n_seq, delta, 'filled');
+grid on; title('Unit Sample (Impulse)'); xlabel('n'); ylabel('Amplitude');

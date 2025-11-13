@@ -1,0 +1,123 @@
+clear all
+close all
+clc
+%% Experiment 3.... LTI System
+n=-10:10;
+x1=int32(n>0 & n<=5);
+x2=int32(n>-2 & n<=1);
+a=2;b=3;
+% Linearity check for y(n)=x^2(n)
+y1=x1.^2; % . needed for indivisual operation on each element of array
+y2=x2.^2;
+lhs=(a*x1+b*x2).^2;
+rhs=a*y1+b*y2;
+if y1==y2
+    display("System is Linear");
+else
+    display("System is non linear");
+subplot(5,2,1);
+stem(n,lhs);
+title("LHS: (a*x1 + b*x2)^2");
+subplot(5,2,2);
+stem(n,rhs);
+title("RHS: a*x1 + b*x2");
+% Time Invariance check for y(n)=x^2(n)
+n0=3; % Shift amount
+x_shift=circshift(x1,n0);
+y_shift__input=x_shift.^2;
+y_shift__output=circshift(y1,n0);
+if (y_shift__output==y_shift__input)
+    display("System is Time Invariant")
+else
+    display("System is Time Variant")
+end
+subplot(5,2,3);
+stem(n,y_shift__input);
+title("Output for shifted input")
+subplot(5,2,4);
+stem(n,y_shift__output);
+title("Shifted output of original");
+end
+% Time shifting
+l=length(n);
+x=zeros(1,l);
+for i=1:l
+    if(n(i)>0 && n(i)<=5)
+        x(i)=n(i);
+    else
+        x(i)=0;
+    end
+end
+disp("x(n):");disp(x)
+for i=1:l
+    if(n(i)>0 && n(i)<=5)
+        x(i-2)=n(i);
+    elseif (n(i)>5)
+        x(i-2)=0;
+    else
+        x(i)=0;
+    end
+end
+disp("x(n+2):");disp(x)
+for i=1:l
+    if((n(i)-2)>0 && (n(i)-2)<=5)
+        x(i)=n(i)-2;
+    else
+        x(i)=0;
+    end
+end
+disp("x(n-2)");disp(x)
+for i=1:l
+    if(-n(i)>0 && -n(i)<=5)
+        x(i)=-n(i);
+    elseif (-n(i)>5)
+        x(i)=0;
+    else
+        x(i)=0;
+    end
+end
+disp("x(-n)");disp(x)
+for i=1:l
+    if(-n(i)+2>0 && -n(i)+2<=5)
+        x(i)=-n(i-2);
+    elseif (n(i)>1)
+        x(i)=0;
+    else
+        x(i)=0;
+    end
+end
+disp("x(-n-2)");disp(x)
+for i=1:l
+    if(-n(i)-2>0 && -n(i)-2<=5)
+        x(i)=-n(i+2);
+    elseif (n(i)>1)
+        x(i)=0;
+    else
+        x(i)=0;
+    end
+end
+disp("x(n+2):");disp(x)
+subplot(5,2,5);
+stem(n,x);
+title("Original Signal : x(n)");
+xlabel("n");ylabel("x(n)")
+subplot(5,2,6);
+stem(n,x);
+title("Shifted Signal : x(n+2)");
+xlabel("n");ylabel("x(n+2)");
+subplot(5,2,7);
+stem(n,x);
+title("Shifted Signal : x(n-2)");
+xlabel("n");ylabel("x(n+2)");
+subplot(5,2,8);
+stem(-n,x);
+title("Shifted Signal : x(-n)");
+xlabel("n");ylabel("x(-n)");
+subplot(5,2,9);
+stem(-n,x);
+title("Shifted Signal : x(-n-2)");
+xlabel("n");ylabel("x(-n-2)");
+subplot(5,2,10);
+stem(-n,x);
+title("Shifted Signal : x(-n+2)");
+xlabel("n");ylabel("x(-n+2)");

@@ -1,0 +1,46 @@
+clear all
+close all
+clc
+%% Experiment 4.... Linear Convolution
+x=[1 2 1 2]; nx1=-1;
+h=[2 1 2 3]; nh1=0;
+y1=conv(x,h);
+N1=length(x);
+N2=length(h);
+N=N1+N2-1;
+y_manual_1=zeros(1,N);
+for n=1:N
+    for k=1:N1
+        if(n-k+1>0 && n-k+1<=N2)
+            y_manual_1(n)=y_manual_1(n)+(x(k)*h(n-k+1));
+        end
+    end
+end
+ny1 = nx1 + nh1;                   % starting index of y
+ny2 = ny1 + (N-1);                 % ending index of y
+ny  = ny1:ny2;
+y_manual_2=zeros(1,N1+N2-1);
+for i=1:length(x)
+    for j=1:length(h)
+        y_manual_2(i+j-1)=y_manual_2(i+j-1)+(x(i)*h(j));
+    end
+end
+% Display result
+disp("Input Sequence x(n)"); disp(x)
+disp("Impulse Sequence h(n)"); disp(h)
+disp("Convolution result using built-in function:"); disp(y1)
+disp("Convolution result manually (with index shift):"); disp(y_manual_2)
+disp("Output index range n="+string(ny1)+" to "+string(ny2))
+% Plotting
+subplot(2,2,1);
+stem(nx1:nx1+N1-1,x,"filled");
+title("Input Sequence x(n)"); xlabel("n"); ylabel("x(n)")
+subplot(2,2,2);
+stem(nh1:nh1+N2-1,h,"filled");
+title("Impulse Response h(n)"); xlabel("n"); ylabel("h(n)")
+subplot(2,2,3);
+stem(ny,y_manual_2,"filled");
+title("Manual Convolution y(n)"); xlabel("n"); ylabel("y(n)")
+subplot(2,2,4);
+stem(ny,y1,"filled");
+title("Built-in Convolution y(n)"); xlabel("n"); ylabel("y(n)")
