@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=1440, user-scalable=yes">
-    <title>BitHuB</title>   
+    <title>BitHuB - Feedback</title>   
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="comment.css">
+    <link rel="stylesheet" href="feedback.css">
      <!-- Google tag start here -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-FTVZQ3QK4Z"></script>
 <script>
@@ -30,7 +30,7 @@
                 <li><a href="clubs.html">Clubs</a></li>
                 <li><a href="transport.html">Transport</a></li>                
                 <li><a href="event.html">Event</a></li> 
-                <li><a href="comment.html">Contact</a></li> 
+                <li><a href="feedback.html">FeedBack</a></li> 
                 <li><a href="bit.html">BIT</a></li>  
               </ul>
             <div class="menu-toggle" id="menu-toggle">&#9776;</div>
@@ -46,7 +46,8 @@
 <!-- background starts here -->
 
 <div id="contact-section">
-  <h5 style="color: #ffffff; font-weight: bold; font-family: 'Inter', sans-serif; font-size: 1.5em; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);">Contact Us</h5>
+  <h5 style="color: #ffffff; font-weight: bold; font-family: 'Inter', sans-serif; font-size: 1.5em; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);">Feedback</h5>
+  <br><br>
   <form id="feedbackForm">
       <div class="input-group">
           <label for="name">Name :</label>
@@ -54,7 +55,15 @@
       </div>
       <div class="input-group">
           <label for="roll">Roll No :</label>
-          <input type="text" id="roll" name="roll" placeholder="Roll No." required>
+          <div class="roll-input-container">
+              <select id="prefix" name="prefix" required>
+                  <option value="">SELECT</option>
+                  <option value="BTECH/">BTECH</option>
+                  <option value="IPH/">IPH</option>
+              </select>
+              <input type="text" id="roll" name="roll" placeholder="12345" maxlength="5" pattern="[0-9]{5}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
+              <span class="roll-suffix">/25</span>
+          </div>
       </div>
       <label>Give your feedback :</label>
       <br>
@@ -83,6 +92,11 @@
     const form = document.getElementById("feedbackForm");
     form.addEventListener("submit", function(e) {
         e.preventDefault();
+
+        // Format the roll number
+        const prefix = document.getElementById('prefix').value;
+        const rollInput = document.getElementById('roll');
+        rollInput.value = prefix + rollInput.value + '/25';
 
         const formData = new FormData(form);
 

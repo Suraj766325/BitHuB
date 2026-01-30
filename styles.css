@@ -1596,3 +1596,13 @@ body::after, html::after {
         padding: 0.75rem !important;
     }
 }
+
+/* Blinking Contact Link */
+@keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+}
+
+.blink-feedback {
+    animation: blink 0.5s infinite;
+}
