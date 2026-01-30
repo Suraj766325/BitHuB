@@ -145,3 +145,46 @@ input[type="radio"] + label {
 input[type="radio"] + label:hover {
     color: #00d4ff;
 }
+
+.roll-input-container {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 6px;
+    backdrop-filter: blur(5px);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.roll-prefix, .roll-suffix {
+    color: #ffffff;
+    font-size: 16px;
+    padding: 12px;
+    background: transparent;
+    border: none;
+    margin: 0;
+}
+
+.roll-input-container select {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    color: #ffffff;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.roll-input-container select:focus {
+    background: rgba(0, 212, 255, 0.1);
+    box-shadow: inset 0 0 5px rgba(0, 212, 255, 0.5);
+}
+
+.roll-input-container select option {
+    background: rgba(0, 0, 0, 0.8);
+    color: #ffffff;
+}
