@@ -78,31 +78,50 @@
 </head>
 <body>
     <div id="main-content">
-    <audio id="welcomeAudio">
+    <audio id="welcomeAudio" preload="auto">
         <source src="welcome_audio.mp3" type="audio/mpeg">
     </audio>
     <script>
-        // Reset the audio played flag on page reload
-        localStorage.removeItem('audioPlayed');
+        (function() {
+            // Check if we are on the root path (not including index.html)
+            const path = window.location.pathname;
+            const isHome = (path === '/' || path === '' || path.endsWith('/')) && !path.toLowerCase().includes('index.html');
+            
+            if (isHome && !localStorage.getItem('welcomePlayed')) {
+                const audio = document.getElementById('welcomeAudio');
+                if (!audio) return;
 
-        // Only play audio on the root URL (bithub.co.in)
-        if (window.location.pathname === '/') {
-            const audio = document.getElementById('welcomeAudio');
-            audio.volume = 1;
+                const handleInteraction = () => {
+                    // Double check storage flag
+                    if (localStorage.getItem('welcomePlayed')) return;
 
-            function playWelcomeAudio() {
-                if (!localStorage.getItem('audioPlayed')) {
                     audio.play().then(() => {
-                        localStorage.setItem('audioPlayed', 'true');
-                    }).catch(error => {
-                        console.log('Audio play failed:', error);
+                        localStorage.setItem('welcomePlayed', 'true');
+                        
+                        // Maintain play counter
+                        const playCount = parseInt(localStorage.getItem('audioPlayCount') || '0');
+                        localStorage.setItem('audioPlayCount', (playCount + 1).toString());
+                        
+                        console.log('Welcome sound played. Total:', playCount + 1);
+                        cleanup();
+                    }).catch(err => {
+                        console.log('Playback failed, waiting for next interaction:', err.message);
                     });
-                    document.removeEventListener('click', playWelcomeAudio);
-                }
-            }
+                };
 
-            document.addEventListener('click', playWelcomeAudio);
-        }
+                const cleanup = () => {
+                    ['click', 'touchstart', 'pointerdown', 'mousedown'].forEach(evt => 
+                        window.removeEventListener(evt, handleInteraction));
+                };
+
+                ['click', 'touchstart', 'pointerdown', 'mousedown'].forEach(evt => 
+                    window.addEventListener(evt, handleInteraction, { once: true }));
+                
+                // Keep audio loaded
+                audio.volume = 1;
+                audio.load();
+            }
+        })();
 
         // Poll functionality
         const questions = ["How are you feeling today?", "What's your mood right now?", "How's your day going?", "Feeling good?", "What's your current state?"];
