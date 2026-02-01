@@ -62,7 +62,7 @@
                   <option value="IPH/">IPH</option>
               </select>
               <input type="text" id="roll" name="roll" placeholder="12345" maxlength="5" pattern="[0-9]{5}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
-              <span class="roll-suffix">/25</span>
+              <span class="roll-suffix"> / 25</span>
           </div>
       </div>
       <label>Give your feedback :</label>
@@ -75,11 +75,23 @@
       <label for="neutral">Neutral</label>
       <br><br>
       <div class="input-group">
+          <label for="recipient">Select Recipient:</label>
+          <div class="recipient-input-container">
+              <select id="recipient" name="recipient" required>
+                  <option value="">SELECT</option>
+                  <option value="Suraj Kumar">Suraj Kumar [ Founder ]</option>
+                  <option value="Anurag Kumar Verma">Anurag Kumar Verma [ Active Developer ]</option>
+              </select>
+          </div>
+      </div>
+      <div class="input-group">
         <label for="message">Your Message :</label>
-        <textarea id="message" name="message" placeholder="Your Message" required></textarea>
+        <div id="messageContainer" contenteditable="true" style="flex-grow: 1; padding: 12px; border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 6px; box-sizing: border-box; font-size: 16px; transition: all 0.3s ease; background: rgba(0, 0, 0, 0.5); color: #ffffff; backdrop-filter: blur(5px); min-height: 140px; outline: none;" onfocus="this.style.borderColor='#00d4ff'; this.style.boxShadow='0 0 10px rgba(0, 212, 255, 0.5)'; this.style.background='rgba(0, 0, 0, 0.7)';"></div>
+        <input type="hidden" id="fullMessage" name="message">
     </div>
       <br>
       <div style="text-align: center;">
+        <p style="color: #ffffff; font-size: 0.9em; margin-bottom: 10px;">NOTE: if you want the concerned person to contact you then please mention your contact details in your message</p>
         <button type="submit" style="width: 200px; padding: 10px; border-radius: 5px;">Submit</button>
       </div>
   </form>
@@ -89,34 +101,182 @@
 <p id="responseMessage" style="color: green;"></p>
 
 <script>
+    const recipientSelect = document.getElementById('recipient');
+    const messageContainer = document.getElementById('messageContainer');
+    messageContainer.contentEditable = 'false';
+    const prefixSpan = document.createElement('span');
+    prefixSpan.contentEditable = 'false';
+    prefixSpan.id = 'prefixSpan';
+      function getFormattedDateTime(d) {
+        const opts = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+        return d.toLocaleString('en-GB', opts);
+      }
+    const userSpan = document.createElement('div');
+    userSpan.contentEditable = 'true';
+    userSpan.id = 'userSpan';
+    userSpan.style.minHeight = '20px';
+    userSpan.textContent = 'Write your message here...';
+    userSpan.style.color = '#aaa';
+    messageContainer.appendChild(prefixSpan);
+    messageContainer.appendChild(userSpan);
+
+    userSpan.addEventListener('keydown', (e) => {
+        if (!['Shift', 'Control', 'Alt', 'Meta', 'Backspace', 'Delete', 'Enter', 'Tab', 'Escape', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+            if (userSpan.textContent === 'Write your message here...') {
+                userSpan.textContent = '';
+                userSpan.style.color = '#ffffff';
+            }
+        }
+    });
+
+    userSpan.addEventListener('blur', () => {
+        if (userSpan.textContent.trim() === '') {
+            userSpan.textContent = 'Write your message here...';
+            userSpan.style.color = '#aaa';
+        }
+    });
+
+    messageContainer.addEventListener('click', () => {
+      const selection = window.getSelection();
+      const range = document.createRange();
+      range.selectNodeContents(userSpan);
+      // If placeholder is present, place caret before it so typing replaces it
+      if (userSpan.textContent === 'Write your message here...') {
+        range.collapse(true); // to start (before placeholder)
+      } else {
+        range.collapse(false); // to end
+      }
+      selection.removeAllRanges();
+      selection.addRange(range);
+      userSpan.focus();
+    });
+
+    function updateMessage() {
+      const selected = recipientSelect.value;
+      if (selected) {
+        const now = new Date();
+        const formatted = getFormattedDateTime(now);
+        prefixSpan.innerHTML = `To,<br>${selected}<br><div class="feedback-datetime" contenteditable="false" style="color:#ddd; margin:5px 0;">${formatted}</div><div style="border-bottom: 1px dotted #ffffff; margin: 5px 0;"></div><br>`;
+      } else {
+        prefixSpan.innerHTML = '';
+      }
+    }
+
+    recipientSelect.addEventListener('change', updateMessage);
+
+    // Helper: get caret (character) offset within an element
+    function getCaretOffsetWithin(element) {
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount) return 0;
+      const range = sel.getRangeAt(0).cloneRange();
+      const preRange = document.createRange();
+      preRange.selectNodeContents(element);
+      preRange.setEnd(range.startContainer, range.startOffset);
+      return preRange.toString().length;
+    }
+
+    // Safer Backspace handling: only allow Backspace when selection/caret is inside userSpan
+    messageContainer.addEventListener('keydown', (e) => {
+      if (e.key !== 'Backspace') return;
+      const sel = window.getSelection();
+      if (!sel || !sel.rangeCount) {
+        e.preventDefault();
+        return;
+      }
+
+      const anchor = sel.anchorNode;
+
+      function isDescendant(parent, node) {
+        while (node) {
+          if (node === parent) return true;
+          node = node.parentNode;
+        }
+        return false;
+      }
+
+      // If the caret/selection is not inside userSpan, block deletion (protects prefix)
+      if (!isDescendant(userSpan, anchor)) {
+        e.preventDefault();
+        return;
+      }
+
+      // If selection is collapsed, allow backspace only when caret offset > 0
+      try {
+        const r = sel.getRangeAt(0).cloneRange();
+        const pre = document.createRange();
+        pre.selectNodeContents(userSpan);
+        pre.setEnd(r.startContainer, r.startOffset);
+        const preLen = pre.toString().length;
+        if (sel.isCollapsed && preLen === 0) {
+          e.preventDefault();
+          return;
+        }
+
+        // If selection is not collapsed and starts at offset 0, block (would delete prefix)
+        if (!sel.isCollapsed) {
+          const startRange = document.createRange();
+          startRange.selectNodeContents(userSpan);
+          startRange.setEnd(r.startContainer, r.startOffset);
+          const startLen = startRange.toString().length;
+          if (startLen === 0) {
+            e.preventDefault();
+            return;
+          }
+        }
+      } catch (err) {
+        // If any error occurs computing ranges, be conservative and prevent deletion
+        e.preventDefault();
+        return;
+      }
+      // Otherwise allow backspace
+    });
+
+    // show any saved message from previous submit after reload
+    document.addEventListener('DOMContentLoaded', () => {
+      const saved = sessionStorage.getItem('feedbackMessage');
+      if (saved) {
+        const resp = document.getElementById("responseMessage");
+        if (resp) resp.innerText = saved;
+        sessionStorage.removeItem('feedbackMessage');
+      }
+      // Initialize prefix (including read-only date/time) if recipient is selected
+      updateMessage();
+    });
+
     const form = document.getElementById("feedbackForm");
     form.addEventListener("submit", function(e) {
-        e.preventDefault();
+      e.preventDefault();
 
-        // Format the roll number
-        const prefix = document.getElementById('prefix').value;
-        const rollInput = document.getElementById('roll');
-        rollInput.value = prefix + rollInput.value + '/25';
+      // Set the hidden message
+      document.getElementById('fullMessage').value = messageContainer.innerText.trim();
 
-        const formData = new FormData(form);
+      // Format the roll number
+      const prefix = document.getElementById('prefix').value;
+      const rollInput = document.getElementById('roll');
+      rollInput.value = prefix + rollInput.value + '/25';
 
-        const scriptUrl = "https://script.google.com/macros/s/AKfycbzjJr-y91dwvaMEs5iQlUL7Cl-h0A-amLfQz02d5ulrLjiGu4MQ0QVZ92yDcn9xweLWLg/exec"; 
+      const formData = new FormData(form);
 
-        document.getElementById("responseMessage").innerText = "Thank you for your feedback!"; 
-        form.reset();
-        
-        fetch(scriptUrl, {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.text())
-        .then(data => {
-            console.log("Success:", data);
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            document.getElementById("responseMessage").innerText = "An error occurred. Please try again later."; 
-        });
+      const scriptUrl = "https://script.google.com/macros/s/AKfycbzjJr-y91dwvaMEs5iQlUL7Cl-h0A-amLfQz02d5ulrLjiGu4MQ0QVZ92yDcn9xweLWLg/exec"; 
+
+      // Try to send data reliably even if we reload immediately
+      if (navigator.sendBeacon) {
+        try {
+          navigator.sendBeacon(scriptUrl, formData);
+        } catch (err) {
+          // fallback to fetch if sendBeacon fails
+          fetch(scriptUrl, { method: 'POST', body: formData }).catch(() => {});
+        }
+      } else {
+        // best-effort async fetch (may be cancelled by reload)
+        fetch(scriptUrl, { method: 'POST', body: formData }).catch(() => {});
+      }
+
+      // Persist thank-you message across reload, then reload the page
+      sessionStorage.setItem('feedbackMessage', 'Thank you for your feedback!');
+      form.reset();
+      // small delay to ensure sendBeacon starts in some browsers
+      setTimeout(() => { window.location.reload(); }, 100);
     });
 </script>
 

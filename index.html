@@ -64,7 +64,20 @@
                 height: 10px;
             }
         }
-    </style>
+    
+      /* Professional poll modal styles */
+      #poll-modal { display: none; position: fixed; inset: 0; z-index: 1000; justify-content: center; align-items: center; font-family: 'Inter', sans-serif; }
+      #poll-modal .poll-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); pointer-events: none; }
+      .poll-card { position: relative; width: min(640px, 92%); background: linear-gradient(180deg,#05050a 0%, #0a0320 100%); padding: 28px; border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.03); color: #eef1f8; z-index: 2; }
+      .poll-card::before { content: ''; position: absolute; inset: 0; border-radius: 12px; pointer-events: none; background-image: radial-gradient(circle at 10% 10%, rgba(142,68,173,0.06), transparent 8%), repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0 1px, transparent 1px 8px); mix-blend-mode: overlay; opacity: 0.6; }
+      .poll-card h2 { margin: 0 0 8px 0; font-size: 1.25rem; font-weight: 700; color: #f6f7fb; letter-spacing: 0.2px; }
+      .poll-desc { margin: 0 0 12px 0; color: #c7d0e0; font-size: 0.95rem; }
+      .poll-options { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+      .poll-option { background: transparent; color: #eef1f8; border: 1px dotted rgba(142,68,173,0.25); padding: 10px 18px; border-radius: 10px; min-width: 110px; cursor: pointer; font-weight: 600; transition: transform .12s ease, background .12s ease, border-color .12s ease; }
+      .poll-option:hover { transform: translateY(-3px); background: rgba(142,68,173,0.08); border-color: rgba(142,68,173,0.45); }
+      .poll-close { position: absolute; right: 12px; top: 10px; background: transparent; border: none; color: #cfd8e3; font-size: 20px; cursor: pointer; padding: 6px; }
+
+      </style>
      <!-- Google tag start here -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-FTVZQ3QK4Z"></script>
 <script>
@@ -78,128 +91,112 @@
 </head>
 <body>
     <div id="main-content">
-    <audio id="welcomeAudio" preload="auto">
-        <source src="welcome_audio.mp3" type="audio/mpeg">
-    </audio>
+
     <script>
-        (function() {
-            // Check if we are on the root path (not including index.html)
-            const path = window.location.pathname;
-            const isHome = (path === '/' || path === '' || path.endsWith('/')) && !path.toLowerCase().includes('index.html');
-            
-            if (isHome && !localStorage.getItem('welcomePlayed')) {
-                const audio = document.getElementById('welcomeAudio');
-                if (!audio) return;
+    document.addEventListener('DOMContentLoaded', function() {
+      const questions = ["How are you feeling today?", "What's your mood right now?", "How's your day going?", "Feeling good?", "What's your current state?"];
+      const timeSlots = [10000, 20000, 15000, 25000, 30000]; // 10s, 20s, 15s, 25s, 30s
+      const randomTime = timeSlots[Math.floor(Math.random() * timeSlots.length)];
+      const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
+      console.log('Poll will appear in', randomTime / 1000, 'seconds with question:', randomQuestion);
 
-                const handleInteraction = () => {
-                    // Double check storage flag
-                    if (localStorage.getItem('welcomePlayed')) return;
-
-                    audio.play().then(() => {
-                        localStorage.setItem('welcomePlayed', 'true');
-                        
-                        // Maintain play counter
-                        const playCount = parseInt(localStorage.getItem('audioPlayCount') || '0');
-                        localStorage.setItem('audioPlayCount', (playCount + 1).toString());
-                        
-                        console.log('Welcome sound played. Total:', playCount + 1);
-                        cleanup();
-                    }).catch(err => {
-                        console.log('Playback failed, waiting for next interaction:', err.message);
-                    });
-                };
-
-                const cleanup = () => {
-                    ['click', 'touchstart', 'pointerdown', 'mousedown'].forEach(evt => 
-                        window.removeEventListener(evt, handleInteraction));
-                };
-
-                ['click', 'touchstart', 'pointerdown', 'mousedown'].forEach(evt => 
-                    window.addEventListener(evt, handleInteraction, { once: true }));
-                
-                // Keep audio loaded
-                audio.volume = 1;
-                audio.load();
-            }
-        })();
-
-        // Poll functionality
-        const questions = ["How are you feeling today?", "What's your mood right now?", "How's your day going?", "Feeling good?", "What's your current state?"];
-        const timeSlots = [10000, 20000, 15000, 25000, 30000]; // 10s, 20s, 15s, 25s, 30s
-        const randomTime = timeSlots[Math.floor(Math.random() * timeSlots.length)];
-        const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
-        console.log('Poll will appear in', randomTime / 1000, 'seconds with question:', randomQuestion);
-        setTimeout(() => {
+      // Suppress poll if shown within the last 20 minutes (use localStorage so reloads respect it)
+      const SUPPRESS_MS = 20 * 60 * 1000; // 20 minutes
+      try {
+        const lastShown = localStorage.getItem('pollLastShown');
+        if (lastShown && (Date.now() - parseInt(lastShown, 10) < SUPPRESS_MS)) {
+          console.log('Poll suppressed — shown within last 20 minutes.');
+        } else {
+          setTimeout(() => {
             console.log('Showing poll modal');
-            document.querySelector('#poll-modal h2').textContent = randomQuestion;
+            const titleEl = document.querySelector('#poll-modal h2');
+            if (titleEl) titleEl.textContent = randomQuestion;
             const mainContent = document.getElementById('main-content');
             if (mainContent) {
-                mainContent.style.filter = 'none';
-                mainContent.style.opacity = '0';
-                mainContent.style.pointerEvents = 'none';
+              mainContent.style.pointerEvents = 'none';
+              mainContent.style.opacity = '0.45';
             }
             const modal = document.getElementById('poll-modal');
-            if (modal) {
-                modal.style.display = 'flex';
-            }
-        }, randomTime);
+            if (modal) modal.style.display = 'flex';
 
-        function handlePollClick(response) {
-            console.log('Poll button clicked:', response);
-            const currentQuestion = document.querySelector('#poll-modal h2').textContent;
-            sendPollFeedback(currentQuestion, response);
-            // localStorage.setItem('pollResponded', 'true');
-            const modal = document.getElementById('poll-modal');
-            if (modal) {
-                modal.style.display = 'none';
-            }
-            const mainContent = document.getElementById('main-content');
-            if (mainContent) {
-                mainContent.style.filter = '';
-                mainContent.style.opacity = '';
-                mainContent.style.pointerEvents = '';
-            }
+            // Record shown timestamp in local storage
+            try { localStorage.setItem('pollLastShown', Date.now().toString()); } catch (e) { console.warn('localStorage unavailable', e); }
+          }, randomTime);
         }
+      } catch (e) {
+        console.warn('Error checking poll suppression:', e);
+        // fallback: show poll normally
+        setTimeout(() => {
+          const titleEl = document.querySelector('#poll-modal h2');
+          if (titleEl) titleEl.textContent = randomQuestion;
+          const mainContent = document.getElementById('main-content');
+          if (mainContent) {
+            mainContent.style.pointerEvents = 'none';
+            mainContent.style.opacity = '0.45';
+          }
+          const modal = document.getElementById('poll-modal');
+          if (modal) modal.style.display = 'flex';
+        }, randomTime);
+      }
 
+      function closeModal() {
+        const modal = document.getElementById('poll-modal');
+        if (modal) modal.style.display = 'none';
+        const mainContent = document.getElementById('main-content');
+        if (mainContent) {
+          mainContent.style.pointerEvents = '';
+          mainContent.style.opacity = '';
+        }
+      }
+
+      function handlePollClick(response) {
+        console.log('Poll button clicked:', response);
+        const currentQuestion = document.querySelector('#poll-modal h2')?.textContent || '';
+        sendPollFeedback(currentQuestion, response);
+        closeModal();
+      }
+
+      // Attach listeners to dynamic elements
+      const attachListeners = () => {
         const pollOptions = document.querySelectorAll('.poll-option');
-        const pollModal = document.getElementById('poll-modal');
-
         pollOptions.forEach(button => {
-            button.addEventListener('click', function() {
-                const response = this.getAttribute('data-response');
-                console.log('Poll button clicked:', response);
-                const currentQuestion = document.querySelector('#poll-modal h2').textContent;
-                sendPollFeedback(currentQuestion, response);
-                // localStorage.setItem('pollResponded', 'true');
-                pollModal.style.display = 'none';
-                const mainContent = document.getElementById('main-content');
-                mainContent.style.filter = '';
-                mainContent.style.opacity = '';
-                mainContent.style.pointerEvents = '';
-            });
+          button.removeEventListener('click', button._pollHandler);
+          const handler = function() { handlePollClick(this.getAttribute('data-response')); };
+          button.addEventListener('click', handler);
+          button._pollHandler = handler;
         });
 
-        function sendPollFeedback(question, response) {
-            const formData = new FormData();
-            formData.append('name', question);
-            formData.append('roll', '');
-            formData.append('feedback', '');
-            formData.append('message', response);
-
-            const scriptUrl = "https://script.google.com/macros/s/AKfycbzjJr-y91dwvaMEs5iQlUL7Cl-h0A-amLfQz02d5ulrLjiGu4MQ0QVZ92yDcn9xweLWLg/exec";
-
-            fetch(scriptUrl, {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.text())
-            .then(data => {
-                console.log("Poll feedback sent:", data);
-            })
-            .catch(error => {
-                console.error("Error sending poll feedback:", error);
-            });
+        const closeBtn = document.querySelector('.poll-close');
+        if (closeBtn) {
+          closeBtn.addEventListener('click', function() { handlePollClick('Dismiss'); });
         }
+      };
+
+      // Wait for modal to be inserted (it exists in DOM below), then attach
+      attachListeners();
+
+      function sendPollFeedback(question, response) {
+        const formData = new FormData();
+        formData.append('name', question);
+        formData.append('roll', '');
+        formData.append('feedback', '');
+        formData.append('message', response);
+
+        const scriptUrl = "https://script.google.com/macros/s/AKfycbzjJr-y91dwvaMEs5iQlUL7Cl-h0A-amLfQz02d5ulrLjiGu4MQ0QVZ92yDcn9xweLWLg/exec";
+
+        fetch(scriptUrl, {
+          method: "POST",
+          body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+          console.log("Poll feedback sent:", data);
+        })
+        .catch(error => {
+          console.error("Error sending poll feedback:", error);
+        });
+      }
+    });
     </script>
 
    <!-- nav bar starts here -->
@@ -322,12 +319,7 @@
             <div class="wave wave2"></div>
             <div class="wave wave3"></div>
           </div>
-          <div class="floating-shapes">
-            <div class="shape shape1"></div>
-            <div class="shape shape2"></div>
-            <div class="shape shape3"></div>
-            <div class="shape shape4"></div>
-          </div>
+          <!-- floating-shapes removed to eliminate the unwanted flying/rotating block -->
           <div class="particle-system">
             <div class="particle"></div>
             <div class="particle"></div>
@@ -499,25 +491,18 @@
     </div>
 
     <!-- Poll Modal -->
-    <div id="poll-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #000011 0%, #000033 50%, #000066 100%); z-index: 1000; justify-content: center; align-items: center; overflow: hidden;">
-        <div class="sparks">
-            <div class="spark red" style="top: 10%; left: 20%; animation-delay: 0s;"></div>
-            <div class="spark blue" style="top: 20%; left: 80%; animation-delay: 0.5s;"></div>
-            <div class="spark red" style="top: 50%; left: 10%; animation-delay: 1s;"></div>
-            <div class="spark blue" style="top: 70%; left: 90%; animation-delay: 1.5s;"></div>
-            <div class="spark red" style="top: 30%; left: 50%; animation-delay: 2s;"></div>
-            <div class="spark blue" style="top: 80%; left: 30%; animation-delay: 2.5s;"></div>
-            <div class="spark red" style="top: 15%; left: 70%; animation-delay: 3s;"></div>
-            <div class="spark blue" style="top: 60%; left: 40%; animation-delay: 3.5s;"></div>
+    <div id="poll-modal" aria-hidden="true">
+      <div class="poll-backdrop" aria-hidden="true"></div>
+      <div class="poll-card" role="dialog" aria-modal="true" aria-labelledby="poll-title">
+        <button class="poll-close" aria-label="Close poll">&times;</button>
+        <h2 id="poll-title">How are you feeling today?</h2>
+        <p class="poll-desc">Your feedback helps improve this site. Select one option below.</p>
+        <div class="poll-options">
+          <button class="poll-option" data-response="Sad">Sad</button>
+          <button class="poll-option" data-response="Neutral">Neutral</button>
+          <button class="poll-option" data-response="Happy">Happy</button>
         </div>
-        <div style="background: linear-gradient(135deg, #8b0000 0%, #00008b 33%, #000000 66%, #daa520 100%); padding: 50px; border-radius: 60% 40% 50% 30%; box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 30px rgba(139, 0, 0, 0.3); max-width: 600px; text-align: center; animation: fadeIn 0.5s ease-in-out; position: relative; z-index: 1; backdrop-filter: blur(10px); display: flex; flex-direction: column; justify-content: center; align-items: center;">
-            <h2 style="font-size: 3rem; margin-bottom: 40px; color: #0d47a1; font-weight: 800; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); font-family: 'Inter', sans-serif; background: rgba(0,0,0,0.7); padding: 20px; border-radius: 50%; width: 80%;">How are you feeling today?</h2>
-            <div style="display: flex; gap: 30px; flex-wrap: wrap; justify-content: center;">
-                <button class="poll-option" data-response="Sad" onclick="handlePollClick('Sad')" style="background: linear-gradient(45deg, #8b0000, #b22222); color: white; border: none; padding: 20px; border-radius: 50%; width: 120px; height: 120px; font-size: 1.4rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 25px rgba(139, 0, 0, 0.4); font-weight: 700; transform: scale(1); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center;">Sad</button>
-                <button class="poll-option" data-response="Neutral" onclick="handlePollClick('Neutral')" style="background: linear-gradient(45deg, #daa520, #b8860b); color: #333; border: none; padding: 20px; border-radius: 50%; width: 120px; height: 120px; font-size: 1.4rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 25px rgba(218, 165, 32, 0.4); font-weight: 700; transform: scale(1); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center;">Neutral</button>
-                <button class="poll-option" data-response="Happy" onclick="handlePollClick('Happy')" style="background: linear-gradient(45deg, #00008b, #0000cd); color: white; border: none; padding: 20px; border-radius: 50%; width: 120px; height: 120px; font-size: 1.4rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 10px 25px rgba(0, 0, 139, 0.4); font-weight: 700; transform: scale(1); font-family: 'Inter', sans-serif; display: flex; justify-content: center; align-items: center;">Happy</button>
-            </div>
-        </div>
+      </div>
     </div>
     <!-- End Poll Modal -->
 

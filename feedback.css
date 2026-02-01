@@ -75,6 +75,46 @@ textarea {
     height: 140px;
 }
 
+#messageContainer {
+    /* let container size to content and only cap its max height */
+    min-height: 0;
+    max-height: 480px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#prefixSpan {
+    user-select: none;
+    pointer-events: none;
+}
+
+/* Make the editable user area appear as plain text (no inner boxed input look) */
+#userSpan {
+    padding: 0;
+    margin: 0;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+    display: block;
+    width: 100%;
+    color: #ffffff;
+    min-height: 20px;
+}
+
+/* make user text wrap and allow the span to grow/shrink */
+#userSpan {
+    white-space: pre-wrap;
+    word-break: break-word;
+    flex: 0 1 auto;
+}
+
+/* Ensure caret is visible and text flows naturally */
+#userSpan:focus {
+    outline: none;
+}
+
 button {
     background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
     color: #ffffff;
@@ -185,6 +225,41 @@ input[type="radio"] + label:hover {
 }
 
 .roll-input-container select option {
+    background: rgba(0, 0, 0, 0.8);
+    color: #ffffff;
+}
+
+.recipient-input-container {
+    display: flex;
+    align-items: center;
+    width: 50ch;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 6px;
+    backdrop-filter: blur(5px);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.recipient-input-container select {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    color: #ffffff;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    width: 100%;
+}
+
+.recipient-input-container select:focus {
+    background: rgba(0, 212, 255, 0.1);
+    box-shadow: inset 0 0 5px rgba(0, 212, 255, 0.5);
+}
+
+.recipient-input-container select option {
     background: rgba(0, 0, 0, 0.8);
     color: #ffffff;
 }
