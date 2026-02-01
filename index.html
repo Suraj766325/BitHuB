@@ -77,6 +77,40 @@
       .poll-option:hover { transform: translateY(-3px); background: rgba(142,68,173,0.08); border-color: rgba(142,68,173,0.45); }
       .poll-close { position: absolute; right: 12px; top: 10px; background: transparent; border: none; color: #cfd8e3; font-size: 20px; cursor: pointer; padding: 6px; }
 
+          /* Update details shown near the logo - compact professional box */
+          .update-details {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-left: 12px;
+            padding: 6px 10px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+            border: 1px solid rgba(0,212,255,0.07);
+            border-radius: 8px;
+            color: #cfeff6;
+            font-size: 12px;
+            line-height: 1.1;
+            max-width: 360px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+          }
+
+          .update-details .ud-title {
+            font-weight: 700;
+            color: #e8ffff;
+            font-size: 12px;
+          }
+
+          .update-details .ud-line { font-size: 11px; color: #bfeef4; }
+          .update-details .ud-key { color: #9fe5ef; font-weight: 600; margin-right: 6px; }
+          .update-details .ud-val { color: #eafefe; font-weight: 500; }
+
+          @media (max-width: 900px) {
+            .update-details { display: none; }
+          }
       </style>
      <!-- Google tag start here -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-FTVZQ3QK4Z"></script>
@@ -203,6 +237,13 @@
     <header class="ihead">
         <nav>
             <div class="logo1"><img src="bit2.png" alt=""></div>
+            <div class="update-details" aria-label="Update details">
+              <div class="ud-title">Update Details</div>
+              <div class="ud-line"><span class="ud-key">By :</span><span class="ud-val">Anurag Kumar Verma</span></div>
+              <div class="ud-line"><span class="ud-key">Date :</span><span class="ud-val">01/02/2026</span></div>
+              <div class="ud-line"><span class="ud-key">Content Updated :</span><span class="ud-val">none</span></div>
+              <div class="ud-line"><span class="ud-key">Software Updated (Y/N) :</span><span class="ud-val">Y</span></div>
+            </div>
             <div class="logo"><b class="bithub1">BitHuB</b></div>
             <ul style="padding-top: 8px;" class="nav-links">
                 <li><a href="index.html">Home</a></li>                
