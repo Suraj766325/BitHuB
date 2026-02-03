@@ -45,11 +45,184 @@
 
       <!-- background starts here -->
 
-      <!-- Under Construction Message -->
-      <div style="display: flex; justify-content: center; align-items: center; height: 50vh; font-size: 2rem; font-weight: bold; color: #333;">
-          Under Active Construction
+      <!-- Trends card placed below the header for clean layout -->
+      <div class="trends-wrapper" style="margin-top:84px;display:flex;justify-content:center;">
+        <div class="trends-card" style="width:min(980px,94%);">
+          <div class="trends-card-inner">
+            <h3 class="trends-title">Hot : In demand subjects</h3>
+            <div id="trends-list" aria-live="polite" style="margin-top:12px"></div>
+            <div class="trends-note">Updated live from BitHub Headquarters [ BHQ Server id : 19326 ] </div>
+          </div>
+        </div>
       </div>
-      <!-- End Under Construction Message -->
+
+<style>
+  /* Simple, professional card matching poll modal style */
+  .trends-card { border-radius:12px; box-shadow:0 12px 30px rgba(2,6,23,0.5); overflow:hidden; }
+  .trends-card-inner { background: linear-gradient(180deg,#05050a 0%, #0a0320 100%); padding:20px; color:#eef1f8; border:1px solid rgba(255,255,255,0.03); }
+  .trends-title { margin:0; font-size:1.2rem; font-weight:700; color:#f6f7fb; }
+  .trends-note { margin-top:10px; font-size:12px; color:#bcdbe4; }
+
+  .trend-row { display:flex; align-items:center; gap:14px; padding:10px 8px; border-radius:8px; background:transparent; }
+  .trend-rank { width:36px; height:36px; border-radius:8px; background:rgba(255,255,255,0.03); display:flex; align-items:center; justify-content:center; font-weight:700; color:#e6eef3; }
+  .trend-body { flex:1; }
+  .trend-subject { font-weight:600; color:#eaf0f5; margin:0; }
+  .trend-bar { height:10px; background:rgba(255,255,255,0.03); border-radius:6px; margin-top:6px; overflow:hidden; }
+  .trend-fill { height:100%; background:rgba(0,212,255,0.12); border-radius:6px; }
+  .trend-count { width:56px; text-align:right; font-weight:600; color:#cfeff7; }
+
+  /* responsive spacing */
+  @media (max-width:720px){ .trends-card-inner { padding:14px; } .trend-rank{width:32px;height:32px;} .trend-count{width:48px;} }
+</style>
+
+<style>
+  /* loader used while fetching trends */
+  .trends-loader { display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 0;color:#cfeff8 }
+  .trends-loader .dots { display:flex;gap:8px;margin-top:8px }
+  .trends-loader .dot { width:10px;height:10px;border-radius:50%;background:#00d4ff;opacity:0.15;animation:dotPulse 1s infinite ease-in-out; }
+  .trends-loader .dot:nth-child(2){ animation-delay:0.15s }
+  .trends-loader .dot:nth-child(3){ animation-delay:0.3s }
+  @keyframes dotPulse { 0%{opacity:0.15;transform:translateY(0)}50%{opacity:1;transform:translateY(-6px)}100%{opacity:0.15;transform:translateY(0)} }
+</style>
+
+<script>
+(function(){
+  const widget = document.getElementById('trends-list');
+  const scriptUrl = "https://script.google.com/macros/s/AKfycbzDXNGtTWpYHsMDSlXFeeVWpepgNEDuvGkRaqBjmwvUGHNAwvJXWznu0BQiTcrqrzOAKg/exec";
+
+  async function fetchTrends(){
+    try{
+      // show loader
+      widget.innerHTML = '<div class="trends-loader"><div>Loading trends</div><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
+      const res = await fetch(scriptUrl);
+      const obj = await res.json();
+      renderChart(obj.results || []);
+    }catch(e){ widget.innerHTML = '<div style="color:#ffb3b3">Unable to load trends.</div>'; console.error(e); }
+  }
+
+  function createSVG(tag, attrs){
+    const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (let k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+
+  function renderChart(items){
+    widget.innerHTML = '';
+    if (!items.length){ widget.innerHTML = '<div style="color:#cfeef8">No activity in the last 12 hours.</div>'; return; }
+
+    // chart dimensions
+    const padding = { top: 28, right: 24, bottom: 84, left: 64 };
+    const parentWidth = Math.max(360, widget.parentElement.clientWidth || 920);
+    const containerH = 360;
+
+    // compute bar geometry based on number of items; ensure bars auto-scale
+    const barCount = items.length;
+    const gap = Math.max(8, Math.round(parentWidth * 0.01)); // small responsive gap
+    // initial available width inside a default max container
+    const defaultInnerW = Math.max(300, parentWidth - padding.left - padding.right);
+    let barWidth = Math.floor((defaultInnerW - (barCount + 1) * gap) / barCount);
+    const minBarWidth = 24;
+    const maxBarWidth = 140;
+    if (barWidth > maxBarWidth) barWidth = maxBarWidth;
+    if (barWidth < minBarWidth) barWidth = minBarWidth;
+
+    // required inner width to fit all bars at computed width
+    const requiredInnerW = (barCount * barWidth) + ((barCount + 1) * gap);
+    // final svg/container width will be either parent-constrained or expanded to required width
+    const containerW = padding.left + padding.right + Math.max(defaultInnerW, requiredInnerW);
+    const width = containerW - padding.left - padding.right;
+    const height = containerH - padding.top - padding.bottom;
+
+    const svg = createSVG('svg', { width: containerW, height: containerH, viewBox: `0 0 ${containerW} ${containerH}`, role: 'img', 'aria-label': 'Trending subjects bar chart' });
+
+    // title (already present visually) but include accessible title element
+    const title = createSVG('title', {});
+    title.textContent = 'Hot : In demand subjects — last 12 hours';
+    svg.appendChild(title);
+
+    // compute scales and nice max for y-axis
+    const maxClicks = Math.max(...items.map(i=>i.clicks));
+    function niceCeil(v){
+      if (v <= 5) return 5;
+      if (v <= 10) return Math.ceil(v/5)*5;
+      if (v <= 50) return Math.ceil(v/10)*10;
+      if (v <= 200) return Math.ceil(v/20)*20;
+      if (v <= 1000) return Math.ceil(v/50)*50;
+      var p = Math.pow(10, Math.floor(Math.log10(v)));
+      return Math.ceil(v / p) * p;
+    }
+    const yMax = Math.max(1, niceCeil(maxClicks));
+    const ticks = 5;
+
+    // axes group
+    const g = createSVG('g', { transform: `translate(${padding.left},${padding.top})` });
+
+    // Y axis lines and labels
+    for (let t = 0; t <= ticks; t++){
+      const yVal = yMax * (t / ticks);
+      const y = height - (yVal / yMax) * height;
+      // grid line
+      const line = createSVG('line', { x1: 0, y1: y, x2: width, y2: y, stroke: 'rgba(255,255,255,0.04)', 'stroke-width': 1 });
+      g.appendChild(line);
+      // label
+      const lbl = createSVG('text', { x: -12, y: y + 4, 'text-anchor': 'end', 'font-size': 12, fill: '#cfeff7' });
+      lbl.textContent = String(Math.round(yVal));
+      g.appendChild(lbl);
+    }
+
+    // X axis - vertical baseline
+    const xAxisY = height;
+    const xAxisLine = createSVG('line', { x1: 0, y1: xAxisY, x2: width, y2: xAxisY, stroke: 'rgba(255,255,255,0.06)', 'stroke-width': 1.5 });
+    g.appendChild(xAxisLine);
+
+    // bars
+    // compute x positions using gap and barWidth
+    const barGap = gap;
+    items.forEach((it, i) => {
+      const x = barGap + i * (barWidth + barGap);
+      const h = (it.clicks / yMax) * height;
+      const y = height - h;
+
+      // bar rect
+      const rect = createSVG('rect', { x: x, y: y, width: barWidth, height: Math.max(2,h), fill: 'rgba(0,212,255,0.18)', rx: 3, ry: 3 });
+      g.appendChild(rect);
+
+      // count label above bar
+      const countLabel = createSVG('text', { x: x + barWidth/2, y: y - 6, 'text-anchor': 'middle', 'font-size': 12, fill: '#eaf0f5' });
+      countLabel.textContent = it.clicks;
+      g.appendChild(countLabel);
+
+      // x-axis label (subject) - wrap/trim
+      const subj = String(it.subject).length > 18 ? String(it.subject).slice(0,18) + '…' : String(it.subject);
+      const xLabel = createSVG('text', { x: x + barWidth/2, y: xAxisY + 18, 'text-anchor': 'middle', 'font-size': 12, fill: '#bcdbe4' });
+      xLabel.textContent = subj;
+      g.appendChild(xLabel);
+    });
+
+    // Y axis label (rotated)
+    const yLabel = createSVG('text', { x: -padding.left + 12, y: height/2, transform: `rotate(-90 ${-padding.left+12} ${height/2})`, 'text-anchor': 'middle', 'font-size': 12, fill: '#bcdbe4' });
+    yLabel.textContent = 'Clicks';
+    g.appendChild(yLabel);
+
+    // X axis label
+    const xLabelAxis = createSVG('text', { x: width/2, y: height + 48, 'text-anchor': 'middle', 'font-size': 12, fill: '#bcdbe4' });
+    xLabelAxis.textContent = 'Subjects';
+    g.appendChild(xLabelAxis);
+
+    svg.appendChild(g);
+    // allow horizontal scroll when svg wider than container
+    try {
+      const wrap = widget.parentElement;
+      wrap.style.overflowX = (containerW > widget.parentElement.clientWidth) ? 'auto' : '';
+      wrap.style.webkitOverflowScrolling = 'touch';
+    } catch (e) {}
+    widget.appendChild(svg);
+  }
+
+  document.addEventListener('DOMContentLoaded', fetchTrends);
+  setInterval(fetchTrends, 120000);
+})();
+</script>
 
       <!-- background ends here -->
     
