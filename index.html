@@ -68,49 +68,151 @@
       /* Professional poll modal styles */
       #poll-modal { display: none; position: fixed; inset: 0; z-index: 1000; justify-content: center; align-items: center; font-family: 'Inter', sans-serif; }
       #poll-modal .poll-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); pointer-events: none; }
-      .poll-card { position: relative; width: min(640px, 92%); background: linear-gradient(180deg,#05050a 0%, #0a0320 100%); padding: 28px; border-radius: 12px; box-shadow: 0 12px 30px rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.03); color: #eef1f8; z-index: 2; }
-      .poll-card::before { content: ''; position: absolute; inset: 0; border-radius: 12px; pointer-events: none; background-image: radial-gradient(circle at 10% 10%, rgba(142,68,173,0.06), transparent 8%), repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0 1px, transparent 1px 8px); mix-blend-mode: overlay; opacity: 0.6; }
-      .poll-card h2 { margin: 0 0 8px 0; font-size: 1.25rem; font-weight: 700; color: #f6f7fb; letter-spacing: 0.2px; }
-      .poll-desc { margin: 0 0 12px 0; color: #c7d0e0; font-size: 0.95rem; }
-      .poll-options { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-      .poll-option { background: transparent; color: #eef1f8; border: 1px dotted rgba(142,68,173,0.25); padding: 10px 18px; border-radius: 10px; min-width: 110px; cursor: pointer; font-weight: 600; transition: transform .12s ease, background .12s ease, border-color .12s ease; }
-      .poll-option:hover { transform: translateY(-3px); background: rgba(142,68,173,0.08); border-color: rgba(142,68,173,0.45); }
+      /* Larger, responsive poll modal */
+      .poll-card {
+        position: relative;
+        width: min(1100px, 96%);
+        max-width: 1100px;
+        background: linear-gradient(180deg,#05050a 0%, #0a0320 100%);
+        padding: 28px;
+        border-radius: 12px;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.6);
+        border: 1px solid rgba(255,255,255,0.03);
+        color: #eef1f8;
+        z-index: 2;
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        box-sizing: border-box;
+      }
+      .poll-card::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        border-radius: 12px;
+        pointer-events: none;
+        background-image: radial-gradient(circle at 10% 10%, rgba(142,68,173,0.06), transparent 8%), repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0 1px, transparent 1px 8px);
+        mix-blend-mode: overlay;
+        opacity: 0.6;
+      }
+      .poll-card h2 { margin: 0 0 8px 0; font-size: clamp(1.25rem, 2.0vw, 1.75rem); font-weight: 700; color: #f6f7fb; letter-spacing: 0.2px; }
+      .poll-desc { margin: 0 0 12px 0; color: #c7d0e0; font-size: clamp(0.95rem, 1.4vw, 1.05rem); max-width: 60ch; }
+      /* Layout the options to take remaining space and scale */
+      .poll-options { display: flex; gap: 12px; justify-content: space-between; flex-wrap: nowrap; flex: 1 1 auto; }
+      .poll-option {
+        background: transparent;
+        color: #eef1f8;
+        border: 1px dotted rgba(142,68,173,0.25);
+        padding: clamp(10px, 1.4vw, 16px) clamp(14px, 2vw, 22px);
+        border-radius: 10px;
+        min-width: 120px;
+        cursor: pointer;
+        font-weight: 600;
+        transition: transform .12s ease, background .12s ease, border-color .12s ease;
+        flex: 1 1 0;
+        text-align: center;
+      }
+      .poll-option:hover { transform: translateY(-4px) scale(1.02); background: rgba(142,68,173,0.08); border-color: rgba(142,68,173,0.45); }
       .poll-close { position: absolute; right: 12px; top: 10px; background: transparent; border: none; color: #cfd8e3; font-size: 20px; cursor: pointer; padding: 6px; }
 
-          /* Update details shown near the logo - compact professional box */
+      /* On small screens stack content and allow wrapping of options */
+      @media (max-width: 720px) {
+        .poll-card { flex-direction: column; padding: 18px; width: min(92%, 640px); }
+        .poll-options { flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .poll-option { min-width: 110px; flex: 0 1 auto; }
+      }
+
+          /* Update details shown as a compact slanted stamp anchored to footer bottom-right */
+          footer#project-contributors-bar { position: relative; }
           .update-details {
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            margin-left: 12px;
+            display: inline-block;
+            position: absolute;
+            right: 18px;
+            bottom: 18px;
+            transform: rotate(-6deg) scale(0.96);
+            transform-origin: center;
             padding: 6px 10px;
             background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
             border: 1px solid rgba(0,212,255,0.07);
-            border-radius: 8px;
+            border-radius: 6px;
             color: #cfeff6;
-            font-size: 12px;
-            line-height: 1.1;
-            max-width: 360px;
-            white-space: nowrap;
+            font-size: 11px;
+            line-height: 1.08;
+            max-width: 320px;
+            white-space: normal;
             overflow: hidden;
             text-overflow: ellipsis;
-            font-weight: 500;
+            font-weight: 600;
             font-family: 'Inter', sans-serif;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.45);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            transition: transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s ease;
+            text-align: left;
+            z-index: 4;
           }
 
           .update-details .ud-title {
-            font-weight: 700;
+            font-weight: 800;
             color: #e8ffff;
-            font-size: 12px;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
           }
 
           .update-details .ud-line { font-size: 11px; color: #bfeef4; }
           .update-details .ud-key { color: #9fe5ef; font-weight: 600; margin-right: 6px; }
           .update-details .ud-val { color: #eafefe; font-weight: 500; }
 
+          /* Stamp decorative layers */
+          .update-details::before{
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 5px;
+            border: 1.5px dashed rgba(159,229,239,0.12);
+            transform: translate(-2px,2px);
+            pointer-events: none;
+            z-index: 0;
+          }
+          .update-details::after{
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 5px;
+            background: repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 6px);
+            opacity: 0.12;
+            pointer-events: none;
+            mix-blend-mode: overlay;
+            z-index: 1;
+          }
+          .update-details > * { position: relative; z-index: 2; }
+
+          .update-details:hover{ transform: rotate(-8deg) scale(0.985); box-shadow: 0 12px 22px rgba(0,0,0,0.55); }
+
           @media (max-width: 900px) {
             .update-details { display: none; }
           }
+          @media (max-width: 1200px) {
+            .update-details { transform: rotate(-5deg) scale(0.94); max-width: 260px; }
+            .update-details .ud-line { font-size: 10px; }
+          }
+      </style>
+      <!-- Home entrance animation: used on initial load and when Home is clicked -->
+      <style>
+        /* disable the global page fade for this page (we'll run a more compact entrance) */
+        body { animation: none !important; }
+
+        @keyframes homePop {
+          0% { opacity: 0; transform: translateY(10px) scale(0.995); }
+          60% { opacity: 1; transform: translateY(-6px) scale(1.02); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .home-entrance {
+          animation: homePop 620ms cubic-bezier(.2,.9,.2,1) both;
+          will-change: transform, opacity;
+        }
       </style>
      <!-- Google tag start here -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-FTVZQ3QK4Z"></script>
@@ -237,13 +339,6 @@
     <header class="ihead">
         <nav>
             <div class="logo1"><img src="bit2.png" alt=""></div>
-            <div class="update-details" aria-label="Update details">
-              <div class="ud-title">Update Details</div>
-              <div class="ud-line"><span class="ud-key">By :</span><span class="ud-val">Anurag Kumar Verma</span></div>
-              <div class="ud-line"><span class="ud-key">Date :</span><span class="ud-val">01/02/2026</span></div>
-              <div class="ud-line"><span class="ud-key">Content Updated :</span><span class="ud-val">none</span></div>
-              <div class="ud-line"><span class="ud-key">Software Updated (Y/N) :</span><span class="ud-val">Y</span></div>
-            </div>
             <div class="logo"><b class="bithub1">BitHuB</b></div>
             <ul style="padding-top: 8px;" class="nav-links">
                 <li><a href="index.html">Home</a></li>                
@@ -259,6 +354,38 @@
     </header>
     <!-- nav bar ends here -->
 
+    <script>
+      // Home entrance animation runner: runs on initial page load and when Home link is clicked
+      (function(){
+        function runHomeEntrance() {
+          try {
+            const main = document.getElementById('main-content') || document.body;
+            if (!main) return;
+            main.classList.remove('home-entrance');
+            // force reflow to restart animation
+            void main.offsetWidth;
+            main.classList.add('home-entrance');
+          } catch (e) { console.warn('home entrance failed', e); }
+        }
+
+        // run shortly after DOM ready so layout is stable (reduced, non-blocking)
+        document.addEventListener('DOMContentLoaded', function(){
+          setTimeout(runHomeEntrance, 120);
+        });
+
+        // attach to Home nav links to replay animation when user clicks Home
+        document.addEventListener('click', function(e){
+          const a = e.target.closest && e.target.closest('.nav-links a');
+          if (!a) return;
+          const href = a.getAttribute('href') || '';
+          if (href.endsWith('index.html') || href === './' || href === '/') {
+            // play entrance but do not block navigation
+            runHomeEntrance();
+          }
+        });
+      })();
+    </script>
+
     <!-- start top padding -->
 <div style="padding-top: 60px;"></div>
 <!-- end top padding -->
@@ -271,34 +398,18 @@
 
      <div class="slider-container">
       <div class="slider">
-          <div class="photo-text"><p> यं शैवा समुपासते शिव इति ब्रह्मेति वेदान्तिनो <br> बौद्धा बुद्ध इति प्रमाणपटवः कर्तेति नैयायिकाः । <br> अर्हन् नित्यथ जैन शासनरताः कर्मेति मीमांसकाः <br> सोऽयं नो विदधातु वांच्छित फलं त्रैलोक्यनाथोहरिः ।।</p></div>
-          <img src="1.jpg" alt="Image 1">
-          <img src="2.jpg" alt="Image 2">
-          <img src="3.jpg" alt="Image 3">
-          <img src="1.jpg" alt="Image 4">
-          <img src="2.jpg" alt="Image 5">
-          <!-- <a href="https://docs.google.com/forms/d/e/1FAIpQLSf5UCW7aVA_wEmBuux096QcPPZOvv5_8N5eoUuuaMxbu0jqOw/viewform?usp=dialog" target="_blank">
-            <div class="overlay-text">
-              <marquee behavior="" direction="">
-                EEESoc recruitment: <span class="colori">register here..</span>
-              </marquee>
+        <!-- Trends hero: replaces image slider. The trends card is sized to perfectly fill this box. -->
+        <div id="slider-trends-wrapper" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:14px;box-sizing:border-box;">
+          <div id="slider-trends-card" style="width:100%;height:100%;max-width:1200px;">
+            <div style="width:100%;height:100%;border-radius:12px;overflow:hidden;box-shadow:0 12px 30px rgba(2,6,23,0.5);border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg,#05050a 0%, #0a0320 100%);padding:18px;box-sizing:border-box;">
+              <h3 style="margin:0 0 12px 0;font-size:1.4rem;color:#f6f7fb;font-weight:700;">Hot : In demand subjects</h3>
+              <div id="slider-trends" style="width:100%;height:auto;min-height:260px;position:relative;">Loading trends…</div>
+              <div style="margin-top:8px;font-size:12px;color:#bcdbe4;">Updated live from Anurag's Server</div>
             </div>
-          </a>           -->
-          
+          </div>
+        </div>
       </div>
-      <div class="radio-buttons">
-          <input type="radio" id="slide-1" name="slide" checked>
-          <label for="slide-1"></label>
-          <input type="radio" id="slide-2" name="slide">
-          <label for="slide-2"></label>
-          <input type="radio" id="slide-3" name="slide">
-          <label for="slide-3"></label>
-          <input type="radio" id="slide-4" name="slide">
-          <label for="slide-4"></label>
-          <input type="radio" id="slide-5" name="slide">
-          <label for="slide-5"></label>
-      </div>
-  </div>
+    </div>
 
 
       <!-- background ends here -->
@@ -510,6 +621,14 @@
           </div>
         </div>
       </div>
+    <!-- Update Details stamp (moved from header) -->
+    <div class="update-details" aria-label="Update details">
+      <div class="ud-title">Update Details</div>
+      <div class="ud-line"><span class="ud-key">By :</span><span class="ud-val">Anurag Kumar Verma</span></div>
+      <div class="ud-line"><span class="ud-key">Date :</span><span class="ud-val">03/02/2026</span></div>
+      <div class="ud-line"><span class="ud-key">Content Updated (Y/N ) :</span><span class="ud-val">N</span></div>
+      <div class="ud-line"><span class="ud-key">Software Updated (Y/N) :</span><span class="ud-val">Y</span></div>
+    </div>
     </footer>
 
 
@@ -549,5 +668,189 @@
 
     <script src="script.js"></script>
 <script src="profile.js"></script>
+
+<!-- Trends click-tracking: sends subject clicks to Apps Script -->
+<script>
+(function(){
+  const scriptUrl = "https://script.google.com/macros/s/AKfycbzDXNGtTWpYHsMDSlXFeeVWpepgNEDuvGkRaqBjmwvUGHNAwvJXWznu0BQiTcrqrzOAKg/exec";
+  const COOLDOWN_MS = 20 * 60 * 1000; // 20 minutes
+  const LAST_CLICK_KEY = 'trends_last_click_at';
+  const CLIENT_ID_KEY = 'trends_client_id';
+
+  function getClientId() {
+    try {
+      let id = localStorage.getItem(CLIENT_ID_KEY);
+      if (!id) {
+        id = 'c_' + Math.random().toString(36).slice(2,10);
+        localStorage.setItem(CLIENT_ID_KEY, id);
+      }
+      return id;
+    } catch (e) { return 'anon'; }
+  }
+  function formatDate(d){ const dd = String(d.getDate()).padStart(2,'0'); const mm = String(d.getMonth()+1).padStart(2,'0'); const yyyy = d.getFullYear(); return dd + '/' + mm + '/' + yyyy; }
+  function formatTime(d){ const hh = String(d.getHours()).padStart(2,'0'); const mm = String(d.getMinutes()).padStart(2,'0'); const ss = String(d.getSeconds()).padStart(2,'0'); return hh + ':' + mm + ':' + ss; }
+
+  function showToast(text){
+    let t = document.getElementById('trends-toast');
+    if (!t){ t = document.createElement('div'); t.id = 'trends-toast'; t.style.position='fixed'; t.style.right='18px'; t.style.bottom='18px'; t.style.background='linear-gradient(90deg,#0b1220,#071029)'; t.style.color='#fff'; t.style.padding='10px 14px'; t.style.borderRadius='10px'; t.style.boxShadow='0 6px 18px rgba(2,6,23,0.6)'; t.style.zIndex=99999; t.style.fontFamily='Inter, sans-serif'; document.body.appendChild(t); }
+    t.textContent = text; t.style.opacity = 1; clearTimeout(t._hideTimer); t._hideTimer = setTimeout(()=>{ t.style.transition='opacity 0.6s'; t.style.opacity = 0; }, 3000);
+  }
+
+  // Developer bypass removed for production.
+
+  function sendClick(subject, href){
+    const now = new Date();
+    const clientId = getClientId();
+    const fd = new FormData();
+    fd.append('subject', subject);
+    fd.append('date', formatDate(now));
+    fd.append('time', formatTime(now));
+    fd.append('clientId', clientId);
+    fd.append('userAgent', navigator.userAgent || '');
+
+    console.log('Trends: sending click', { subject: subject, date: formatDate(now), time: formatTime(now), clientId: clientId });
+
+    // show immediate UI feedback
+    try{ showToast('Recorded: ' + subject); } catch(e){}
+
+    try{
+      if (navigator.sendBeacon){
+        // navigator.sendBeacon is fire-and-forget; log and continue
+        const ok = navigator.sendBeacon(scriptUrl, fd);
+        console.log('sendBeacon ok=', ok);
+        return true;
+      } else {
+        // fallback: fetch then navigate (if href provided)
+        fetch(scriptUrl, { method: 'POST', body: fd })
+          .then(r => r.text())
+          .then(t => console.log('fetch result:', t))
+          .catch(err => console.warn('fetch send failed', err))
+          .finally(()=>{ if (href) window.location = href; });
+        return false;
+      }
+    } catch(e){
+      console.warn('sendClick error', e);
+      try{ fetch(scriptUrl, { method: 'POST', body: fd }).catch(()=>{}); }catch(e2){}
+      return true;
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    const anchors = document.querySelectorAll('a.course-card');
+    anchors.forEach(a => {
+      a.addEventListener('click', function(evt){
+        const last = parseInt(localStorage.getItem(LAST_CLICK_KEY) || '0', 10);
+        const devBypass = localStorage.getItem('trends_dev_bypass') === '1';
+        // If within cooldown, and dev bypass is NOT enabled, do NOT send or record the click — but allow navigation (ignore only)
+        if (!devBypass && (Date.now() - last < COOLDOWN_MS)){
+          showToast('Click ignored — within 20-minute rate limit.');
+          return; // do not prevent navigation; simply ignore sending
+        }
+        // Record last-click timestamp (prevents rapid repeats)
+        try{ localStorage.setItem(LAST_CLICK_KEY, Date.now().toString()); } catch(e){}
+        const subject = (this.querySelector('.course-name') && this.querySelector('.course-name').textContent.trim()) || this.textContent.trim() || 'unknown';
+        const href = this.getAttribute('href');
+        if (navigator.sendBeacon){
+          sendClick(subject, null); // fire-and-forget, navigation proceeds
+        } else {
+          evt.preventDefault(); // block until fetch completes then navigate
+          sendClick(subject, href);
+        }
+      }, { passive: false });
+    });
+    // create dev toggle for testing
+          // dev toggle removed for production build
+  });
+
+})();
+</script>
+
+<!-- Slider trends chart script (renders the same SVG chart used on event.html into #slider-trends) -->
+<style>
+  /* loader overlay: absolutely positioned so it doesn't change layout or cause scrolling */
+  .trends-loader { position:absolute; inset:0; display:flex;flex-direction:column;align-items:center;justify-content:center;color:#cfeff8; pointer-events:none }
+  .trends-loader .dots { display:flex;gap:8px;margin-top:8px }
+  .trends-loader .dot { width:10px;height:10px;border-radius:50%;background:#00d4ff;opacity:0.15;animation:dotPulse 1s infinite ease-in-out; }
+  .trends-loader .dot:nth-child(2){ animation-delay:0.15s }
+  .trends-loader .dot:nth-child(3){ animation-delay:0.3s }
+  @keyframes dotPulse { 0%{opacity:0.15;transform:translateY(0)}50%{opacity:1;transform:translateY(-6px)}100%{opacity:0.15;transform:translateY(0)} }
+</style>
+<script>
+(function(){
+  const container = document.getElementById('slider-trends');
+  if (!container) return;
+  const scriptUrl = "https://script.google.com/macros/s/AKfycbzDXNGtTWpYHsMDSlXFeeVWpepgNEDuvGkRaqBjmwvUGHNAwvJXWznu0BQiTcrqrzOAKg/exec";
+
+  function createSVG(tag, attrs){
+    const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
+    for (let k in attrs) el.setAttribute(k, attrs[k]);
+    return el;
+  }
+
+  async function fetchTrends(){
+    try{
+      container.innerHTML = '<div class="trends-loader"><div>Loading trends</div><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
+      const res = await fetch(scriptUrl);
+      const obj = await res.json();
+      renderChart(obj.results || []);
+    }catch(e){ container.innerHTML = '<div style="color:#ffb3b3">Unable to load trends.</div>'; console.error(e); }
+  }
+
+  function renderChart(items){
+    container.innerHTML = '';
+    if (!items.length){ container.innerHTML = '<div style="color:#cfeef8">No activity in the last 12 hours.</div>'; return; }
+    const padding = { top: 28, right: 24, bottom: 84, left: 64 };
+    const parentWidth = Math.max(360, container.clientWidth || 800);
+    const containerH = Math.max(260, container.clientHeight || 360);
+    const barCount = items.length;
+    const gap = Math.max(8, Math.round(parentWidth * 0.01));
+    const defaultInnerW = Math.max(300, parentWidth - padding.left - padding.right);
+    let barWidth = Math.floor((defaultInnerW - (barCount + 1) * gap) / barCount);
+    const minBarWidth = 24; const maxBarWidth = 140;
+    if (barWidth > maxBarWidth) barWidth = maxBarWidth; if (barWidth < minBarWidth) barWidth = minBarWidth;
+    const requiredInnerW = (barCount * barWidth) + ((barCount + 1) * gap);
+    const containerW = padding.left + padding.right + Math.max(defaultInnerW, requiredInnerW);
+    const width = containerW - padding.left - padding.right;
+    const height = containerH - padding.top - padding.bottom;
+
+    const svg = createSVG('svg', { width: containerW, height: containerH, viewBox: `0 0 ${containerW} ${containerH}`, role: 'img', 'aria-label': 'Trending subjects bar chart' });
+    const title = createSVG('title', {}); title.textContent = 'Hot : In demand subjects — last 12 hours'; svg.appendChild(title);
+    const maxClicks = Math.max(...items.map(i=>i.clicks));
+    function niceCeil(v){ if (v <= 5) return 5; if (v <= 10) return Math.ceil(v/5)*5; if (v <= 50) return Math.ceil(v/10)*10; if (v <= 200) return Math.ceil(v/20)*20; if (v <= 1000) return Math.ceil(v/50)*50; var p = Math.pow(10, Math.floor(Math.log10(v))); return Math.ceil(v / p) * p; }
+    const yMax = Math.max(1, niceCeil(maxClicks));
+    const ticks = 5;
+    const g = createSVG('g', { transform: `translate(${padding.left},${padding.top})` });
+
+    for (let t = 0; t <= ticks; t++){
+      const yVal = yMax * (t / ticks);
+      const y = height - (yVal / yMax) * height;
+      const line = createSVG('line', { x1: 0, y1: y, x2: width, y2: y, stroke: 'rgba(255,255,255,0.04)', 'stroke-width': 1 }); g.appendChild(line);
+      const lbl = createSVG('text', { x: -12, y: y + 4, 'text-anchor': 'end', 'font-size': 12, fill: '#cfeff7' }); lbl.textContent = String(Math.round(yVal)); g.appendChild(lbl);
+    }
+
+    const xAxisY = height; const xAxisLine = createSVG('line', { x1: 0, y1: xAxisY, x2: width, y2: xAxisY, stroke: 'rgba(255,255,255,0.06)', 'stroke-width': 1.5 }); g.appendChild(xAxisLine);
+    const barGap = gap;
+    items.forEach((it, i) => {
+      const x = barGap + i * (barWidth + barGap);
+      const h = (it.clicks / yMax) * height; const y = height - h;
+      const rect = createSVG('rect', { x: x, y: y, width: barWidth, height: Math.max(2,h), fill: 'rgba(0,212,255,0.18)', rx: 3, ry: 3 }); g.appendChild(rect);
+      const countLabel = createSVG('text', { x: x + barWidth/2, y: y - 6, 'text-anchor': 'middle', 'font-size': 12, fill: '#eaf0f5' }); countLabel.textContent = it.clicks; g.appendChild(countLabel);
+      const subj = String(it.subject).length > 18 ? String(it.subject).slice(0,18) + '…' : String(it.subject);
+      const xLabel = createSVG('text', { x: x + barWidth/2, y: xAxisY + 18, 'text-anchor': 'middle', 'font-size': 12, fill: '#bcdbe4' }); xLabel.textContent = subj; g.appendChild(xLabel);
+    });
+
+    const yLabel = createSVG('text', { x: -padding.left + 12, y: height/2, transform: `rotate(-90 ${-padding.left+12} ${height/2})`, 'text-anchor': 'middle', 'font-size': 12, fill: '#bcdbe4' }); yLabel.textContent = 'Clicks'; g.appendChild(yLabel);
+    const xLabelAxis = createSVG('text', { x: width/2, y: height + 48, 'text-anchor': 'middle', 'font-size': 12, fill: '#bcdbe4' }); xLabelAxis.textContent = 'Subjects'; g.appendChild(xLabelAxis);
+
+    svg.appendChild(g);
+    try { const wrap = container.parentElement; wrap.style.overflowX = (containerW > container.parentElement.clientWidth) ? 'auto' : ''; wrap.style.webkitOverflowScrolling = 'touch'; } catch(e){}
+    container.appendChild(svg);
+  }
+
+  // initial load and periodic refresh
+  fetchTrends(); setInterval(fetchTrends, 120000);
+})();
+</script>
+
 </body>
 </html>
