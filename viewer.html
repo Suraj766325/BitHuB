@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Elite PDF Viewer</title>
+<title>PDF Viewer</title>
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf_viewer.min.css"/>
@@ -130,19 +130,19 @@ function loadPdfJs(){
 return new Promise((resolve,reject)=>{
 if(window.pdfjsLib) return resolve();
 
-const s=document.createElement('script');
-s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js';
+const script=document.createElement('script');
+script.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js';
 
-s.onload=()=>{
-const v=document.createElement('script');
-v.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf_viewer.min.js';
-v.onload=resolve;
-v.onerror=reject;
-document.head.appendChild(v);
+script.onload=()=>{
+const viewer=document.createElement('script');
+viewer.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf_viewer.min.js';
+viewer.onload=resolve;
+viewer.onerror=reject;
+document.head.appendChild(viewer);
 };
 
-s.onerror=reject;
-document.head.appendChild(s);
+script.onerror=reject;
+document.head.appendChild(script);
 });
 }
 
@@ -155,6 +155,8 @@ throw new Error('Missing file');
 }
 
 (async function(){
+
+try{
 
 await loadPdfJs();
 
@@ -185,7 +187,29 @@ pageCount.textContent=pdfDoc.numPages;
 const firstPage=await pdfDoc.getPage(1);
 const baseViewport=firstPage.getViewport({scale:1});
 
-scale=(pagesContainer.clientWidth0.95)/baseViewport.width;
+scale=(pagesContainer.clientWidth * 0.95)/baseViewport.width;
+
+const observer=new IntersectionObserver(entries=>{
+
+entries.forEach(entry=>{
+
+if(!entry.isIntersecting) return;
+
+const page=Number(entry.target.dataset.page);
+
+currentPage=page;
+
+if(rendered.has(page)) return;
+
+rendered.add(page);
+
+const canvas=entry.target.querySelector('canvas');
+const textLayer=entry.target.querySelector('.textLayer');
+
+render(page,canvas,textLayer);
+
+});
+},{threshold:.15});
 
 function createPage(pageNumber){
 
@@ -202,6 +226,8 @@ wrapper.appendChild(textLayer);
 
 pagesContainer.appendChild(wrapper);
 
+observer.observe(wrapper);
+
 return {wrapper,canvas,textLayer};
 }
 
@@ -209,11 +235,11 @@ async function render(pageNumber,canvas,textLayer){
 
 const page=await pdfDoc.getPage(pageNumber);
 
-const outputScale=window.devicePixelRatio||1;
+const outputScale=window.devicePixelRatio || 1;
 const viewport=page.getViewport({scale});
 
-canvas.width=Math.floor(viewport.widthoutputScale);
-canvas.height=Math.floor(viewport.heightoutputScale);
+canvas.width=Math.floor(viewport.width * outputScale);
+canvas.height=Math.floor(viewport.height * outputScale);
 
 canvas.style.width=viewport.width+'px';
 canvas.style.height=viewport.height+'px';
@@ -243,9 +269,7 @@ pageNum.textContent=currentPage;
 
 for(let i=1;i<=pdfDoc.numPages;i++){
 
-const {wrapper,canvas,textLayer}=createPage(i);
-
-observer.observe(wrapper);
+createPage(i);
 
 const thumbCanvas=document.createElement('canvas');
 const thumbWrap=document.createElement('div');
@@ -266,28 +290,6 @@ document.querySelector('[data-page="'+i+'"]')
 };
 }
 
-const observer=new IntersectionObserver(entries=>{
-
-entries.forEach(entry=>{
-
-if(!entry.isIntersecting) return;
-
-const page=Number(entry.target.dataset.page);
-
-currentPage=page;
-
-if(rendered.has(page)) return;
-
-rendered.add(page);
-
-const canvas=entry.target.querySelector('canvas');
-const textLayer=entry.target.querySelector('.textLayer');
-
-render(page,canvas,textLayer);
-
-});
-},{threshold:.15});
-
 function rerender(){
 
 document.querySelectorAll('.page-wrapper').forEach(w=>{
@@ -306,12 +308,12 @@ render(p,canvas,textLayer);
 }
 
 document.getElementById('zoomIn').onclick=()=>{
-scale=Math.min(scale+.15,5);
+scale=Math.min(scale + 0.15,5);
 requestAnimationFrame(rerender);
 };
 
 document.getElementById('zoomOut').onclick=()=>{
-scale=Math.max(scale-.15,.3);
+scale=Math.max(scale - 0.15,.3);
 requestAnimationFrame(rerender);
 };
 
@@ -328,7 +330,8 @@ document.querySelector('[data-page="'+target+'"]').scrollIntoView({behavior:'smo
 window.addEventListener('resize',async()=>{
 
 const vp=(await pdfDoc.getPage(1)).getViewport({scale:1});
-scale=(pagesContainer.clientWidth0.95)/vp.width;
+scale=(pagesContainer.clientWidth * 0.95)/vp.width;
+
 rerender();
 });
 
@@ -344,14 +347,14 @@ return;
 const dx=e.touches[0].clientX-e.touches[1].clientX;
 const dy=e.touches[0].clientY-e.touches[1].clientY;
 
-const dist=Math.sqrt(dxdx+dydy);
+const dist=Math.sqrt(dxdx + dydy);
 
 if(lastDist){
 
 if(dist>lastDist){
-scale=Math.min(scale+.03,5);
+scale=Math.min(scale + .03,5);
 }else{
-scale=Math.max(scale-.03,.3);
+scale=Math.max(scale - .03,.3);
 }
 
 requestAnimationFrame(rerender);
@@ -362,6 +365,14 @@ lastDist=dist;
 },{passive:true});
 
 document.addEventListener('contextmenu',e=>e.preventDefault());
+
+}catch(err){
+
+document.getElementById('loader').innerHTML=
+'Failed to load PDF.<br><br>Check file URL or server CORS.<br><br>'+err.message;
+
+console.error(err);
+}
 
 })();
 </script>
