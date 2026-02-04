@@ -36,29 +36,7 @@ button{
   cursor:pointer;
 }
 
-#layout{
-  display:flex;
-}
-
-#thumbs{
-  width:140px;
-  background:#111;
-  overflow-y:auto;
-  height:calc(100vh - 52px);
-  border-right:1px solid #333;
-}
-
-.thumb{
-  cursor:pointer;
-  padding:6px;
-}
-
-.thumb canvas{
-  width:100%;
-}
-
 #viewerWrap{
-  flex:1;
   display:flex;
   justify-content:center;
   overflow:auto;
@@ -115,12 +93,8 @@ canvas{
 <button id="zoomIn">+</button>
 </div>
 
-<div id="layout">
-<div id="thumbs"></div>
-
 <div id="viewerWrap">
 <div id="pagesContainer"></div>
-</div>
 </div>
 
 <div id="loader">Loading PDF...</div>
@@ -163,7 +137,6 @@ await loadPdfJs();
 pdfjsLib.GlobalWorkerOptions.workerSrc=
 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-const thumbs=document.getElementById('thumbs');
 const pagesContainer=document.getElementById('pagesContainer');
 const loader=document.getElementById('loader');
 
@@ -196,11 +169,9 @@ entries.forEach(entry=>{
 if(!entry.isIntersecting) return;
 
 const page=Number(entry.target.dataset.page);
-
 currentPage=page;
 
 if(rendered.has(page)) return;
-
 rendered.add(page);
 
 const canvas=entry.target.querySelector('canvas');
@@ -225,10 +196,7 @@ wrapper.appendChild(canvas);
 wrapper.appendChild(textLayer);
 
 pagesContainer.appendChild(wrapper);
-
 observer.observe(wrapper);
-
-return {wrapper,canvas,textLayer};
 }
 
 async function render(pageNumber,canvas,textLayer){
@@ -268,26 +236,7 @@ pageNum.textContent=currentPage;
 }
 
 for(let i=1;i<=pdfDoc.numPages;i++){
-
 createPage(i);
-
-const thumbCanvas=document.createElement('canvas');
-const thumbWrap=document.createElement('div');
-thumbWrap.className='thumb';
-thumbWrap.appendChild(thumbCanvas);
-thumbs.appendChild(thumbWrap);
-
-pdfDoc.getPage(i).then(p=>{
-const vp=p.getViewport({scale:.25});
-thumbCanvas.width=vp.width;
-thumbCanvas.height=vp.height;
-p.render({canvasContext:thumbCanvas.getContext('2d'),viewport:vp});
-});
-
-thumbWrap.onclick=()=>{
-document.querySelector('[data-page="'+i+'"]')
-.scrollIntoView({behavior:'smooth'});
-};
 }
 
 function rerender(){
