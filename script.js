@@ -85,48 +85,47 @@ function createParticles() {
 
 
 
-const slider = document.querySelector('.slider');
-const radioButtons = document.querySelectorAll('.radio-buttons input[type="radio"]');
-const images = document.querySelectorAll('.slider img');
+// Slideshow: only run when slider and images exist
+(() => {
+    const slider = document.querySelector('.slider');
+    const radioButtons = document.querySelectorAll('.radio-buttons input[type="radio"]');
+    const images = document.querySelectorAll('.slider img');
 
-let currentSlide = 0;
+    if (!slider || images.length === 0) return;
 
-// Function to show the next slide
-function showNextSlide() {
-    images[currentSlide].classList.remove('active');
-    currentSlide = (currentSlide + 1) % images.length;
-    images[currentSlide].classList.add('active');
-    radioButtons[currentSlide].checked = true;
-}
+    let currentSlide = 0;
 
-// Function to show the selected slide
-function showSelectedSlide(index) {
-    images[currentSlide].classList.remove('active');
-    currentSlide = index;
-    images[currentSlide].classList.add('active');
-}
+    function showNextSlide() {
+        if (images[currentSlide]) images[currentSlide].classList.remove('active');
+        currentSlide = (currentSlide + 1) % images.length;
+        if (images[currentSlide]) images[currentSlide].classList.add('active');
+        if (radioButtons && radioButtons[currentSlide]) radioButtons[currentSlide].checked = true;
+    }
 
-// Add event listeners to radio buttons
-radioButtons.forEach((button, index) => {
-    button.addEventListener('change', () => {
-        showSelectedSlide(index);
+    function showSelectedSlide(index) {
+        if (images[currentSlide]) images[currentSlide].classList.remove('active');
+        currentSlide = index;
+        if (images[currentSlide]) images[currentSlide].classList.add('active');
+    }
+
+    radioButtons.forEach((button, index) => {
+        button.addEventListener('change', () => {
+            showSelectedSlide(index);
+        });
     });
-});
 
-// Add event listener to slider
-slider.addEventListener('click', () => {
-    showNextSlide();
-});
+    slider.addEventListener('click', () => {
+        showNextSlide();
+    });
 
-// Start the slideshow
-setInterval(() => {
-    showNextSlide();
-}, 4000);
+    // Start the slideshow
+    setInterval(() => {
+        showNextSlide();
+    }, 4000);
 
-// Show the first slide
-if (images.length > 0) {
+    // Show the first slide
     images[0].classList.add('active');
-}
+})();
 
 
 // Contributor profiles hover effect
@@ -162,5 +161,22 @@ document.addEventListener('click', (e) => {
         profilePictures.forEach(picture => {
             picture.classList.remove('enlarged');
         });
+    }
+});
+
+// Intercept clicks on links to PDF files and open them in internal viewer
+document.addEventListener('click', function (e) {
+    const anchor = e.target.closest('a');
+    if (!anchor) return;
+    const href = anchor.getAttribute('href');
+    if (!href) return;
+    const lower = href.toLowerCase();
+    if (lower.endsWith('.pdf')) {
+        e.preventDefault();
+        e.stopPropagation();
+        try { anchor.removeAttribute('target'); } catch(e) {}
+        try { anchor.removeAttribute('download'); } catch(e) {}
+        const viewerUrl = 'viewer.html?file=' + encodeURIComponent(href);
+        window.location.href = viewerUrl;
     }
 });
