@@ -1,233 +1,329 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PDF Viewer</title>
-  <style>
-    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#222;color:#eee}
-    .toolbar{display:flex;gap:8px;align-items:center;padding:8px;background:#111;position:sticky;top:0;z-index:10}
-    button{background:#333;color:#fff;border:1px solid #444;padding:6px 10px;border-radius:4px;cursor:pointer}
-    button:active{transform:translateY(1px)}
-    #canvasContainer{display:flex;justify-content:center;padding:16px}
-    canvas{box-shadow:0 10px 30px rgba(0,0,0,0.7);background:#fff}
-    .spacer{flex:1}
-    #loader{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:9999;color:#fff;font-size:18px}
-    #debug{position:fixed;left:8px;bottom:8px;background:rgba(0,0,0,0.7);color:#fff;padding:8px;border-radius:6px;max-width:60%;font-size:13px;z-index:10000}
-  </style>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PDF Viewer</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf_viewer.min.css"/>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:#1b1b1b;
+  color:#eee;
+}
+
+.toolbar{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  padding:10px;
+  background:#0f0f0f;
+  position:sticky;
+  top:0;
+  z-index:50;
+}
+
+button{
+  background:#2b2b2b;
+  color:#fff;
+  border:1px solid #444;
+  padding:6px 12px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+#viewerWrap{
+  display:flex;
+  justify-content:center;
+  overflow:auto;
+}
+
+#pagesContainer{
+  width:100%;
+  max-width:1100px;
+  padding:20px;
+}
+
+.page-wrapper{
+  position:relative;
+  margin-bottom:18px;
+  display:flex;
+  justify-content:center;
+}
+
+canvas{
+  background:#fff;
+  box-shadow:0 15px 40px rgba(0,0,0,.6);
+}
+
+.textLayer{
+  position:absolute;
+  inset:0;
+  overflow:hidden;
+}
+
+#loader{
+  position:fixed;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,.7);
+  z-index:9999;
+  font-size:18px;
+}
+</style>
 </head>
+
 <body>
-  <div class="toolbar">
-    <button id="prev">Prev</button>
-    <button id="next">Next</button>
-    <span id="pageInfo">Page <span id="pageNum">0</span> / <span id="pageCount">0</span></span>
-    <div class="spacer"></div>
-    <button id="zoomOut">-</button>
-    <button id="zoomIn">+</button>
-  </div>
 
-  <div id="canvasContainer"><div id="pagesContainer"></div></div>
-  <div id="loader" style="display:none">Loading PDF... <span id="percent">0%</span></div>
-  <div id="debug" style="display:none"></div>
+<div class="toolbar">
+<button id="prev">Prev</button>
+<button id="next">Next</button>
 
-  <script>
-    // Load a stable pdf.js bundle (cdnjs) then start the viewer
-    function loadPdfJs() {
-      return new Promise((resolve, reject) => {
-        if (window.pdfjsLib) return resolve(window.pdfjsLib);
-        const s = document.createElement('script');
-        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js';
-        s.onload = () => resolve(window.pdfjsLib);
-        s.onerror = () => reject(new Error('Failed to load pdf.js'));
-        document.head.appendChild(s);
-      });
-    }
+<span>Page <span id="pageNum">0</span> / <span id="pageCount">0</span></span>
 
-    const urlParams = new URLSearchParams(window.location.search);
-    const file = urlParams.get('file');
-    if (!file) {
-      document.body.innerHTML = '<div style="padding:20px;color:#f88">No file provided.</div>';
-      throw new Error('No file');
-    }
+<div style="flex:1"></div>
 
-    (async function init() {
-      try {
-        await loadPdfJs();
-      } catch (err) {
-        const debugEl = document.getElementById('debug');
-        debugEl.style.display = 'block';
-        debugEl.textContent = 'Unable to load pdf.js: ' + err.message;
-        console.error(err);
-        return;
-      }
+<button id="zoomOut">-</button>
+<button id="zoomIn">+</button>
+</div>
 
-      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+<div id="viewerWrap">
+<div id="pagesContainer"></div>
+</div>
 
-      const pagesContainer = document.getElementById('pagesContainer');
-      let pdfDoc = null;
-      let pageNum = 1;
-      let scale = 1.2;
-      const rendered = new Set();
-      let currentVisiblePage = 1;
+<div id="loader">Loading PDF...</div>
 
-      const pageNumElem = document.getElementById('pageNum');
-      const pageCountElem = document.getElementById('pageCount');
-      const loader = document.getElementById('loader');
-      const percent = document.getElementById('percent');
+<script>
+function loadPdfJs(){
+return new Promise((resolve,reject)=>{
+if(window.pdfjsLib) return resolve();
 
-      function makePageCanvas(pageNumber) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'page-wrapper';
-        wrapper.style.display = 'flex';
-        wrapper.style.justifyContent = 'center';
-        wrapper.style.margin = '12px 0';
-        const canvas = document.createElement('canvas');
-        canvas.dataset.page = pageNumber;
-        canvas.style.boxShadow = '0 10px 30px rgba(0,0,0,0.7)';
-        canvas.style.background = '#fff';
-        wrapper.appendChild(canvas);
-        return {wrapper, canvas};
-      }
+const script=document.createElement('script');
+script.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js';
 
-      function renderPageToCanvas(num, canvas) {
-        return pdfDoc.getPage(num).then(function(page) {
-          const viewport = page.getViewport({ scale: scale });
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          canvas.style.width = viewport.width + 'px';
-          canvas.style.height = viewport.height + 'px';
-          const renderContext = { canvasContext: canvas.getContext('2d'), viewport: viewport };
-          return page.render(renderContext).promise.then(function() {
-            pageNumElem.textContent = currentVisiblePage;
-          });
-        });
-      }
+script.onload=()=>{
+const viewer=document.createElement('script');
+viewer.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf_viewer.min.js';
+viewer.onload=resolve;
+viewer.onerror=reject;
+document.head.appendChild(viewer);
+};
 
-      async function fetchArrayBufferWithProgress(url) {
-        loader.style.display = 'flex';
-        percent.textContent = '0%';
-        const resp = await fetch(url);
-        const debugEl = document.getElementById('debug');
-        debugEl.style.display = 'block';
-        debugEl.textContent = `HTTP ${resp.status} ${resp.statusText}`;
-        if (!resp.ok) throw new Error('Network error: ' + resp.status + ' ' + resp.statusText);
-        const contentLength = resp.headers.get('content-length');
-        const contentType = resp.headers.get('content-type') || '';
-        debugEl.textContent += ` — content-type: ${contentType || 'unknown'}${contentLength ? ' — content-length: '+contentLength : ''}`;
-        if (!contentType.toLowerCase().includes('pdf')) {
-          try {
-            const txt = await resp.clone().text();
-            debugEl.textContent += '\n\nResponse preview:\n' + (txt.slice(0, 800));
-          } catch (e) {
-            debugEl.textContent += '\n\n(response body not readable)';
-          }
-        }
-        if (!resp.body || !contentLength) {
-          const ab = await resp.arrayBuffer();
-          percent.textContent = '100%';
-          return ab;
-        }
-        const total = parseInt(contentLength, 10);
-        const reader = resp.body.getReader();
-        let received = 0;
-        const chunks = [];
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          chunks.push(value);
-          received += value.length;
-          const p = Math.min(100, Math.round((received / total) * 100));
-          percent.textContent = p + '%';
-        }
-        const ab = new Uint8Array(received);
-        let offset = 0;
-        for (const chunk of chunks) {
-          ab.set(chunk, offset);
-          offset += chunk.length;
-        }
-        percent.textContent = '100%';
-        return ab.buffer;
-      }
+script.onerror=reject;
+document.head.appendChild(script);
+});
+}
 
-      document.getElementById('prev').addEventListener('click', () => {
-        const target = Math.max(1, currentVisiblePage - 1);
-        const el = pagesContainer.querySelector('canvas[data-page="' + target + '"]');
-        if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
-      });
-      document.getElementById('next').addEventListener('click', () => {
-        const target = Math.min(pdfDoc ? pdfDoc.numPages : 1, currentVisiblePage + 1);
-        const el = pagesContainer.querySelector('canvas[data-page="' + target + '"]');
-        if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
-      });
-      document.getElementById('zoomIn').addEventListener('click', async () => { scale = Math.min(scale + 0.2, 3); await rerenderVisiblePages(); });
-      document.getElementById('zoomOut').addEventListener('click', async () => { scale = Math.max(scale - 0.2, 0.4); await rerenderVisiblePages(); });
+const params=new URLSearchParams(location.search);
+const file=params.get('file');
 
-      async function rerenderVisiblePages() {
-        const canvases = pagesContainer.querySelectorAll('canvas');
-        for (const canvas of canvases) {
-          const p = parseInt(canvas.dataset.page,10);
-          if (rendered.has(p)) {
-            const ctx2 = canvas.getContext('2d');
-            ctx2.clearRect(0,0,canvas.width,canvas.height);
-            await renderPageToCanvas(p, canvas);
-          }
-        }
-      }
+if(!file){
+document.body.innerHTML='<h2 style="padding:20px">No PDF specified.</h2>';
+throw new Error('Missing file');
+}
 
-      try {
-        const arrayBuffer = await fetchArrayBufferWithProgress(file);
-        loader.style.display = 'none';
-        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
-        pdfDoc = await loadingTask.promise;
-        pageCountElem.textContent = pdfDoc.numPages;
+(async function(){
 
-        // Prepare a canvas wrapper for each page (lazy render via IntersectionObserver)
-        for (let i = 1; i <= pdfDoc.numPages; i++) {
-          const {wrapper, canvas} = makePageCanvas(i);
-          pagesContainer.appendChild(wrapper);
-        }
+try{
 
-        // compute a default fit scale using page 1
-        try {
-          const firstPage = await pdfDoc.getPage(1);
-          const viewport1 = firstPage.getViewport({ scale: 1 });
-          const containerWidth = Math.max(200, pagesContainer.clientWidth * 0.95);
-          const fitScale = containerWidth / viewport1.width;
-          // increase default zoom by one step (+0.2), cap at 3
-          scale = Math.min(Math.min(fitScale, 1) + 0.2, 3);
-        } catch (e) {
-          // fallback: slightly zoomed default
-          scale = 1.0;
-        }
+await loadPdfJs();
 
-        const observer = new IntersectionObserver(async (entries) => {
-          for (const entry of entries) {
-            const canvas = entry.target.querySelector('canvas');
-            const p = parseInt(canvas.dataset.page,10);
-            if (entry.isIntersecting) {
-              currentVisiblePage = p;
-              pageNumElem.textContent = currentVisiblePage;
-              if (!rendered.has(p)) {
-                rendered.add(p);
-                await renderPageToCanvas(p, canvas);
-              }
-            }
-          }
-        }, {root: null, rootMargin: '0px', threshold: 0.25});
+pdfjsLib.GlobalWorkerOptions.workerSrc=
+'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
 
-        // Observe each wrapper
-        pagesContainer.querySelectorAll('.page-wrapper').forEach(w => observer.observe(w));
+const pagesContainer=document.getElementById('pagesContainer');
+const loader=document.getElementById('loader');
 
-      } catch (err) {
-        loader.style.display = 'none';
-        document.body.innerHTML = '<div style="padding:20px;color:#f88">Error loading PDF.</div>';
-        console.error(err);
-      }
+let pdfDoc;
+let scale=1;
+let currentPage=1;
+const rendered=new Set();
 
-      // Basic deterrents against easy saving
-      document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
-      document.addEventListener('keydown', function(e){ if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') e.preventDefault(); });
-    })();
-  </script>
+const pageNum=document.getElementById('pageNum');
+const pageCount=document.getElementById('pageCount');
+
+pdfDoc=await pdfjsLib.getDocument({
+url:file,
+rangeChunkSize:65536
+}).promise;
+
+loader.style.display='none';
+
+pageCount.textContent=pdfDoc.numPages;
+
+const firstPage=await pdfDoc.getPage(1);
+const baseViewport=firstPage.getViewport({scale:1});
+
+scale=(pagesContainer.clientWidth * 0.95)/baseViewport.width;
+
+const observer=new IntersectionObserver(entries=>{
+
+entries.forEach(entry=>{
+
+if(!entry.isIntersecting) return;
+
+const page=Number(entry.target.dataset.page);
+currentPage=page;
+
+if(rendered.has(page)) return;
+rendered.add(page);
+
+const canvas=entry.target.querySelector('canvas');
+const textLayer=entry.target.querySelector('.textLayer');
+
+render(page,canvas,textLayer);
+
+});
+},{threshold:.15});
+
+function createPage(pageNumber){
+
+const wrapper=document.createElement('div');
+wrapper.className='page-wrapper';
+wrapper.dataset.page=pageNumber;
+
+const canvas=document.createElement('canvas');
+const textLayer=document.createElement('div');
+textLayer.className='textLayer';
+
+wrapper.appendChild(canvas);
+wrapper.appendChild(textLayer);
+
+pagesContainer.appendChild(wrapper);
+observer.observe(wrapper);
+}
+
+async function render(pageNumber,canvas,textLayer){
+
+const page=await pdfDoc.getPage(pageNumber);
+
+const outputScale=window.devicePixelRatio || 1;
+const viewport=page.getViewport({scale});
+
+canvas.width=Math.floor(viewport.width * outputScale);
+canvas.height=Math.floor(viewport.height * outputScale);
+
+canvas.style.width=viewport.width+'px';
+canvas.style.height=viewport.height+'px';
+
+const ctx=canvas.getContext('2d');
+ctx.setTransform(outputScale,0,0,outputScale,0,0);
+
+await page.render({
+canvasContext:ctx,
+viewport
+}).promise;
+
+const text=await page.getTextContent();
+
+textLayer.style.width=viewport.width+'px';
+textLayer.style.height=viewport.height+'px';
+
+pdfjsLib.renderTextLayer({
+textContent:text,
+container:textLayer,
+viewport,
+textDivs:[]
+});
+
+pageNum.textContent=currentPage;
+}
+
+for(let i=1;i<=pdfDoc.numPages;i++){
+createPage(i);
+}
+
+function rerender(){
+
+document.querySelectorAll('.page-wrapper').forEach(w=>{
+
+const p=Number(w.dataset.page);
+if(!rendered.has(p)) return;
+
+const canvas=w.querySelector('canvas');
+const textLayer=w.querySelector('.textLayer');
+
+canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+textLayer.innerHTML='';
+
+render(p,canvas,textLayer);
+});
+}
+
+document.getElementById('zoomIn').onclick=()=>{
+scale=Math.min(scale + 0.15,5);
+requestAnimationFrame(rerender);
+};
+
+document.getElementById('zoomOut').onclick=()=>{
+scale=Math.max(scale - 0.15,.3);
+requestAnimationFrame(rerender);
+};
+
+document.getElementById('prev').onclick=()=>{
+const target=Math.max(1,currentPage-1);
+document.querySelector('[data-page="'+target+'"]').scrollIntoView({behavior:'smooth'});
+};
+
+document.getElementById('next').onclick=()=>{
+const target=Math.min(pdfDoc.numPages,currentPage+1);
+document.querySelector('[data-page="'+target+'"]').scrollIntoView({behavior:'smooth'});
+};
+
+window.addEventListener('resize',async()=>{
+
+const vp=(await pdfDoc.getPage(1)).getViewport({scale:1});
+scale=(pagesContainer.clientWidth * 0.95)/vp.width;
+
+rerender();
+});
+
+let lastDist=null;
+
+document.addEventListener('touchmove',e=>{
+
+if(e.touches.length!==2){
+lastDist=null;
+return;
+}
+
+const dx=e.touches[0].clientX-e.touches[1].clientX;
+const dy=e.touches[0].clientY-e.touches[1].clientY;
+
+const dist=Math.sqrt(dxdx + dydy);
+
+if(lastDist){
+
+if(dist>lastDist){
+scale=Math.min(scale + .03,5);
+}else{
+scale=Math.max(scale - .03,.3);
+}
+
+requestAnimationFrame(rerender);
+}
+
+lastDist=dist;
+
+},{passive:true});
+
+document.addEventListener('contextmenu',e=>e.preventDefault());
+
+}catch(err){
+
+document.getElementById('loader').innerHTML=
+'Failed to load PDF.<br><br>Check file URL or server CORS.<br><br>'+err.message;
+
+console.error(err);
+}
+
+})();
+</script>
 </body>
 </html>
