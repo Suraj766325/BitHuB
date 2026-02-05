@@ -1,329 +1,421 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>PDF Viewer</title>
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf_viewer.min.css"/>
-
-<style>
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:#1b1b1b;
-  color:#eee;
-}
-
-.toolbar{
-  display:flex;
-  gap:8px;
-  align-items:center;
-  padding:10px;
-  background:#0f0f0f;
-  position:sticky;
-  top:0;
-  z-index:50;
-}
-
-button{
-  background:#2b2b2b;
-  color:#fff;
-  border:1px solid #444;
-  padding:6px 12px;
-  border-radius:6px;
-  cursor:pointer;
-}
-
-#viewerWrap{
-  display:flex;
-  justify-content:center;
-  overflow:auto;
-}
-
-#pagesContainer{
-  width:100%;
-  max-width:1100px;
-  padding:20px;
-}
-
-.page-wrapper{
-  position:relative;
-  margin-bottom:18px;
-  display:flex;
-  justify-content:center;
-}
-
-canvas{
-  background:#fff;
-  box-shadow:0 15px 40px rgba(0,0,0,.6);
-}
-
-.textLayer{
-  position:absolute;
-  inset:0;
-  overflow:hidden;
-}
-
-#loader{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(0,0,0,.7);
-  z-index:9999;
-  font-size:18px;
-}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>PDF Viewer</title>
+  <style>
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#222;color:#eee}
+    .toolbar{display:flex;gap:8px;align-items:center;padding:8px;background:#111;position:sticky;top:0;z-index:10}
+    button{background:#333;color:#fff;border:1px solid #444;padding:6px 10px;border-radius:4px;cursor:pointer}
+    button:active{transform:translateY(1px)}
+    #canvasContainer{display:flex;justify-content:center;padding:16px}
+    canvas{box-shadow:0 10px 30px rgba(0,0,0,0.7);background:#fff}
+    #pagesContainer{touch-action:pan-y;-ms-touch-action:pan-y;will-change:transform;transition:transform 120ms ease}
+    .page-wrapper{touch-action:pan-y;-ms-touch-action:pan-y}
+    #zoomSlider{width:160px;margin-left:8px;appearance:none;background:transparent;accent-color:#fff}
+    #zoomSlider:focus{outline:none}
+    #zoomSlider::-webkit-slider-runnable-track{height:6px;background:rgba(255,255,255,0.18);border-radius:4px}
+    #zoomSlider::-webkit-slider-thumb{appearance:none;margin-top:-4px;width:14px;height:14px;background:#fff;border-radius:50%;box-shadow:0 0 2px rgba(0,0,0,0.6);border:1px solid rgba(0,0,0,0.2)}
+    #zoomSlider::-moz-range-track{height:6px;background:rgba(255,255,255,0.18);border-radius:4px}
+    #zoomSlider::-moz-range-thumb{width:14px;height:14px;background:#fff;border-radius:50%;border:1px solid rgba(0,0,0,0.2)}
+    #zoomSlider::-ms-track{height:6px;background:transparent;border-color:transparent;color:transparent}
+    #zoomSlider::-ms-fill-lower{background:rgba(255,255,255,0.18);border-radius:4px}
+    #zoomSlider::-ms-fill-upper{background:rgba(255,255,255,0.18);border-radius:4px}
+    #zoomLabel{margin-left:8px;font-size:13px;color:#ddd}
+    .spacer{flex:1}
+    #loader{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);z-index:9999;color:#fff;font-size:18px}
+    #debug{position:fixed;left:8px;bottom:8px;background:rgba(0,0,0,0.7);color:#fff;padding:8px;border-radius:6px;max-width:60%;font-size:13px;z-index:10000}
+  </style>
 </head>
-
 <body>
-
-<div class="toolbar">
-<button id="prev">Prev</button>
-<button id="next">Next</button>
-
-<span>Page <span id="pageNum">0</span> / <span id="pageCount">0</span></span>
-
-<div style="flex:1"></div>
-
-<button id="zoomOut">-</button>
-<button id="zoomIn">+</button>
-</div>
-
-<div id="viewerWrap">
-<div id="pagesContainer"></div>
-</div>
-
-<div id="loader">Loading PDF...</div>
-
-<script>
-function loadPdfJs(){
-return new Promise((resolve,reject)=>{
-if(window.pdfjsLib) return resolve();
-
-const script=document.createElement('script');
-script.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js';
-
-script.onload=()=>{
-const viewer=document.createElement('script');
-viewer.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf_viewer.min.js';
-viewer.onload=resolve;
-viewer.onerror=reject;
-document.head.appendChild(viewer);
-};
-
-script.onerror=reject;
-document.head.appendChild(script);
-});
-}
-
-const params=new URLSearchParams(location.search);
-const file=params.get('file');
-
-if(!file){
-document.body.innerHTML='<h2 style="padding:20px">No PDF specified.</h2>';
-throw new Error('Missing file');
-}
-
-(async function(){
-
-try{
-
-await loadPdfJs();
-
-pdfjsLib.GlobalWorkerOptions.workerSrc=
-'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-
-const pagesContainer=document.getElementById('pagesContainer');
-const loader=document.getElementById('loader');
-
-let pdfDoc;
-let scale=1;
-let currentPage=1;
-const rendered=new Set();
-
-const pageNum=document.getElementById('pageNum');
-const pageCount=document.getElementById('pageCount');
-
-pdfDoc=await pdfjsLib.getDocument({
-url:file,
-rangeChunkSize:65536
-}).promise;
-
-loader.style.display='none';
-
-pageCount.textContent=pdfDoc.numPages;
-
-const firstPage=await pdfDoc.getPage(1);
-const baseViewport=firstPage.getViewport({scale:1});
-
-scale=(pagesContainer.clientWidth * 0.95)/baseViewport.width;
-
-const observer=new IntersectionObserver(entries=>{
-
-entries.forEach(entry=>{
-
-if(!entry.isIntersecting) return;
-
-const page=Number(entry.target.dataset.page);
-currentPage=page;
-
-if(rendered.has(page)) return;
-rendered.add(page);
-
-const canvas=entry.target.querySelector('canvas');
-const textLayer=entry.target.querySelector('.textLayer');
-
-render(page,canvas,textLayer);
-
-});
-},{threshold:.15});
-
-function createPage(pageNumber){
-
-const wrapper=document.createElement('div');
-wrapper.className='page-wrapper';
-wrapper.dataset.page=pageNumber;
-
-const canvas=document.createElement('canvas');
-const textLayer=document.createElement('div');
-textLayer.className='textLayer';
-
-wrapper.appendChild(canvas);
-wrapper.appendChild(textLayer);
-
-pagesContainer.appendChild(wrapper);
-observer.observe(wrapper);
-}
-
-async function render(pageNumber,canvas,textLayer){
-
-const page=await pdfDoc.getPage(pageNumber);
-
-const outputScale=window.devicePixelRatio || 1;
-const viewport=page.getViewport({scale});
-
-canvas.width=Math.floor(viewport.width * outputScale);
-canvas.height=Math.floor(viewport.height * outputScale);
-
-canvas.style.width=viewport.width+'px';
-canvas.style.height=viewport.height+'px';
-
-const ctx=canvas.getContext('2d');
-ctx.setTransform(outputScale,0,0,outputScale,0,0);
-
-await page.render({
-canvasContext:ctx,
-viewport
-}).promise;
-
-const text=await page.getTextContent();
-
-textLayer.style.width=viewport.width+'px';
-textLayer.style.height=viewport.height+'px';
-
-pdfjsLib.renderTextLayer({
-textContent:text,
-container:textLayer,
-viewport,
-textDivs:[]
-});
-
-pageNum.textContent=currentPage;
-}
-
-for(let i=1;i<=pdfDoc.numPages;i++){
-createPage(i);
-}
-
-function rerender(){
-
-document.querySelectorAll('.page-wrapper').forEach(w=>{
-
-const p=Number(w.dataset.page);
-if(!rendered.has(p)) return;
-
-const canvas=w.querySelector('canvas');
-const textLayer=w.querySelector('.textLayer');
-
-canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
-textLayer.innerHTML='';
-
-render(p,canvas,textLayer);
-});
-}
-
-document.getElementById('zoomIn').onclick=()=>{
-scale=Math.min(scale + 0.15,5);
-requestAnimationFrame(rerender);
-};
-
-document.getElementById('zoomOut').onclick=()=>{
-scale=Math.max(scale - 0.15,.3);
-requestAnimationFrame(rerender);
-};
-
-document.getElementById('prev').onclick=()=>{
-const target=Math.max(1,currentPage-1);
-document.querySelector('[data-page="'+target+'"]').scrollIntoView({behavior:'smooth'});
-};
-
-document.getElementById('next').onclick=()=>{
-const target=Math.min(pdfDoc.numPages,currentPage+1);
-document.querySelector('[data-page="'+target+'"]').scrollIntoView({behavior:'smooth'});
-};
-
-window.addEventListener('resize',async()=>{
-
-const vp=(await pdfDoc.getPage(1)).getViewport({scale:1});
-scale=(pagesContainer.clientWidth * 0.95)/vp.width;
-
-rerender();
-});
-
-let lastDist=null;
-
-document.addEventListener('touchmove',e=>{
-
-if(e.touches.length!==2){
-lastDist=null;
-return;
-}
-
-const dx=e.touches[0].clientX-e.touches[1].clientX;
-const dy=e.touches[0].clientY-e.touches[1].clientY;
-
-const dist=Math.sqrt(dxdx + dydy);
-
-if(lastDist){
-
-if(dist>lastDist){
-scale=Math.min(scale + .03,5);
-}else{
-scale=Math.max(scale - .03,.3);
-}
-
-requestAnimationFrame(rerender);
-}
-
-lastDist=dist;
-
-},{passive:true});
-
-document.addEventListener('contextmenu',e=>e.preventDefault());
-
-}catch(err){
-
-document.getElementById('loader').innerHTML=
-'Failed to load PDF.<br><br>Check file URL or server CORS.<br><br>'+err.message;
-
-console.error(err);
-}
-
-})();
-</script>
+  <div class="toolbar">
+    <button id="prev">Prev</button>
+    <button id="next">Next</button>
+    <span id="pageInfo">Page <span id="pageNum">0</span> / <span id="pageCount">0</span></span>
+    <div class="spacer"></div>
+    <button id="zoomOut">-</button>
+    <button id="zoomIn">+</button>
+    <input id="zoomSlider" type="range" min="0" max="1" step="0.01" value="1" disabled>
+    <span id="zoomLabel">100%</span>
+  </div>
+
+  <div id="canvasContainer"><div id="pagesContainer"></div></div>
+  <div id="loader" style="display:none">Loading PDF... <span id="percent">0%</span></div>
+  <div id="debug" style="display:none"></div>
+
+  <script>
+    // Load a stable pdf.js bundle (cdnjs) then start the viewer
+    function loadPdfJs() {
+      return new Promise((resolve, reject) => {
+        if (window.pdfjsLib) return resolve(window.pdfjsLib);
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js';
+        s.onload = () => resolve(window.pdfjsLib);
+        s.onerror = () => reject(new Error('Failed to load pdf.js'));
+        document.head.appendChild(s);
+      });
+    }
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const file = urlParams.get('file');
+    if (!file) {
+      document.body.innerHTML = '<div style="padding:20px;color:#f88">No file provided.</div>';
+      throw new Error('No file');
+    }
+
+    (async function init() {
+      try {
+        await loadPdfJs();
+      } catch (err) {
+        const debugEl = document.getElementById('debug');
+        debugEl.style.display = 'block';
+        debugEl.textContent = 'Unable to load pdf.js: ' + err.message;
+        console.error(err);
+        return;
+      }
+
+      pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+      const pagesContainer = document.getElementById('pagesContainer');
+      let pdfDoc = null;
+      let pageNum = 1;
+      let scale = 1.2;
+      let baseScale = null;
+      let minAllowedScale = 0.1;
+      let maxAllowedScale = 3;
+      const rendered = new Set();
+      let currentVisiblePage = 1;
+
+      const pageNumElem = document.getElementById('pageNum');
+      const pageCountElem = document.getElementById('pageCount');
+      const zoomSlider = document.getElementById('zoomSlider');
+      const zoomLabel = document.getElementById('zoomLabel');
+      const loader = document.getElementById('loader');
+      const percent = document.getElementById('percent');
+
+      function updateZoomUI(s){
+        if (!s && s !== 0) return;
+        if (zoomLabel) zoomLabel.textContent = Math.round(s * 100) + '%';
+        if (zoomSlider && !zoomSlider.disabled) zoomSlider.value = s;
+      }
+
+      function makePageCanvas(pageNumber) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'page-wrapper';
+        wrapper.style.display = 'flex';
+        wrapper.style.justifyContent = 'center';
+        wrapper.style.margin = '12px 0';
+        const canvas = document.createElement('canvas');
+        canvas.dataset.page = pageNumber;
+        canvas.style.boxShadow = '0 10px 30px rgba(0,0,0,0.7)';
+        canvas.style.background = '#fff';
+        wrapper.appendChild(canvas);
+        return {wrapper, canvas};
+      }
+
+      function renderPageToCanvas(num, canvas) {
+        return pdfDoc.getPage(num).then(function(page) {
+          const viewport = page.getViewport({ scale: scale });
+          const outputScale = window.devicePixelRatio || 1;
+          // Create a high-DPI viewport for rendering to the backing canvas
+          const scaledViewport = page.getViewport({ scale: scale * outputScale });
+
+          // Set canvas internal size to CSS size * devicePixelRatio, but keep CSS size for layout
+          canvas.width = Math.floor(scaledViewport.width);
+          canvas.height = Math.floor(scaledViewport.height);
+          canvas.style.width = Math.floor(viewport.width) + 'px';
+          canvas.style.height = Math.floor(viewport.height) + 'px';
+
+          const ctx = canvas.getContext('2d');
+          // Optional: reset any transforms and clear
+          ctx.setTransform(1,0,0,1,0,0);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          const renderContext = { canvasContext: ctx, viewport: scaledViewport };
+          return page.render(renderContext).promise.then(function() {
+            pageNumElem.textContent = currentVisiblePage;
+          });
+        });
+      }
+
+      async function fetchArrayBufferWithProgress(url) {
+        loader.style.display = 'flex';
+        percent.textContent = '0%';
+        const resp = await fetch(url);
+        const debugEl = document.getElementById('debug');
+        debugEl.style.display = 'block';
+        debugEl.textContent = `HTTP ${resp.status} ${resp.statusText}`;
+        if (!resp.ok) throw new Error('Network error: ' + resp.status + ' ' + resp.statusText);
+        const contentLength = resp.headers.get('content-length');
+        const contentType = resp.headers.get('content-type') || '';
+        debugEl.textContent += ` — content-type: ${contentType || 'unknown'}${contentLength ? ' — content-length: '+contentLength : ''}`;
+        if (!contentType.toLowerCase().includes('pdf')) {
+          try {
+            const txt = await resp.clone().text();
+            debugEl.textContent += '\n\nResponse preview:\n' + (txt.slice(0, 800));
+          } catch (e) {
+            debugEl.textContent += '\n\n(response body not readable)';
+          }
+        }
+        if (!resp.body || !contentLength) {
+          const ab = await resp.arrayBuffer();
+          percent.textContent = '100%';
+          return ab;
+        }
+        const total = parseInt(contentLength, 10);
+        const reader = resp.body.getReader();
+        let received = 0;
+        const chunks = [];
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          chunks.push(value);
+          received += value.length;
+          const p = Math.min(100, Math.round((received / total) * 100));
+          percent.textContent = p + '%';
+        }
+        const ab = new Uint8Array(received);
+        let offset = 0;
+        for (const chunk of chunks) {
+          ab.set(chunk, offset);
+          offset += chunk.length;
+        }
+        percent.textContent = '100%';
+        return ab.buffer;
+      }
+
+      document.getElementById('prev').addEventListener('click', () => {
+        const target = Math.max(1, currentVisiblePage - 1);
+        const el = pagesContainer.querySelector('canvas[data-page="' + target + '"]');
+        if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+      document.getElementById('next').addEventListener('click', () => {
+        const target = Math.min(pdfDoc ? pdfDoc.numPages : 1, currentVisiblePage + 1);
+        const el = pagesContainer.querySelector('canvas[data-page="' + target + '"]');
+        if (el) el.scrollIntoView({behavior:'smooth', block:'start'});
+      });
+      async function performZoom(newScale) {
+        newScale = Math.max(minAllowedScale, Math.min(maxAllowedScale, newScale));
+        if (Math.abs(newScale - scale) < 0.0001) return;
+        scale = newScale;
+        // Re-render the current visible page plus any already-rendered pages to apply new resolution.
+        const canvases = pagesContainer.querySelectorAll('canvas');
+        for (const canvas of canvases) {
+          const p = parseInt(canvas.dataset.page,10);
+          if (rendered.has(p) || p === currentVisiblePage) {
+            rendered.add(p);
+            const ctx2 = canvas.getContext('2d');
+            ctx2.clearRect(0,0,canvas.width,canvas.height);
+            await renderPageToCanvas(p, canvas);
+          }
+        }
+        // update slider/label to reflect new scale
+        updateZoomUI(scale);
+      }
+      document.getElementById('zoomIn').addEventListener('click', async () => { await performZoom(scale + 0.2); });
+      document.getElementById('zoomOut').addEventListener('click', async () => { await performZoom(scale - 0.2); });
+
+      async function rerenderVisiblePages() {
+        const canvases = pagesContainer.querySelectorAll('canvas');
+        for (const canvas of canvases) {
+          const p = parseInt(canvas.dataset.page,10);
+          if (rendered.has(p)) {
+            const ctx2 = canvas.getContext('2d');
+            ctx2.clearRect(0,0,canvas.width,canvas.height);
+            await renderPageToCanvas(p, canvas);
+          }
+        }
+      }
+
+      try {
+        const arrayBuffer = await fetchArrayBufferWithProgress(file);
+        loader.style.display = 'none';
+        const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+        pdfDoc = await loadingTask.promise;
+        pageCountElem.textContent = pdfDoc.numPages;
+
+        // Prepare a canvas wrapper for each page (lazy render via IntersectionObserver)
+        for (let i = 1; i <= pdfDoc.numPages; i++) {
+          const {wrapper, canvas} = makePageCanvas(i);
+          pagesContainer.appendChild(wrapper);
+        }
+
+        // compute a default fit scale using page 1
+        try {
+          const firstPage = await pdfDoc.getPage(1);
+          const viewport1 = firstPage.getViewport({ scale: 1 });
+          const containerWidth = Math.max(200, pagesContainer.clientWidth * 0.95);
+          // Use fixed base 40% as requested, allow down to 10% and up by 5 steps
+          baseScale = 0.4;
+          scale = baseScale;
+          minAllowedScale = 0.1; // 10%
+          maxAllowedScale = Math.min(3, baseScale + (0.2 * 5));
+          // enable and configure zoom slider
+          if (zoomSlider) {
+            zoomSlider.min = String(minAllowedScale);
+            zoomSlider.max = String(maxAllowedScale);
+            zoomSlider.step = '0.01';
+            zoomSlider.value = String(scale);
+            zoomSlider.disabled = false;
+          }
+          updateZoomUI(scale);
+        } catch (e) {
+          // fallback: use base 40%
+          baseScale = 0.4;
+          scale = baseScale;
+          minAllowedScale = 0.1;
+          maxAllowedScale = Math.min(3, baseScale + (0.2 * 5));
+          if (zoomSlider) {
+            zoomSlider.min = String(minAllowedScale);
+            zoomSlider.max = String(maxAllowedScale);
+            zoomSlider.step = '0.01';
+            zoomSlider.value = String(scale);
+            zoomSlider.disabled = false;
+          }
+          updateZoomUI(scale);
+        }
+
+        const observer = new IntersectionObserver(async (entries) => {
+          // Lazy render any intersecting pages
+          for (const entry of entries) {
+            const canvas = entry.target.querySelector('canvas');
+            const p = parseInt(canvas.dataset.page,10);
+            if (entry.isIntersecting && !rendered.has(p)) {
+              rendered.add(p);
+              await renderPageToCanvas(p, canvas);
+            }
+          }
+          // After processing, compute which page is the most-visible and set it as current
+          computeMostVisiblePage();
+        }, {root: null, rootMargin: '0px', threshold: 0.01});
+
+        // Determine which page wrapper is most visible (max intersection height)
+        function computeMostVisiblePage() {
+          const wrappers = Array.from(pagesContainer.querySelectorAll('.page-wrapper'));
+          let best = {page: 1, visible: 0};
+          for (const w of wrappers) {
+            const canvas = w.querySelector('canvas');
+            if (!canvas) continue;
+            const p = parseInt(canvas.dataset.page,10);
+            const r = w.getBoundingClientRect();
+            const visibleH = Math.max(0, Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0));
+            if (visibleH > best.visible) {
+              best = {page: p, visible: visibleH};
+            }
+          }
+          if (best.page && best.page !== currentVisiblePage) {
+            currentVisiblePage = best.page;
+            pageNumElem.textContent = currentVisiblePage;
+          }
+        }
+
+        // Debounce helper
+        function debounce(fn, wait){ let t; return function(){ clearTimeout(t); t = setTimeout(fn, wait); }; }
+        // Keep page number calibrated on scroll/resize
+        window.addEventListener('scroll', debounce(computeMostVisiblePage, 80), {passive:true});
+        window.addEventListener('resize', debounce(computeMostVisiblePage, 120));
+
+        // --- Zoom slider interactions ---
+        let sliderDragging = false;
+        if (zoomSlider) {
+          zoomSlider.addEventListener('input', function(e){
+            const v = parseFloat(e.target.value);
+            sliderDragging = true;
+            // live preview via transform
+            pagesContainer.style.transform = 'scale(' + v + ')';
+            updateZoomUI(v);
+          });
+          zoomSlider.addEventListener('change', async function(e){
+            const v = parseFloat(e.target.value);
+            await performZoom(v);
+            pagesContainer.style.transform = 'none';
+            sliderDragging = false;
+          });
+          // commit on pointer up outside the control as well
+          window.addEventListener('pointerup', async function(){
+            if (sliderDragging) {
+              sliderDragging = false;
+              const v = parseFloat(zoomSlider.value);
+              await performZoom(v);
+              pagesContainer.style.transform = 'none';
+            }
+          });
+        }
+
+        // Observe each wrapper
+        pagesContainer.querySelectorAll('.page-wrapper').forEach(w => observer.observe(w));
+
+        // Ensure initial page 1 is visible and counter is correct.
+        // Use computed scroll position and repeat shortly after load to override other scroll actions.
+        const firstCanvas = pagesContainer.querySelector('canvas[data-page="1"]');
+        function forceScrollToFirst() {
+          if (!firstCanvas) return;
+          const wrapper = firstCanvas.parentElement;
+          const toolbar = document.querySelector('.toolbar');
+          const toolbarHeight = toolbar ? toolbar.getBoundingClientRect().height : 0;
+          const rect = wrapper.getBoundingClientRect();
+          const targetTop = window.scrollY + rect.top - toolbarHeight - 4; // small offset
+          window.scrollTo({ top: Math.max(0, Math.floor(targetTop)), left: 0, behavior: 'auto' });
+          // Also try scrolling the container directly for some environments
+          try { wrapper.scrollIntoView({behavior:'auto', block:'start'}); } catch(e){}
+          currentVisiblePage = 1;
+          pageNumElem.textContent = currentVisiblePage;
+        }
+        // run immediately and a couple times after short delays to ensure it's applied
+        forceScrollToFirst();
+        setTimeout(forceScrollToFirst, 30);
+        setTimeout(forceScrollToFirst, 250);
+
+        // Two-finger pinch-to-zoom handling (smooth UX on touch devices)
+        let pinchState = { active:false, startDist:0, startScale: scale, lastScale: scale };
+        function _dist(a,b){ const dx=a.clientX-b.clientX; const dy=a.clientY-b.clientY; return Math.hypot(dx,dy); }
+        pagesContainer.addEventListener('touchstart', function(e){
+          if (e.touches && e.touches.length === 2) {
+            pinchState.active = true;
+            pinchState.startDist = _dist(e.touches[0], e.touches[1]);
+            pinchState.startScale = scale;
+            pinchState.lastScale = scale;
+            const rect = pagesContainer.getBoundingClientRect();
+            const midX = (e.touches[0].clientX + e.touches[1].clientX)/2 - rect.left;
+            const midY = (e.touches[0].clientY + e.touches[1].clientY)/2 - rect.top;
+            pagesContainer.style.transformOrigin = midX + 'px ' + midY + 'px';
+            pagesContainer.style.transition = 'none';
+          }
+        });
+        pagesContainer.addEventListener('touchmove', function(e){
+          if (pinchState.active && e.touches && e.touches.length === 2) {
+            e.preventDefault();
+            const d = _dist(e.touches[0], e.touches[1]);
+            const newScale = Math.max(minAllowedScale, Math.min(maxAllowedScale, pinchState.startScale * (d / pinchState.startDist)));
+            pinchState.lastScale = newScale;
+            pagesContainer.style.transform = 'scale(' + newScale + ')';
+          }
+        }, { passive:false });
+        pagesContainer.addEventListener('touchend', async function(e){
+          if (pinchState.active && (!e.touches || e.touches.length < 2)) {
+            pinchState.active = false;
+            pagesContainer.style.transition = 'transform 160ms ease';
+            // commit scale and rerender canvases at integer canvas resolution
+            scale = pinchState.lastScale;
+            pagesContainer.style.transform = 'none';
+            pagesContainer.style.transformOrigin = 'center top';
+            await rerenderVisiblePages();
+          }
+        });
+        // Prevent platform gesture events (older iOS) that can cause rotate/tilt
+        document.addEventListener('gesturestart', function(e){ try{ e.preventDefault(); } catch(e){} });
+
+      } catch (err) {
+        loader.style.display = 'none';
+        document.body.innerHTML = '<div style="padding:20px;color:#f88">Error loading PDF.</div>';
+        console.error(err);
+      }
+
+      // Basic deterrents against easy saving
+      document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+      document.addEventListener('keydown', function(e){ if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') e.preventDefault(); });
+    })();
+  </script>
 </body>
 </html>

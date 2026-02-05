@@ -178,6 +178,14 @@
     // bars
     // compute x positions using gap and barWidth
     const barGap = gap;
+    function shortLabel(s){
+      const ss = String(s || '');
+      if (ss.indexOf('Environmental') !== -1) return 'Evs';
+      if (ss.indexOf('Chemistry Lab') !== -1) return 'Che Lab';
+      if (ss.indexOf('Physics Lab') !== -1) return 'Phy Lab';
+      if (ss.indexOf('Communication') !== -1) return 'Com. Skl.';
+      return ss;
+    }
     items.forEach((it, i) => {
       const x = barGap + i * (barWidth + barGap);
       const h = (it.clicks / yMax) * height;
@@ -192,8 +200,9 @@
       countLabel.textContent = it.clicks;
       g.appendChild(countLabel);
 
-      // x-axis label (subject) - wrap/trim
-      const subj = String(it.subject).length > 18 ? String(it.subject).slice(0,18) + '…' : String(it.subject);
+      // x-axis label (subject) - use short label for chart display only
+      const raw = shortLabel(it.subject);
+      const subj = raw.length > 18 ? raw.slice(0,18) + '…' : raw;
       const xLabel = createSVG('text', { x: x + barWidth/2, y: xAxisY + 18, 'text-anchor': 'middle', 'font-size': 12, fill: '#bcdbe4' });
       xLabel.textContent = subj;
       g.appendChild(xLabel);
