@@ -236,13 +236,7 @@
       const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
       console.log('Poll will appear in', randomTime / 1000, 'seconds with question:', randomQuestion);
 
-      // Suppress poll if shown within the last 20 minutes (use localStorage so reloads respect it)
-      const SUPPRESS_MS = 20 * 60 * 1000; // 20 minutes
-      try {
-        const lastShown = localStorage.getItem('pollLastShown');
-        if (lastShown && (Date.now() - parseInt(lastShown, 10) < SUPPRESS_MS)) {
-          console.log('Poll suppressed — shown within last 20 minutes.');
-        } else {
+      // ...existing code...
           setTimeout(() => {
             console.log('Showing poll modal');
             const titleEl = document.querySelector('#poll-modal h2');
@@ -625,7 +619,7 @@
     <div class="update-details" aria-label="Version Info">
       <div class="ud-title">Version Info</div>
       <div class="ud-line"><span class="ud-key">By :</span><span class="ud-val">Anurag Kumar Verma</span></div>
-      <div class="ud-line"><span class="ud-key">Date :</span><span class="ud-val">05th Feb, 2026</span></div>
+      <div class="ud-line"><span class="ud-key">Date :</span><span class="ud-val">11th Feb, 2026</span></div>
       <div class="ud-line"><span class="ud-key">Content Updated (Y/N ) :</span><span class="ud-val">N</span></div>
       <div class="ud-line"><span class="ud-key">Software Updated (Y/N) :</span><span class="ud-val">Y</span></div>
     </div>
@@ -743,7 +737,7 @@
         const devBypass = localStorage.getItem('trends_dev_bypass') === '1';
         // If within cooldown, and dev bypass is NOT enabled, do NOT send or record the click — but allow navigation (ignore only)
         if (!devBypass && (Date.now() - last < COOLDOWN_MS)){
-          showToast('Click ignored — within 20-minute rate limit.');
+          // ...existing code... (rate limit logic, but no toast or message)
           return; // do not prevent navigation; simply ignore sending
         }
         // Record last-click timestamp (prevents rapid repeats)

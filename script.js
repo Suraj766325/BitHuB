@@ -164,19 +164,4 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// Intercept clicks on links to PDF files and open them in internal viewer
-document.addEventListener('click', function (e) {
-    const anchor = e.target.closest('a');
-    if (!anchor) return;
-    const href = anchor.getAttribute('href');
-    if (!href) return;
-    const lower = href.toLowerCase();
-    if (lower.endsWith('.pdf')) {
-        e.preventDefault();
-        e.stopPropagation();
-        try { anchor.removeAttribute('target'); } catch(e) {}
-        try { anchor.removeAttribute('download'); } catch(e) {}
-        const viewerUrl = 'viewer.html?file=' + encodeURIComponent(href);
-        window.location.href = viewerUrl;
-    }
-});
+// ...existing code...
