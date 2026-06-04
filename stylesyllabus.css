@@ -1,44 +1,140 @@
-/* Dark Theme for Content Pages */
-.syllabus0{
-    display: grid;
-    padding: 10px;
-    gap: 10px;
-    background: transparent;
+/* ============================================================
+   BitHuB — Syllabus Stylesheet
+   Version 4.0 | Clean · Flat · Corporate
+   ============================================================ */
+
+.syllabus0 {
+  display: grid;
+  padding: var(--space-6) var(--space-8);
+  gap: var(--space-6);
+  background: transparent;
+  max-width: 1000px;
+  margin: 0 auto;
+  width: 100%;
 }
-.syllabus1{
-    width: 100%;
-    display: grid;
-    border: 1px solid rgba(0, 212, 255, 0.3);
-    border-radius: 10px;
-    padding: 5px;
-    gap: 5px;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(26, 26, 46, 0.7) 100%);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+
+.syllabus1 {
+  width: 100%;
+  display: grid;
+  border: 1px solid var(--border);
+  border-radius: 0;
+  padding: 0;
+  gap: 0;
+  background: var(--bg-surface);
 }
-.syllabus11{
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(9, 9, 121, 0.2) 100%);
-    color: #ffffff;
-    text-align: center;
-    border: 1px solid rgba(0, 212, 255, 0.4);
-    border-radius: 10px;
-    padding: 10px;
-    font-weight: 600;
+
+.syllabus11 {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  padding: var(--space-4) var(--space-5);
+  font-weight: 600;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
-.syllabus12{
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.5) 0%, rgba(26, 26, 46, 0.5) 100%);
-    color: #ffffff;
-    border: 1px solid rgba(0, 212, 255, 0.2);
-    border-radius: 10px;
-    padding: 10px;
+
+.syllabus12 {
+  background: transparent;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border);
+  border-radius: 0;
+  padding: var(--space-4) var(--space-5);
+  font-size: 13px;
+  line-height: 1.6;
 }
+
+.syllabus12:last-child {
+  border-bottom: none;
+}
+
+.syllabus12 b {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Interactivity for clickable list items (labs, PDFs, etc.) */
+.syllabus1 > a {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.syllabus12.main1 {
+  position: relative;
+  overflow: hidden;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background var(--t), color var(--t);
+  text-align: center;
+}
+
+.syllabus12.main1::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0; right: auto;
+  width: 2px;
+  background: #444444;
+  opacity: 0;
+  transition: opacity var(--t);
+}
+
+.syllabus12.main1:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.syllabus12.main1:hover::before {
+  opacity: 1;
+}
+
+.syllabus12.main1:active {
+  background: var(--bg-active);
+}
+
+.syllabus12.main1:active::before {
+  opacity: 1;
+}
+
+/* Touch devices support */
+@media (hover: none) and (pointer: coarse) {
+  .syllabus12.main1::before { opacity: 0.2; }
+  .syllabus12.main1:active { background: var(--bg-hover); }
+  .syllabus12.main1:active::before { opacity: 1; }
+}
+
+@media (max-width: 640px) {
+  .syllabus12.main1::before {
+    opacity: 0.2;
+    background: #555555;
+  }
+  .syllabus12.main1:active { background: #161616; }
+  .syllabus12.main1:active::before { opacity: 1; }
+}
+
+/* Fallback link styling within text descriptions */
 .syllabus12 a {
-    color: #ffffff;
-    font-weight: 600;
-    text-decoration: none;
-    transition: all 0.3s ease;
+  color: var(--accent-text);
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color var(--t), border-bottom-color var(--t);
 }
+
 .syllabus12 a:hover {
-    color: #00d4ff;
-    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+  color: var(--text-primary);
+  border-bottom-color: var(--border-accent);
+}
+
+@media (max-width: 768px) {
+  .syllabus0 {
+    padding: var(--space-4) var(--space-4);
+    gap: var(--space-4);
+  }
 }

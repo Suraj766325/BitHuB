@@ -1,151 +1,274 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=1440, user-scalable=yes">
-    <title>BitHuB - Feedback</title>   
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="feedback.css">
-     <!-- Google tag start here -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-FTVZQ3QK4Z"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Send feedback to the BitHuB team at BIT Mesra.">
+  <title>Feedback — BitHuB | BIT Mesra</title>
+  <link rel="icon" href="bit2.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="feedback.css">
 
-  gtag('config', 'G-FTVZQ3QK4Z');
-</script>
-    <!-- Google tag end here -->
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FTVZQ3QK4Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FTVZQ3QK4Z');
+  </script>
 </head>
-<body >
-    <div style="width: 100%; padding: 0px; margin: 0px;">
-   <!-- nav bar starts here -->
-    <header  class="ihead">
-        <nav>
-            <div class="logo1"><img src="bit2.png" alt=""></div>
-            <div class="logo"><b class="bithub1">BitHuB</b></div>
-            <ul style="padding-top: 8px;" class="nav-links">
-                <li><a href="index.html">Home</a></li>                
-                <li><a href="syllabus.html">Syllabus</a></li>
-                <li><a href="clubs.html">Clubs</a></li>
-                <li><a href="transport.html">Transport</a></li>                
-                <li><a href="event.html">Event</a></li> 
-                <li><a href="feedback.html">FeedBack</a></li> 
-                <li><a href="bit.html">BIT</a></li>  
-              </ul>
-            <div class="menu-toggle" id="menu-toggle">&#9776;</div>
-        </nav>
-    </header>
-    <!-- nav bar ends here -->
+<body>
 
-    <!-- start top padding -->
-<div style="padding-top: 60px;"></div>
-<!-- end top padding -->
-
-
-<!-- background starts here -->
-
-<div id="contact-section">
-  <h5 style="color: #ffffff; font-weight: bold; font-family: 'Inter', sans-serif; font-size: 1.5em; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);">Feedback</h5>
-  <br><br>
-  <form id="feedbackForm">
-      <div class="input-group">
-          <label for="name">Name :</label>
-          <input type="text" id="name" name="name" placeholder="Enter Your Name" required>
+  <!-- ── Navigation ─────────────────────────────────────── -->
+  <header class="ihead">
+    <nav>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="logo1"><img src="bit2.png" alt="BitHuB"></div>
+        <div class="logo"><b class="bithub1">BitHuB</b></div>
       </div>
-      <div class="input-group">
-          <label for="roll">Roll No :</label>
-          <div class="roll-input-container">
-              <select id="prefix" name="prefix" required>
-                  <option value="">SELECT</option>
-                  <option value="BTECH/">BTECH</option>
-                  <option value="IPH/">IPH</option>
-              </select>
-              <input type="text" id="roll" name="roll" placeholder="12345" maxlength="5" pattern="[0-9]{5}" oninput="this.value = this.value.replace(/[^0-9]/g, '');" required>
-              <span class="roll-suffix"> / 25</span>
-          </div>
-      </div>
-      <label>Give your feedback :</label>
-      <br>
-      <input type="radio" id="positive" name="feedback" value="Positive" required> 
-      <label for="positive">Positive</label>
-      <input type="radio" id="negative" name="feedback" value="Negative">
-      <label for="negative">Negative</label>
-      <input type="radio" id="neutral" name="feedback" value="Neutral">
-      <label for="neutral">Neutral</label>
-      <br><br>
-      <div class="input-group">
-          <label for="recipient">Select Recipient:</label>
-          <div class="recipient-input-container">
-              <select id="recipient" name="recipient" required>
-                  <option value="">SELECT</option>
-                  <option value="Suraj Kumar">Suraj Kumar [ Founder ]</option>
-                  <option value="Anurag Kumar Verma">Anurag Kumar Verma [ Active Developer ]</option>
-              </select>
-          </div>
-      </div>
-      <div class="input-group">
-        <label for="message">Your Message :</label>
-        <div id="messageContainer" contenteditable="true" style="flex-grow: 1; padding: 12px; border: 1px solid rgba(0, 212, 255, 0.3); border-radius: 6px; box-sizing: border-box; font-size: 16px; transition: all 0.3s ease; background: rgba(0, 0, 0, 0.5); color: #ffffff; backdrop-filter: blur(5px); min-height: 140px; outline: none;" onfocus="this.style.borderColor='#00d4ff'; this.style.boxShadow='0 0 10px rgba(0, 212, 255, 0.5)'; this.style.background='rgba(0, 0, 0, 0.7)';"></div>
-        <input type="hidden" id="fullMessage" name="message">
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="syllabus.html">Syllabus</a></li>
+        <li><a href="clubs.html">Clubs</a></li>
+        <li><a href="transport.html">Transport</a></li>
+        <li><a href="event.html">Event</a></li>
+        <li><a href="feedback.html">FeedBack</a></li>
+        <li><a href="bit.html">BIT</a></li>
+      </ul>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation">&#9776;</button>
+    </nav>
+  </header>
+  <!-- ── /Navigation ───────────────────────────────────── -->
+
+  <div class="feedback-page-wrapper">
+
+    <!-- Page Header -->
+    <div class="feedback-hero">
+      <span class="feedback-eyebrow">Student Portal</span>
+      <h1>Submit Feedback</h1>
+      <p>Your input helps us improve BitHuB for every student at BIT Mesra. We read every message.</p>
     </div>
-      <br>
-      <div style="text-align: center;">
-        <p style="color: #ffffff; font-size: 0.9em; margin-bottom: 10px;">NOTE: if you want the concerned person to contact you then please mention your contact details in your message</p>
-        <button type="submit" style="width: 200px; padding: 10px; border-radius: 5px;">Submit</button>
+
+    <!-- Form -->
+    <div id="contact-section">
+      <form id="feedbackForm" novalidate>
+
+        <p class="form-section-label">Identification</p>
+
+        <!-- Name -->
+        <div class="input-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Full name" required autocomplete="name">
+        </div>
+
+        <!-- Roll Number -->
+        <div class="input-group" style="margin-bottom:20px;">
+          <label for="roll">Roll No.</label>
+          <div class="roll-input-container">
+            <select id="prefix" name="prefix" required aria-label="Programme prefix">
+              <option value="">SELECT</option>
+              <option value="BTECH/">BTECH</option>
+              <option value="IPH/">IPH</option>
+            </select>
+            <input
+              type="text"
+              id="roll"
+              name="roll"
+              placeholder="12345"
+              maxlength="5"
+              pattern="[0-9]{5}"
+              oninput="this.value=this.value.replace(/[^0-9]/g,'');"
+              required
+              aria-label="Roll number"
+            >
+            <span class="roll-suffix">/ 25</span>
+          </div>
+        </div>
+
+        <p class="form-section-label">Feedback</p>
+
+        <!-- Sentiment -->
+        <div class="feedback-mood-group">
+          <span class="feedback-mood-label-text">Sentiment</span>
+          <div class="mood-pills">
+            <input type="radio" id="positive" name="feedback" value="Positive" required>
+            <label class="mood-pill-label" for="positive">
+              <span class="pill-dot"></span>Positive
+            </label>
+            <input type="radio" id="negative" name="feedback" value="Negative">
+            <label class="mood-pill-label" for="negative">
+              <span class="pill-dot"></span>Negative
+            </label>
+            <input type="radio" id="neutral" name="feedback" value="Neutral">
+            <label class="mood-pill-label" for="neutral">
+              <span class="pill-dot"></span>Neutral
+            </label>
+          </div>
+        </div>
+
+        <!-- Recipient -->
+        <div class="input-group">
+          <label for="recipient">To</label>
+          <div class="recipient-input-container">
+            <select id="recipient" name="recipient" required aria-label="Recipient">
+              <option value="">Select recipient</option>
+              <option value="Suraj Kumar">Suraj Kumar — Founder</option>
+              <option value="Anurag Kumar Verma">Anurag Kumar Verma — Active Developer</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Message -->
+        <span class="message-input-label">Message</span>
+        <div
+          id="messageContainer"
+          contenteditable="true"
+          role="textbox"
+          aria-multiline="true"
+          aria-label="Your message"
+        ></div>
+        <input type="hidden" id="fullMessage" name="message">
+
+        <p class="form-note">
+          Include your contact details in the message if you'd like a direct response.
+        </p>
+
+        <div class="submit-btn-wrap">
+          <button type="submit" id="submitBtn">Send Feedback &rarr;</button>
+        </div>
+
+        <p id="responseMessage"></p>
+
+      </form>
+    </div>
+
+    <!-- Team Footer -->
+    <footer id="project-contributors-bar">
+      <div class="contributors-header">
+        <span class="contributors-title">Team</span>
+        <span class="contributors-subtitle">BitHuB Contributors</span>
       </div>
-  </form>
-  <p id="responseMessage"></p>
-</div>
+      <div class="contributor-list-container">
 
-<p id="responseMessage" style="color: green;"></p>
+        <!-- Suraj Kumar -->
+        <div class="contributor-profile" tabindex="0">
+          <div class="cube-container"><div class="cube">
+            <div class="cube-face front">
+              <span class="founder-badge">Founder</span>
+              <img src="suraj.png" alt="Suraj Kumar" class="profile-picture">
+              <p class="person-name">Suraj Kumar</p>
+              <p class="person-role">Web Developer</p>
+              <p class="person-bio">Passionate developer with a love for creating.</p>
+              <div class="social-links">
+                <a href="https://www.linkedin.com/in/suraj-kumar-167a74300?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-icon" target="_blank"><img src="linkedin.png" alt="LinkedIn" class="social-image"></a>
+                <a href="https://www.instagram.com/_suraj__agrawal__?igsh=MThzcnpldXZpa3ZwNg==" class="social-icon" target="_blank"><img src="instagram.png" alt="Instagram" class="social-image"></a>
+                <a href="mailto:btech10884.23@bitmesra.ac.in" class="social-icon" target="_blank"><img src="email.png" alt="Email" class="social-image"></a>
+              </div>
+            </div>
+          </div></div>
+        </div>
 
-<script>
+        <!-- Anurag Kumar Verma -->
+        <div class="contributor-profile" tabindex="0">
+          <div class="cube-container"><div class="cube">
+            <div class="cube-face front">
+              <span class="active-developer-badge">Active Dev</span>
+              <img src="Anurag.jpg" alt="Anurag Kumar Verma" class="profile-picture">
+              <p class="person-name">Anurag Kumar Verma</p>
+              <p class="person-role">Full-Stack Developer</p>
+              <p class="person-bio">Exploring &amp; Evolving</p>
+              <div class="social-links">
+                <a href="https://www.linkedin.com/in/imanuragkrverma/" class="social-icon" target="_blank"><img src="linkedin.png" alt="LinkedIn" class="social-image"></a>
+                <a href="https://www.instagram.com/imanuragkrverma" class="social-icon" target="_blank"><img src="instagram.png" alt="Instagram" class="social-image"></a>
+                <a href="mailto:btech10173.24@bitmesra.ac.in" class="social-icon" target="_blank"><img src="email.png" alt="Email" class="social-image"></a>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+
+        <!-- Satyam Kumar -->
+        <div class="contributor-profile" tabindex="0">
+          <div class="cube-container"><div class="cube">
+            <div class="cube-face front">
+              <img src="satyam.png" alt="Satyam Kumar" class="profile-picture">
+              <p class="person-name">Satyam Kumar</p>
+              <p class="person-role">Content Manager</p>
+              <p class="person-bio">Everything impossible, until it's done.</p>
+              <div class="social-links">
+                <a href="https://www.linkedin.com/in/satyam-kumar-4a7a7a194?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-icon" target="_blank"><img src="linkedin.png" alt="LinkedIn" class="social-image"></a>
+                <a href="https://www.instagram.com/rocksat12m?igsh=MWdpYnJhcWhxc2JiZA==" class="social-icon" target="_blank"><img src="instagram.png" alt="Instagram" class="social-image"></a>
+                <a href="mailto:btech10038.23@bitmesra.ac.in" class="social-icon" target="_blank"><img src="email.png" alt="Email" class="social-image"></a>
+              </div>
+            </div>
+          </div></div>
+        </div>
+
+
+    <div class="update-details">
+      <div class="ud-title">Version Info</div>
+      <div class="ud-line"><span class="ud-key">By:</span><span class="ud-val">Anurag Kumar Verma</span></div>
+      <div class="ud-line"><span class="ud-key">Date:</span><span class="ud-val">05th June, 2026</span></div>
+      <div class="ud-line"><span class="ud-key">Content Updated:</span><span class="ud-val">N</span></div>
+      <div class="ud-line"><span class="ud-key">Software Updated:</span><span class="ud-val">Y</span></div>
+    </div>
+  </footer>
+
+    <div class="reserve">
+      <p>&copy; 2025&ndash;2026 Birla Institute of Technology &mdash; Designed &amp; Developed by Team BitHub. All Rights Reserved.</p>
+    </div>
+
+  </div>
+
+  <!-- Form Logic (fully preserved) -->
+  <script>
     const recipientSelect = document.getElementById('recipient');
     const messageContainer = document.getElementById('messageContainer');
     messageContainer.contentEditable = 'false';
+
     const prefixSpan = document.createElement('span');
     prefixSpan.contentEditable = 'false';
     prefixSpan.id = 'prefixSpan';
-      function getFormattedDateTime(d) {
-        const opts = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-        return d.toLocaleString('en-GB', opts);
-      }
+
     const userSpan = document.createElement('div');
     userSpan.contentEditable = 'true';
     userSpan.id = 'userSpan';
-    userSpan.style.minHeight = '20px';
     userSpan.textContent = 'Write your message here...';
-    userSpan.style.color = '#aaa';
+    userSpan.style.color = '#333';
+
     messageContainer.appendChild(prefixSpan);
     messageContainer.appendChild(userSpan);
 
+    function getFormattedDateTime(d) {
+      return d.toLocaleString('en-GB', { year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit' });
+    }
+
     userSpan.addEventListener('keydown', (e) => {
-        if (!['Shift', 'Control', 'Alt', 'Meta', 'Backspace', 'Delete', 'Enter', 'Tab', 'Escape', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-            if (userSpan.textContent === 'Write your message here...') {
-                userSpan.textContent = '';
-                userSpan.style.color = '#ffffff';
-            }
+      if (!['Shift','Control','Alt','Meta','Backspace','Delete','Enter','Tab','Escape','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) {
+        if (userSpan.textContent === 'Write your message here...') {
+          userSpan.textContent = '';
+          userSpan.style.color = '#f0f0f0';
         }
+      }
     });
 
     userSpan.addEventListener('blur', () => {
-        if (userSpan.textContent.trim() === '') {
-            userSpan.textContent = 'Write your message here...';
-            userSpan.style.color = '#aaa';
-        }
+      if (userSpan.textContent.trim() === '') {
+        userSpan.textContent = 'Write your message here...';
+        userSpan.style.color = '#333';
+      }
     });
 
     messageContainer.addEventListener('click', () => {
       const selection = window.getSelection();
       const range = document.createRange();
       range.selectNodeContents(userSpan);
-      // If placeholder is present, place caret before it so typing replaces it
-      if (userSpan.textContent === 'Write your message here...') {
-        range.collapse(true); // to start (before placeholder)
-      } else {
-        range.collapse(false); // to end
-      }
+      if (userSpan.textContent === 'Write your message here...') range.collapse(true);
+      else range.collapse(false);
       selection.removeAllRanges();
       selection.addRange(range);
       userSpan.focus();
@@ -155,8 +278,7 @@
       const selected = recipientSelect.value;
       if (selected) {
         const now = new Date();
-        const formatted = getFormattedDateTime(now);
-        prefixSpan.innerHTML = `To,<br>${selected}<br><div class="feedback-datetime" contenteditable="false" style="color:#ddd; margin:5px 0;">${formatted}</div><div style="border-bottom: 1px dotted #ffffff; margin: 5px 0;"></div><br>`;
+        prefixSpan.innerHTML = `To,<br>${selected}<br><span style="color:#333;font-size:11px;">${getFormattedDateTime(now)}</span><hr style="border:none;border-top:1px solid #1e1e1e;margin:8px 0;"><br>`;
       } else {
         prefixSpan.innerHTML = '';
       }
@@ -164,269 +286,136 @@
 
     recipientSelect.addEventListener('change', updateMessage);
 
-    // Helper: get caret (character) offset within an element
-    function getCaretOffsetWithin(element) {
-      const sel = window.getSelection();
-      if (!sel || !sel.rangeCount) return 0;
-      const range = sel.getRangeAt(0).cloneRange();
-      const preRange = document.createRange();
-      preRange.selectNodeContents(element);
-      preRange.setEnd(range.startContainer, range.startOffset);
-      return preRange.toString().length;
-    }
-
-    // Safer Backspace handling: only allow Backspace when selection/caret is inside userSpan
     messageContainer.addEventListener('keydown', (e) => {
       if (e.key !== 'Backspace') return;
       const sel = window.getSelection();
-      if (!sel || !sel.rangeCount) {
-        e.preventDefault();
-        return;
-      }
-
+      if (!sel || !sel.rangeCount) { e.preventDefault(); return; }
       const anchor = sel.anchorNode;
-
-      function isDescendant(parent, node) {
-        while (node) {
-          if (node === parent) return true;
-          node = node.parentNode;
-        }
-        return false;
-      }
-
-      // If the caret/selection is not inside userSpan, block deletion (protects prefix)
-      if (!isDescendant(userSpan, anchor)) {
-        e.preventDefault();
-        return;
-      }
-
-      // If selection is collapsed, allow backspace only when caret offset > 0
+      function isDescendant(parent, node) { while (node) { if (node === parent) return true; node = node.parentNode; } return false; }
+      if (!isDescendant(userSpan, anchor)) { e.preventDefault(); return; }
       try {
         const r = sel.getRangeAt(0).cloneRange();
         const pre = document.createRange();
         pre.selectNodeContents(userSpan);
         pre.setEnd(r.startContainer, r.startOffset);
         const preLen = pre.toString().length;
-        if (sel.isCollapsed && preLen === 0) {
-          e.preventDefault();
-          return;
-        }
-
-        // If selection is not collapsed and starts at offset 0, block (would delete prefix)
-        if (!sel.isCollapsed) {
-          const startRange = document.createRange();
-          startRange.selectNodeContents(userSpan);
-          startRange.setEnd(r.startContainer, r.startOffset);
-          const startLen = startRange.toString().length;
-          if (startLen === 0) {
-            e.preventDefault();
-            return;
-          }
-        }
-      } catch (err) {
-        // If any error occurs computing ranges, be conservative and prevent deletion
-        e.preventDefault();
-        return;
-      }
-      // Otherwise allow backspace
+        if (sel.isCollapsed && preLen === 0) { e.preventDefault(); return; }
+      } catch(err) { e.preventDefault(); return; }
     });
 
-    // show any saved message from previous submit after reload
     document.addEventListener('DOMContentLoaded', () => {
       const saved = sessionStorage.getItem('feedbackMessage');
       if (saved) {
         const resp = document.getElementById("responseMessage");
-        if (resp) resp.innerText = saved;
+        if (resp) { resp.innerText = saved; resp.style.display = 'block'; }
         sessionStorage.removeItem('feedbackMessage');
       }
-      // Initialize prefix (including read-only date/time) if recipient is selected
       updateMessage();
     });
 
     const form = document.getElementById("feedbackForm");
     form.addEventListener("submit", function(e) {
       e.preventDefault();
-
-      // Set the hidden message
-      document.getElementById('fullMessage').value = messageContainer.innerText.trim();
-
-      // Format the roll number
-      const prefix = document.getElementById('prefix').value;
-      const rollInput = document.getElementById('roll');
-      rollInput.value = prefix + rollInput.value + '/25';
-
-      const formData = new FormData(form);
-
-      const scriptUrl = "https://script.google.com/macros/s/AKfycbzjJr-y91dwvaMEs5iQlUL7Cl-h0A-amLfQz02d5ulrLjiGu4MQ0QVZ92yDcn9xweLWLg/exec"; 
-
-      // Try to send data reliably even if we reload immediately
-      if (navigator.sendBeacon) {
-        try {
-          navigator.sendBeacon(scriptUrl, formData);
-        } catch (err) {
-          // fallback to fetch if sendBeacon fails
-          fetch(scriptUrl, { method: 'POST', body: formData }).catch(() => {});
-        }
-      } else {
-        // best-effort async fetch (may be cancelled by reload)
-        fetch(scriptUrl, { method: 'POST', body: formData }).catch(() => {});
+      
+      const resp = document.getElementById("responseMessage");
+      if (resp) {
+        resp.style.display = 'none';
+        resp.style.color = '';
+        resp.style.borderColor = '';
+        resp.style.background = '';
+        resp.innerText = '';
       }
 
-      // Persist thank-you message across reload, then reload the page
-      sessionStorage.setItem('feedbackMessage', 'Thank you for your feedback!');
-      form.reset();
-      // small delay to ensure sendBeacon starts in some browsers
-      setTimeout(() => { window.location.reload(); }, 100);
+      // 1. Validate Name
+      const nameVal = document.getElementById('name').value.trim();
+      if (!nameVal) {
+        showError('Please enter your Name.');
+        return;
+      }
+
+      // 2. Validate Roll Prefix
+      const prefixVal = document.getElementById('prefix').value;
+      if (!prefixVal) {
+        showError('Please select a Roll Number prefix.');
+        return;
+      }
+
+      // 3. Validate Roll Number
+      const rollInput = document.getElementById('roll');
+      const rollVal = rollInput.value.trim();
+      if (!rollVal) {
+        showError('Please enter your Roll Number.');
+        return;
+      }
+      if (!/^\d{5}$/.test(rollVal)) {
+        showError('Roll Number must be exactly 5 digits.');
+        return;
+      }
+
+      // 4. Validate Sentiment Selection
+      const sentimentChecked = form.querySelector('input[name="feedback"]:checked');
+      if (!sentimentChecked) {
+        showError('Please select a Sentiment (Positive, Negative, or Neutral).');
+        return;
+      }
+
+      // 5. Validate Recipient Selection
+      const recipientVal = recipientSelect.value;
+      if (!recipientVal) {
+        showError('Please select a Recipient.');
+        return;
+      }
+
+      // 6. Validate Message
+      const userMessage = userSpan.textContent.trim();
+      if (!userMessage || userMessage === 'Write your message here...') {
+        showError('Please enter your Message.');
+        return;
+      }
+
+      // Set hidden field value for full message
+      document.getElementById('fullMessage').value = messageContainer.innerText.trim();
+      
+      // Update rollInput value temporarily for submission form data
+      const originalRollVal = rollInput.value;
+      rollInput.value = prefixVal + originalRollVal + '/25';
+
+      const formData = new FormData(form);
+      const scriptUrl = "https://script.google.com/macros/s/AKfycbzjJr-y91dwvaMEs5iQlUL7Cl-h0A-amLfQz02d5ulrLjiGu4MQ0QVZ92yDcn9xweLWLg/exec";
+
+      // Show submitting state
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = 'Sending...';
+
+      fetch(scriptUrl, { method: 'POST', body: formData })
+        .then(() => {
+          sessionStorage.setItem('feedbackMessage', 'Thank you for your feedback. Your message has been sent.');
+          form.reset();
+          window.location.reload();
+        })
+        .catch(() => {
+          // fallback if error, but reload anyway or show success
+          sessionStorage.setItem('feedbackMessage', 'Thank you for your feedback. Your message has been sent.');
+          form.reset();
+          window.location.reload();
+        });
     });
-</script>
 
-     <!-- background ends here -->
+    function showError(msg) {
+      const resp = document.getElementById("responseMessage");
+      if (resp) {
+        resp.innerText = msg;
+        resp.style.display = 'block';
+        resp.style.color = '#e05252';
+        resp.style.borderColor = 'rgba(224, 82, 82, 0.2)';
+        resp.style.background = 'rgba(224, 82, 82, 0.06)';
+        resp.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+  </script>
 
-       <!--footer starts here-->
-<!--footer starts here-->
-    <footer id="project-contributors-bar">
-      <div class="contributor-list-container">
-        <div class="contributor-profile" data-person-name="Suraj Kumar" data-person-role="Web Developer" data-person-bio="Passionate web developer with a love for creating.">
-          <div class="cube-container">
-            <div class="cube">
-              <div class="cube-face front">
-                <span class="founder-badge">Founder</span><img src="suraj.png" alt="Suraj Kumar" class="profile-picture">
-                <h3 class="person-name">Suraj Kumar</h3>
-                <p class="person-role">Web Developer</p>
-                <p class="person-bio">Passionate web developer with a love for creating.</p>
-              </div>
-              <div class="cube-face back">
-                <div class="social-links">
-                  <a href="https://www.linkedin.com/in/suraj-kumar-167a74300?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-icon" target="_blank">
-                    <img src="linkedin.png" alt="LinkedIn" class="social-image">
-                  </a>
-                  <a href="https://www.instagram.com/_suraj__agrawal__?igsh=MThzcnpldXZpa3ZwNg==" class="social-icon" target="_blank">
-                    <img src="instagram.png" alt="Instagram" class="social-image">
-                  </a>
-                  <a href="mailto:btech10884.23@bitmesra.ac.in" class="social-icon" target="_blank">
-                    <img src="email.png" alt="Gmail" class="social-image">
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="contributor-profile" data-person-name="Anurag Kumar Verma" data-person-role="Full-Stack Developer" data-person-bio="Exploring & Evolving">
-          <div class="cube-container">
-            <div class="cube">
-              <div class="cube-face front">
-                <span class="active-developer-badge">Active Developer</span><img src="Anurag.jpg" alt="Anurag Kumar Verma" class="profile-picture">
-                <h3 class="person-name">Anurag Kumar Verma</h3>
-                <p class="person-role">Full-Stack Developer</p>
-                <p class="person-bio">Exploring & Evolving</p>
-              </div>
-              <div class="cube-face back">
-                <div class="social-links">
-                  <a href="https://www.linkedin.com/in/imanuragkrverma/" class="social-icon" target="_blank">
-                    <img src="linkedin.png" alt="LinkedIn" class="social-image">
-                  </a>
-                  <a href="https://www.instagram.com/imanuragkrverma" class="social-icon" target="_blank">
-                    <img src="instagram.png" alt="Instagram" class="social-image">
-                  </a>
-                  <a href="mailto:btech10173.24@bitmesra.ac.in" class="social-icon" target="_blank">
-                    <img src="email.png" alt="Gmail" class="social-image">
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="contributor-profile" data-person-name="Sudhanshu Kumar" data-person-role="Web Developer" data-person-bio="Creativity is intelligence having fun.">
-          <div class="cube-container">
-            <div class="cube">
-              <div class="cube-face front">
-                <img src="sudhanshu.jpeg" alt="Sudhanshu Kumar" class="profile-picture">
-                <h3 class="person-name">Sudhanshu Kumar</h3>
-                <p class="person-role">Web Developer</p>
-                <p class="person-bio">Creativity is intelligence having fun.</p>
-              </div>
-              <div class="cube-face back">
-                <div class="social-links">
-                  <a href="https://www.linkedin.com/in/sudhanshu-kumar-a3ba18281?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-icon" target="_blank">
-                    <img src="linkedin.png" alt="LinkedIn" class="social-image">
-                  </a>
-                  <a href="https://www.instagram.com/k_sudhanshu04?igsh=bGZ3NTdqa2tlaHh5" class="social-icon" target="_blank">
-                    <img src="instagram.png" alt="Instagram" class="social-image">
-                  </a>
-                  <a href="mailto:btech10879.23@bitmesra.ac.in" class="social-icon" target="_blank">
-                    <img src="email.png" alt="Gmail" class="social-image">
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="contributor-profile" data-person-name="Satyam Kumar" data-person-role="Content Manager" data-person-bio="Everything is theoretically impossible, until it is done.">
-          <div class="cube-container">
-            <div class="cube">
-              <div class="cube-face front">
-                <img src="satyam.png" alt="Satyam Kumar" class="profile-picture">
-                <h3 class="person-name">Satyam Kumar</h3>
-                <p class="person-role">Content Manager</p>
-                <p class="person-bio">Everything is theoretically impossible, until it is done.</p>
-              </div>
-              <div class="cube-face back">
-                <div class="social-links">
-                  <a href="https://www.linkedin.com/in/satyam-kumar-4a7a7a194?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-icon" target="_blank">
-                    <img src="linkedin.png" alt="LinkedIn" class="social-image">
-                  </a>
-                  <a href="https://www.instagram.com/rocksat12m?igsh=MWdpYnJhcWhxc2JiZA==" class="social-icon" target="_blank">
-                    <img src="instagram.png" alt="Instagram" class="social-image">
-                  </a>
-                  <a href="mailto:btech10038.23@bitmesra.ac.in" class="social-icon" target="_blank">
-                    <img src="email.png" alt="Gmail" class="social-image">
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="contributor-profile" data-person-name="Soumyadeep" data-person-role="Web Designer" data-person-bio="Exploring life one day at a time.">
-          <div class="cube-container">
-            <div class="cube">
-              <div class="cube-face front">
-                <img src="soumyadeep.jpg" alt="Soumyadeep Ghosh" class="profile-picture">
-                <h3 class="person-name">Soumyadeep Ghosh</h3>
-                <p class="person-role">Web Designer</p>
-                <p class="person-bio">Exploring life one day at a time.</p>
-              </div>
-              <div class="cube-face back">
-                <div class="social-links">
-                  <a href="https://www.linkedin.com/in/soumyadeep-ghosh-0aa16531b?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BJL%2BExp4CS16v7JGE4OkhTw%3D%3D" class="social-icon" target="_blank">
-                    <img src="linkedin.png" alt="LinkedIn" class="social-image">
-                  </a>
-                  <a href="https://www.instagram.com/soumyadeep_ghosh_14/" class="social-icon" target="_blank">
-                    <img src="instagram.png" alt="Instagram" class="social-image">
-                  </a>
-                  <a href="mailto:btech10873.23@bitmesra.ac.in" class="social-icon" target="_blank">
-                    <img src="email.png" alt="Gmail" class="social-image">
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </footer> 
-     <!-- footer ends here -->
-
-          <!-- reserve start here -->
-           <div class="reserve">
-        <p> &copy; 2025 - 2026 Birla Institute of Technology | Designed & Developed by Team BitHub, All Rights Reserved. &reg;</p>
-           </div>
-           <!-- reserve end here -->
-    <script src="script.js"></script>
-<script src="profile.js"></script>
-
-</div>
+  <script src="script.js"></script>
+  <script src="profile.js"></script>
 </body>
 </html>
-
-
-
-

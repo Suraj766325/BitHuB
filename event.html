@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1440, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BitHuB - Event</title>
     <link rel="icon" href="bit2.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="card.css">
      <!-- Google tag start here -->
@@ -29,7 +29,7 @@
     <nav>
         <div class="logo1"><img src="bit2.png" alt=""></div>
         <div class="logo"><b class="bithub1">BitHuB</b></div>
-        <ul style="padding-top: 8px;" class="nav-links">
+        <ul class="nav-links">
             <li><a href="index.html">Home</a></li>                
             <li><a href="syllabus.html">Syllabus</a></li>
             <li><a href="clubs.html">Clubs</a></li>
@@ -38,52 +38,25 @@
             <li><a href="feedback.html">FeedBack</a></li> 
             <li><a href="bit.html">BIT</a></li>  
           </ul>
-        <div class="menu-toggle" id="menu-toggle">&#9776;</div>
+        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation">&#9776;</button>
     </nav>
 </header>
 <!-- nav bar ends here -->
 
-      <!-- background starts here -->
-
       <!-- Trends card placed below the header for clean layout -->
-      <div class="trends-wrapper" style="margin-top:84px;display:flex;justify-content:center;">
-        <div class="trends-card" style="width:min(980px,94%);">
-          <div class="trends-card-inner">
-            <h3 class="trends-title">Hot : In demand subjects</h3>
-            <div id="trends-list" aria-live="polite" style="margin-top:12px"></div>
-            <div class="trends-note">Updated live from BitHub Headquarters [ BHQ Server id : 19326 ] </div>
+      <div class="trends-wrapper" style="margin-top:24px;display:flex;justify-content:center;padding:0 var(--space-8);">
+        <div class="trends-card-shell" style="width:min(980px,100%);border:1px solid var(--border);background:var(--bg-surface);">
+          <div class="trends-card-header">
+            <h3 class="trends-card-title">Live Analytics</h3>
+            <div class="trends-live-badge"><span class="trends-live-dot"></span>Live</div>
+          </div>
+          <div class="trends-card-body" style="position:relative;padding:var(--space-6) var(--space-8);">
+            <h4 style="margin:0 0 16px;font-size:12px;font-weight:600;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.04em;">Hot: In demand subjects</h4>
+            <div id="trends-list" aria-live="polite" style="position:relative;min-height:280px;"></div>
+            <div class="trends-note" style="margin-top:16px;font-size:11px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:-0.01em;">Updated live from BitHub Headquarters [ BHQ Server id : 19326 ]</div>
           </div>
         </div>
       </div>
-
-<style>
-  /* Simple, professional card matching poll modal style */
-  .trends-card { border-radius:12px; box-shadow:0 12px 30px rgba(2,6,23,0.5); overflow:hidden; }
-  .trends-card-inner { background: linear-gradient(180deg,#05050a 0%, #0a0320 100%); padding:20px; color:#eef1f8; border:1px solid rgba(255,255,255,0.03); }
-  .trends-title { margin:0; font-size:1.2rem; font-weight:700; color:#f6f7fb; }
-  .trends-note { margin-top:10px; font-size:12px; color:#bcdbe4; }
-
-  .trend-row { display:flex; align-items:center; gap:14px; padding:10px 8px; border-radius:8px; background:transparent; }
-  .trend-rank { width:36px; height:36px; border-radius:8px; background:rgba(255,255,255,0.03); display:flex; align-items:center; justify-content:center; font-weight:700; color:#e6eef3; }
-  .trend-body { flex:1; }
-  .trend-subject { font-weight:600; color:#eaf0f5; margin:0; }
-  .trend-bar { height:10px; background:rgba(255,255,255,0.03); border-radius:6px; margin-top:6px; overflow:hidden; }
-  .trend-fill { height:100%; background:rgba(0,212,255,0.12); border-radius:6px; }
-  .trend-count { width:56px; text-align:right; font-weight:600; color:#cfeff7; }
-
-  /* responsive spacing */
-  @media (max-width:720px){ .trends-card-inner { padding:14px; } .trend-rank{width:32px;height:32px;} .trend-count{width:48px;} }
-</style>
-
-<style>
-  /* loader used while fetching trends */
-  .trends-loader { display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 0;color:#cfeff8 }
-  .trends-loader .dots { display:flex;gap:8px;margin-top:8px }
-  .trends-loader .dot { width:10px;height:10px;border-radius:50%;background:#00d4ff;opacity:0.15;animation:dotPulse 1s infinite ease-in-out; }
-  .trends-loader .dot:nth-child(2){ animation-delay:0.15s }
-  .trends-loader .dot:nth-child(3){ animation-delay:0.3s }
-  @keyframes dotPulse { 0%{opacity:0.15;transform:translateY(0)}50%{opacity:1;transform:translateY(-6px)}100%{opacity:0.15;transform:translateY(0)} }
-</style>
 
 <script>
 (function(){
@@ -93,11 +66,11 @@
   async function fetchTrends(){
     try{
       // show loader
-      widget.innerHTML = '<div class="trends-loader"><div>Loading trends</div><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
+      widget.innerHTML = '<div class="trends-loader"><div>Loading data</div><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
       const res = await fetch(scriptUrl);
       const obj = await res.json();
       renderChart(obj.results || []);
-    }catch(e){ widget.innerHTML = '<div style="color:#ffb3b3">Unable to load trends.</div>'; console.error(e); }
+    }catch(e){ widget.innerHTML = '<div style="color:#555;font-size:11px;padding:16px;letter-spacing:0.04em;text-transform:uppercase;">Unable to load data.</div>'; console.error(e); }
   }
 
   function createSVG(tag, attrs){
@@ -108,127 +81,109 @@
 
   function renderChart(items){
     widget.innerHTML = '';
-    if (!items.length){ widget.innerHTML = '<div style="color:#cfeef8">No activity in the last 12 hours.</div>'; return; }
+    if (!items.length){ widget.innerHTML = '<div style="color:#555;font-size:11px;padding:16px;letter-spacing:0.04em;text-transform:uppercase;">No activity in the last 12 hours.</div>'; return; }
 
     // chart dimensions
-    const padding = { top: 28, right: 24, bottom: 84, left: 64 };
+    const padding = { top: 24, right: 20, bottom: 72, left: 56 };
     const parentWidth = Math.max(360, widget.parentElement.clientWidth || 920);
-    const containerH = 360;
+    const containerH = 320;
 
-    // compute bar geometry based on number of items; ensure bars auto-scale
     const barCount = items.length;
-    const gap = Math.max(8, Math.round(parentWidth * 0.01)); // small responsive gap
-    // initial available width inside a default max container
+    const gap = Math.max(6, Math.round(parentWidth * 0.008));
     const defaultInnerW = Math.max(300, parentWidth - padding.left - padding.right);
     let barWidth = Math.floor((defaultInnerW - (barCount + 1) * gap) / barCount);
-    const minBarWidth = 24;
-    const maxBarWidth = 140;
+    const minBarWidth = 20;
+    const maxBarWidth = 120;
     if (barWidth > maxBarWidth) barWidth = maxBarWidth;
     if (barWidth < minBarWidth) barWidth = minBarWidth;
 
-    // required inner width to fit all bars at computed width
     const requiredInnerW = (barCount * barWidth) + ((barCount + 1) * gap);
-    // final svg/container width will be either parent-constrained or expanded to required width
     const containerW = padding.left + padding.right + Math.max(defaultInnerW, requiredInnerW);
     const width = containerW - padding.left - padding.right;
     const height = containerH - padding.top - padding.bottom;
 
-    const svg = createSVG('svg', { width: containerW, height: containerH, viewBox: `0 0 ${containerW} ${containerH}`, role: 'img', 'aria-label': 'Trending subjects bar chart' });
+    const svg = createSVG('svg', { width: containerW, height: containerH, viewBox: `0 0 ${containerW} ${containerH}`, role: 'img', 'aria-label': 'Trending subjects' });
 
-    // title (already present visually) but include accessible title element
     const title = createSVG('title', {});
     title.textContent = 'Hot : In demand subjects — last 12 hours';
     svg.appendChild(title);
 
-    // compute scales and nice max for y-axis
     const maxClicks = Math.max(...items.map(i=>i.clicks));
     function niceCeil(v){
       if (v <= 5) return 5;
       if (v <= 10) return Math.ceil(v/5)*5;
       if (v <= 50) return Math.ceil(v/10)*10;
       if (v <= 200) return Math.ceil(v/20)*20;
-      if (v <= 1000) return Math.ceil(v/50)*50;
       var p = Math.pow(10, Math.floor(Math.log10(v)));
       return Math.ceil(v / p) * p;
     }
     const yMax = Math.max(1, niceCeil(maxClicks));
-    const ticks = 5;
+    const ticks = 4;
 
-    // axes group
     const g = createSVG('g', { transform: `translate(${padding.left},${padding.top})` });
 
     // Y axis lines and labels
     for (let t = 0; t <= ticks; t++){
       const yVal = yMax * (t / ticks);
       const y = height - (yVal / yMax) * height;
-      // grid line
-      const line = createSVG('line', { x1: 0, y1: y, x2: width, y2: y, stroke: 'rgba(255,255,255,0.04)', 'stroke-width': 1 });
+      const line = createSVG('line', { x1: 0, y1: y, x2: width, y2: y, stroke: '#1e1e1e', 'stroke-width': 1 });
       g.appendChild(line);
-      // label
-      const lbl = createSVG('text', { x: -12, y: y + 4, 'text-anchor': 'end', 'font-size': 12, fill: '#cfeff7' });
+      const lbl = createSVG('text', { x: -10, y: y + 4, 'text-anchor': 'end', 'font-size': 10, fill: '#444', 'font-family': 'Inter, sans-serif' });
       lbl.textContent = String(Math.round(yVal));
       g.appendChild(lbl);
     }
 
-    // X axis - vertical baseline
+    // X axis line
     const xAxisY = height;
-    const xAxisLine = createSVG('line', { x1: 0, y1: xAxisY, x2: width, y2: xAxisY, stroke: 'rgba(255,255,255,0.06)', 'stroke-width': 1.5 });
+    const xAxisLine = createSVG('line', { x1: 0, y1: xAxisY, x2: width, y2: xAxisY, stroke: '#222', 'stroke-width': 1 });
     g.appendChild(xAxisLine);
 
     // bars
-    // compute x positions using gap and barWidth
-    const barGap = gap;
     function shortLabel(s){
       const ss = String(s || '');
-      if (ss.indexOf('Environmental') !== -1) return 'Evs';
-      if (ss.indexOf('Chemistry Lab') !== -1) return 'Che Lab';
+      if (ss.indexOf('Environmental') !== -1) return 'EVS';
+      if (ss.indexOf('Chemistry Lab') !== -1) return 'Chem Lab';
       if (ss.indexOf('Physics Lab') !== -1) return 'Phy Lab';
-      if (ss.indexOf('Communication') !== -1) return 'Com. Skl.';
+      if (ss.indexOf('Communication') !== -1) return 'Comm.';
+      if (ss.indexOf('Biology') !== -1) return 'Bio';
       return ss;
     }
     items.forEach((it, i) => {
-      const x = barGap + i * (barWidth + barGap);
+      const x = gap + i * (barWidth + gap);
       const h = (it.clicks / yMax) * height;
       const y = height - h;
 
-      // bar rect
-      const rect = createSVG('rect', { x: x, y: y, width: barWidth, height: Math.max(2,h), fill: 'rgba(0,212,255,0.18)', rx: 3, ry: 3 });
+      const rect = createSVG('rect', { x: x, y: y, width: barWidth, height: Math.max(1,h), fill: '#2a2a2a', rx: 0, ry: 0 });
       g.appendChild(rect);
 
-      // count label above bar
-      const countLabel = createSVG('text', { x: x + barWidth/2, y: y - 6, 'text-anchor': 'middle', 'font-size': 12, fill: '#eaf0f5' });
+      // accent top
+      const topLine = createSVG('rect', { x: x, y: y, width: barWidth, height: 2, fill: '#4a90d9', rx: 0, ry: 0 });
+      g.appendChild(topLine);
+
+      const countLabel = createSVG('text', { x: x + barWidth/2, y: y - 6, 'text-anchor': 'middle', 'font-size': 10, fill: '#666', 'font-family': 'Inter, sans-serif', 'font-weight': '600' });
       countLabel.textContent = it.clicks;
       g.appendChild(countLabel);
 
-      // x-axis label (subject) - use short label for chart display only
       const raw = shortLabel(it.subject);
-      const subj = raw.length > 18 ? raw.slice(0,18) + '…' : raw;
-      const xLabel = createSVG('text', { x: x + barWidth/2, y: xAxisY + 18, 'text-anchor': 'middle', 'font-size': 12, fill: '#bcdbe4' });
+      const subj = raw.length > 14 ? raw.slice(0,14) + '…' : raw;
+      const xLabel = createSVG('text', { x: x + barWidth/2, y: xAxisY + 16, 'text-anchor': 'middle', 'font-size': 10, fill: '#444', 'font-family': 'Inter, sans-serif' });
       xLabel.textContent = subj;
       g.appendChild(xLabel);
     });
 
-    // Y axis label (rotated)
-    const yLabel = createSVG('text', { x: -padding.left + 12, y: height/2, transform: `rotate(-90 ${-padding.left+12} ${height/2})`, 'text-anchor': 'middle', 'font-size': 12, fill: '#bcdbe4' });
+    const yLabel = createSVG('text', { x: -padding.left + 10, y: height/2, transform: `rotate(-90 ${-padding.left+10} ${height/2})`, 'text-anchor': 'middle', 'font-size': 10, fill: '#444', 'font-family': 'Inter, sans-serif' });
     yLabel.textContent = 'Clicks';
     g.appendChild(yLabel);
 
-    // X axis label
-    const xLabelAxis = createSVG('text', { x: width/2, y: height + 48, 'text-anchor': 'middle', 'font-size': 12, fill: '#bcdbe4' });
-    xLabelAxis.textContent = 'Subjects';
-    g.appendChild(xLabelAxis);
-
     svg.appendChild(g);
-    // allow horizontal scroll when svg wider than container
     try {
       const wrap = widget.parentElement;
       wrap.style.overflowX = (containerW > widget.parentElement.clientWidth) ? 'auto' : '';
-      wrap.style.webkitOverflowScrolling = 'touch';
     } catch (e) {}
     widget.appendChild(svg);
   }
 
-  document.addEventListener('DOMContentLoaded', fetchTrends);
+  fetchTrends();
   setInterval(fetchTrends, 120000);
 })();
 </script>
@@ -243,143 +198,83 @@
       
 
   <!--footer starts here-->
-    <footer id="project-contributors-bar">
-      <div class="contributor-list-container">
-        <div class="contributor-profile" data-person-name="Suraj Kumar" data-person-role="Web Developer" data-person-bio="Passionate web developer with a love for creating.">
-          <div class="cube-container">
-            <div class="cube">
-              <div class="cube-face front">
-                <span class="founder-badge">Founder</span><img src="suraj.png" alt="Suraj Kumar" class="profile-picture">
-                <h3 class="person-name">Suraj Kumar</h3>
-                <p class="person-role">Web Developer</p>
-                <p class="person-bio">Passionate web developer with a love for creating.</p>
-              </div>
-              <div class="cube-face back">
-                <div class="social-links">
-                  <a href="https://www.linkedin.com/in/suraj-kumar-167a74300?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-icon" target="_blank">
-                    <img src="linkedin.png" alt="LinkedIn" class="social-image">
-                  </a>
-                  <a href="https://www.instagram.com/_suraj__agrawal__?igsh=MThzcnpldXZpa3ZwNg==" class="social-icon" target="_blank">
-                    <img src="instagram.png" alt="Instagram" class="social-image">
-                  </a>
-                  <a href="mailto:btech10884.23@bitmesra.ac.in" class="social-icon" target="_blank">
-                    <img src="email.png" alt="Gmail" class="social-image">
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="contributor-profile" data-person-name="Anurag Kumar Verma" data-person-role="Full-Stack Developer" data-person-bio="Exploring & Evolving">
-          <div class="cube-container">
-            <div class="cube">
-              <div class="cube-face front">
-                <span class="active-developer-badge">Active Developer</span><img src="Anurag.jpg" alt="Anurag Kumar Verma" class="profile-picture">
-                <h3 class="person-name">Anurag Kumar Verma</h3>
-                <p class="person-role">Full-Stack Developer</p>
-                <p class="person-bio">Exploring & Evolving</p>
-              </div>
-              <div class="cube-face back">
-                <div class="social-links">
-                  <a href="https://www.linkedin.com/in/imanuragkrverma/" class="social-icon" target="_blank">
-                    <img src="linkedin.png" alt="LinkedIn" class="social-image">
-                  </a>
-                  <a href="https://www.instagram.com/imanuragkrverma" class="social-icon" target="_blank">
-                    <img src="instagram.png" alt="Instagram" class="social-image">
-                  </a>
-                  <a href="mailto:btech10173.24@bitmesra.ac.in" class="social-icon" target="_blank">
-                    <img src="email.png" alt="Gmail" class="social-image">
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="contributor-profile" data-person-name="Sudhanshu Kumar" data-person-role="Web Developer" data-person-bio="Creativity is intelligence having fun.">
-          <div class="cube-container">
-            <div class="cube">
-              <div class="cube-face front">
-                <img src="sudhanshu.jpeg" alt="Sudhanshu Kumar" class="profile-picture">
-                <h3 class="person-name">Sudhanshu Kumar</h3>
-                <p class="person-role">Web Developer</p>
-                <p class="person-bio">Creativity is intelligence having fun.</p>
-              </div>
-              <div class="cube-face back">
-                <div class="social-links">
-                  <a href="https://www.linkedin.com/in/sudhanshu-kumar-a3ba18281?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-icon" target="_blank">
-                    <img src="linkedin.png" alt="LinkedIn" class="social-image">
-                  </a>
-                  <a href="https://www.instagram.com/k_sudhanshu04?igsh=bGZ3NTdqa2tlaHh5" class="social-icon" target="_blank">
-                    <img src="instagram.png" alt="Instagram" class="social-image">
-                  </a>
-                  <a href="mailto:btech10879.23@bitmesra.ac.in" class="social-icon" target="_blank">
-                    <img src="email.png" alt="Gmail" class="social-image">
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="contributor-profile" data-person-name="Satyam Kumar" data-person-role="Content Manager" data-person-bio="Everything is theoretically impossible, until it is done.">
-          <div class="cube-container">
-            <div class="cube">
-              <div class="cube-face front">
-                <img src="satyam.png" alt="Satyam Kumar" class="profile-picture">
-                <h3 class="person-name">Satyam Kumar</h3>
-                <p class="person-role">Content Manager</p>
-                <p class="person-bio">Everything is theoretically impossible, until it is done.</p>
-              </div>
-              <div class="cube-face back">
-                <div class="social-links">
-                  <a href="https://www.linkedin.com/in/satyam-kumar-4a7a7a194?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-icon" target="_blank">
-                    <img src="linkedin.png" alt="LinkedIn" class="social-image">
-                  </a>
-                  <a href="https://www.instagram.com/rocksat12m?igsh=MWdpYnJhcWhxc2JiZA==" class="social-icon" target="_blank">
-                    <img src="instagram.png" alt="Instagram" class="social-image">
-                  </a>
-                  <a href="mailto:btech10038.23@bitmesra.ac.in" class="social-icon" target="_blank">
-                    <img src="email.png" alt="Gmail" class="social-image">
-                  </a>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="contributor-profile" data-person-name="Soumyadeep" data-person-role="Web Designer" data-person-bio="Exploring life one day at a time.">
-          <div class="cube-container">
-            <div class="cube">
-              <div class="cube-face front">
-                <img src="soumyadeep.jpg" alt="Soumyadeep Ghosh" class="profile-picture">
-                <h3 class="person-name">Soumyadeep Ghosh</h3>
-                <p class="person-role">Web Designer</p>
-                <p class="person-bio">Exploring life one day at a time.</p>
-              </div>
-              <div class="cube-face back">
-                <div class="social-links">
-                  <a href="https://www.linkedin.com/in/soumyadeep-ghosh-0aa16531b?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BJL%2BExp4CS16v7JGE4OkhTw%3D%3D" class="social-icon" target="_blank">
-                    <img src="linkedin.png" alt="LinkedIn" class="social-image">
-                  </a>
-                  <a href="https://www.instagram.com/soumyadeep_ghosh_14/" class="social-icon" target="_blank">
-                    <img src="instagram.png" alt="Instagram" class="social-image">
-                  </a>
-                  <a href="mailto:btech10873.23@bitmesra.ac.in" class="social-icon" target="_blank">
-                    <img src="email.png" alt="Gmail" class="social-image">
-                  </a>
-                </div>
-              </div>
+      <footer id="project-contributors-bar">
+    <div class="contributors-header">
+      <span class="contributors-title">Team</span>
+      <span class="contributors-subtitle">BitHuB Contributors</span>
+    </div>
+
+    <div class="contributor-list-container">
+
+      <!-- Suraj Kumar -->
+      <div class="contributor-profile" tabindex="0">
+        <div class="contributor-inner">
+          <div class="contributor-front">
+            <span class="founder-badge">Founder</span>
+            <img src="suraj.png" alt="Suraj Kumar" class="profile-picture">
+            <p class="person-name">Suraj Kumar</p>
+            <p class="person-role">Web Developer</p>
+            <p class="person-bio">Passionate developer with a love for creating.</p>
+            <div class="social-links">
+              <a href="https://www.linkedin.com/in/suraj-kumar-167a74300?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-icon" target="_blank" aria-label="LinkedIn"><img src="linkedin.png" alt="LinkedIn" class="social-image"></a>
+              <a href="https://www.instagram.com/_suraj__agrawal__?igsh=MThzcnpldXZpa3ZwNg==" class="social-icon" target="_blank" aria-label="Instagram"><img src="instagram.png" alt="Instagram" class="social-image"></a>
+              <a href="mailto:btech10884.23@bitmesra.ac.in" class="social-icon" target="_blank" aria-label="Email"><img src="email.png" alt="Email" class="social-image"></a>
             </div>
           </div>
         </div>
       </div>
-    </footer> 
-     <!-- footer ends here -->
+
+      <!-- Anurag Kumar Verma -->
+      <div class="contributor-profile" tabindex="0">
+        <div class="contributor-inner">
+          <div class="contributor-front">
+            <span class="active-developer-badge">Active Dev</span>
+            <img src="Anurag.jpg" alt="Anurag Kumar Verma" class="profile-picture">
+            <p class="person-name">Anurag Kumar Verma</p>
+            <p class="person-role">Full-Stack Developer</p>
+            <p class="person-bio">Exploring &amp; Evolving</p>
+            <div class="social-links">
+              <a href="https://www.linkedin.com/in/imanuragkrverma/" class="social-icon" target="_blank" aria-label="LinkedIn"><img src="linkedin.png" alt="LinkedIn" class="social-image"></a>
+              <a href="https://www.instagram.com/imanuragkrverma" class="social-icon" target="_blank" aria-label="Instagram"><img src="instagram.png" alt="Instagram" class="social-image"></a>
+              <a href="mailto:btech10173.24@bitmesra.ac.in" class="social-icon" target="_blank" aria-label="Email"><img src="email.png" alt="Email" class="social-image"></a>
+            </div>
+          </div>
+        </div>
+      </div>
 
 
+      <!-- Satyam Kumar -->
+      <div class="contributor-profile" tabindex="0">
+        <div class="contributor-inner">
+          <div class="contributor-front">
+            <img src="satyam.png" alt="Satyam Kumar" class="profile-picture">
+            <p class="person-name">Satyam Kumar</p>
+            <p class="person-role">Content Manager</p>
+            <p class="person-bio">Everything impossible, until it's done.</p>
+            <div class="social-links">
+              <a href="https://www.linkedin.com/in/satyam-kumar-4a7a7a194?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-icon" target="_blank" aria-label="LinkedIn"><img src="linkedin.png" alt="LinkedIn" class="social-image"></a>
+              <a href="https://www.instagram.com/rocksat12m?igsh=MWdpYnJhcWhxc2JiZA==" class="social-icon" target="_blank" aria-label="Instagram"><img src="instagram.png" alt="Instagram" class="social-image"></a>
+              <a href="mailto:btech10038.23@bitmesra.ac.in" class="social-icon" target="_blank" aria-label="Email"><img src="email.png" alt="Email" class="social-image"></a>
+            </div>
+          </div>
+        </div>
+      </div>
 
-          <!-- reserve start here -->
-           <div class="reserve">
-        <p> &copy; 2025 - 2026 Birla Institute of Technology | Designed & Developed by Team BitHub, All Rights Reserved. &reg;</p>
-           </div>
+
+    </div>
+
+    <div class="update-details">
+      <div class="ud-title">Version Info</div>
+      <div class="ud-line"><span class="ud-key">By:</span><span class="ud-val">Anurag Kumar Verma</span></div>
+      <div class="ud-line"><span class="ud-key">Date:</span><span class="ud-val">05th June, 2026</span></div>
+      <div class="ud-line"><span class="ud-key">Content Updated:</span><span class="ud-val">N</span></div>
+      <div class="ud-line"><span class="ud-key">Software Updated:</span><span class="ud-val">Y</span></div>
+    </div>
+  </footer>
+
+  <div class="reserve">
+    <p>&copy; 2025&ndash;2026 Birla Institute of Technology &mdash; Designed &amp; Developed by Team BitHub. All Rights Reserved.</p>
+  </div>
            <!-- reserve end here -->
     <script src="script.js"></script>
 <script src="profile.js"></script>

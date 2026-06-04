@@ -1,265 +1,455 @@
+/* ============================================================
+   BitHuB — Feedback Page Styles
+   Professional Enterprise v4.0
+   ============================================================ */
+
 body {
-    font-family: 'Inter', sans-serif;
-    font-size: 18px;
-    line-height: 1.7;
-    color: #ffffff;
-    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
-    width: 100%;
-    min-height: 100vh;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #f0f0f0;
+  background: #0c0c0c;
+  min-height: 100vh;
+}
+
+/* ── Page Layout ──────────────────────────────────────────── */
+.feedback-page-wrapper {
+  min-height: 100vh;
+  padding-top: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Page Header — slim, flat ─────────────────────────────── */
+.feedback-hero {
+  padding: 40px 40px 32px;
+  border-bottom: 1px solid #1e1e1e;
+  background: #0c0c0c;
+}
+
+.feedback-eyebrow {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #444;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.feedback-hero h1 {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #f0f0f0;
+  margin-bottom: 6px;
+}
+
+.feedback-hero p {
+  font-size: 13px;
+  color: #555;
+  max-width: 52ch;
+  line-height: 1.6;
+}
+
+/* ── Form Layout ──────────────────────────────────────────── */
+.feedback-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  max-width: 720px;
+  margin: 0;
+  flex: 1;
 }
 
 #contact-section {
-    padding: 50px;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(26, 26, 46, 0.8) 100%);
-    border-radius: 15px;
-    box-shadow: 0 6px 12px rgba(0, 212, 255, 0.2);
-    animation: fade-in 1s ease-out;
-    border: 1px solid rgba(0, 212, 255, 0.3);
-    backdrop-filter: blur(10px);
+  background: #0c0c0c;
+  border: none;
+  border-right: 1px solid #1e1e1e;
+  border-radius: 0;
+  padding: 32px 40px 40px;
+  box-shadow: none;
+  backdrop-filter: none;
+  animation: none;
 }
 
-#form-container {
-    max-width: 600px;
-    margin: 0 auto;
-    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(26, 26, 46, 0.7) 100%);
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 6px 15px rgba(0, 212, 255, 0.2);
-    border: 1px solid rgba(0, 212, 255, 0.3);
-    backdrop-filter: blur(10px);
+#contact-section::before { display: none; }
+
+/* ── Form section labels ─────────────────────────────────── */
+.form-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #1e1e1e;
+  display: flex;
+  align-items: center;
 }
 
-.main_heading {
-    text-align: center;
-    font-size: 24px;
-    color: #ffffff;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-}
+.form-section-label::after { display: none; }
 
+/* ── Input Groups ────────────────────────────────────────── */
 .input-group {
-    margin-bottom: 20px;
-    display: flex;
-    align-items: flex-start;
+  margin-bottom: 16px;
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: start;
+  gap: 0;
+  border: 1px solid #1e1e1e;
+  border-bottom: none;
 }
+
+.input-group:last-of-type { border-bottom: 1px solid #1e1e1e; }
 
 .input-group label {
-    width: 140px;
-    padding-top: 10px;
-    text-align: left;
-    font-weight: 500;
-    color: #ffffff;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  padding: 11px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: #111;
+  border-right: 1px solid #1e1e1e;
+  min-height: 42px;
 }
 
-input, textarea {
-    flex-grow: 1;
-    padding: 12px;
-    border: 1px solid rgba(0, 212, 255, 0.3);
-    border-radius: 6px;
-    box-sizing: border-box;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    background: rgba(0, 0, 0, 0.5);
-    color: #ffffff;
-    backdrop-filter: blur(5px);
+/* ── Text Inputs ─────────────────────────────────────────── */
+input[type="text"],
+input:not([type="radio"]):not([type="submit"]):not([type="button"]) {
+  flex-grow: 1;
+  padding: 11px 14px;
+  border: none;
+  border-radius: 0;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 400;
+  transition: background 0.14s ease;
+  background: #0c0c0c;
+  color: #f0f0f0;
+  outline: none;
+  width: 100%;
 }
 
-input:focus, textarea:focus {
-    border-color: #00d4ff;
-    outline: none;
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-    background: rgba(0, 0, 0, 0.7);
+input[type="text"]::placeholder { color: #3a3a3a; }
+
+input[type="text"]:focus,
+input:not([type="radio"]):not([type="submit"]):not([type="button"]):focus {
+  background: #111;
+  outline: 1px solid #2a2a2a;
+  outline-offset: -1px;
 }
 
-textarea {
-    height: 140px;
-}
-
-#messageContainer {
-    /* let container size to content and only cap its max height */
-    min-height: 0;
-    max-height: 480px;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-}
-
-#prefixSpan {
-    user-select: none;
-    pointer-events: none;
-}
-
-/* Make the editable user area appear as plain text (no inner boxed input look) */
-#userSpan {
-    padding: 0;
-    margin: 0;
-    border: none !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    outline: none !important;
-    display: block;
-    width: 100%;
-    color: #ffffff;
-    min-height: 20px;
-}
-
-/* make user text wrap and allow the span to grow/shrink */
-#userSpan {
-    white-space: pre-wrap;
-    word-break: break-word;
-    flex: 0 1 auto;
-}
-
-/* Ensure caret is visible and text flows naturally */
-#userSpan:focus {
-    outline: none;
-}
-
-button {
-    background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
-    color: #ffffff;
-    padding: 14px 24px;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    margin-top: 20px;
-    font-size: 17px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.4);
-    position: relative;
-    overflow: hidden;
-    text-align: center;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
-}
-
-button::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.2);
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-button:hover::before {
-    opacity: 1;
-}
-
-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(0, 212, 255, 0.6);
-    background: linear-gradient(135deg, #33e0ff 0%, #00ccff 100%);
-}
-
-#form-response {
-    margin-top: 20px;
-    font-size: 16px;
-    color: #00d4ff;
-    text-align: center;
-    padding: 15px;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 212, 255, 0.2);
-    border: 1px solid rgba(0, 212, 255, 0.3);
-    backdrop-filter: blur(5px);
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
-}
-
-/* Radio button styling */
-input[type="radio"] {
-    accent-color: #00d4ff;
-    margin-right: 5px;
-}
-
-input[type="radio"] + label {
-    color: #ffffff;
-    margin-right: 15px;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.9);
-    cursor: pointer;
-}
-
-input[type="radio"] + label:hover {
-    color: #00d4ff;
-}
-
+/* ── Roll Input ──────────────────────────────────────────── */
 .roll-input-container {
-    display: flex;
-    align-items: center;
-    flex-grow: 1;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(0, 212, 255, 0.3);
-    border-radius: 6px;
-    backdrop-filter: blur(5px);
-    overflow: hidden;
-    transition: all 0.3s ease;
+  display: flex;
+  align-items: stretch;
+  flex-grow: 1;
+  background: #0c0c0c;
+  border: none;
+  overflow: visible;
+  position: relative;
 }
+
+.roll-input-container:focus-within { background: #111; }
 
 .roll-prefix, .roll-suffix {
-    color: #ffffff;
-    font-size: 16px;
-    padding: 12px;
-    background: transparent;
-    border: none;
-    margin: 0;
+  color: #3a3a3a;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 11px 12px;
+  background: #111;
+  border: none;
+  border-right: 1px solid #1e1e1e;
+  white-space: nowrap;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.roll-suffix {
+  border-right: none;
+  border-left: 1px solid #1e1e1e;
 }
 
 .roll-input-container select {
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    color: #ffffff;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    cursor: pointer;
+  background: #111;
+  border: none;
+  border-right: 1px solid #1e1e1e;
+  color: #888;
+  padding: 11px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.14s;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
-.roll-input-container select:focus {
-    background: rgba(0, 212, 255, 0.1);
-    box-shadow: inset 0 0 5px rgba(0, 212, 255, 0.5);
+.roll-input-container select:focus { background: #161616; }
+.roll-input-container select option { background: #111; color: #f0f0f0; }
+
+.roll-input-container input[type="text"] {
+  border: none !important;
+  background: transparent !important;
+  padding: 11px 10px;
+  flex: 1;
+  min-width: 0;
 }
 
-.roll-input-container select option {
-    background: rgba(0, 0, 0, 0.8);
-    color: #ffffff;
-}
-
+/* ── Recipient Select ────────────────────────────────────── */
 .recipient-input-container {
-    display: flex;
-    align-items: center;
-    width: 50ch;
-    background: rgba(0, 0, 0, 0.5);
-    border: 1px solid rgba(0, 212, 255, 0.3);
-    border-radius: 6px;
-    backdrop-filter: blur(5px);
-    overflow: hidden;
-    transition: all 0.3s ease;
+  display: flex;
+  align-items: stretch;
+  flex-grow: 1;
+  background: #0c0c0c;
+  border: none;
+  position: relative;
 }
+
+.recipient-input-container::after {
+  content: '▾';
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #333;
+  font-size: 11px;
+  pointer-events: none;
+}
+
+.recipient-input-container:focus-within { background: #111; }
 
 .recipient-input-container select {
-    background: transparent;
-    border: none;
-    border-radius: 0;
-    color: #ffffff;
-    padding: 12px;
-    font-size: 16px;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    width: 100%;
+  background: transparent;
+  border: none;
+  color: #f0f0f0;
+  padding: 11px 32px 11px 14px;
+  font-size: 13px;
+  font-weight: 400;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  outline: none;
+  width: 100%;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
-.recipient-input-container select:focus {
-    background: rgba(0, 212, 255, 0.1);
-    box-shadow: inset 0 0 5px rgba(0, 212, 255, 0.5);
+.recipient-input-container select option { background: #111; color: #f0f0f0; }
+
+/* ── Mood Pills — flat toggle ────────────────────────────── */
+.feedback-mood-group {
+  margin-bottom: 20px;
+  border: 1px solid #1e1e1e;
+  padding: 14px 16px;
+  background: #0c0c0c;
 }
 
-.recipient-input-container select option {
-    background: rgba(0, 0, 0, 0.8);
-    color: #ffffff;
+.feedback-mood-label-text {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.mood-pills {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mood-pills input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 0; height: 0;
+}
+
+.mood-pill-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border: 1px solid #222;
+  background: #111;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition: all 0.14s ease;
+  user-select: none;
+}
+
+.mood-pill-label:hover { border-color: #3a3a3a; color: #999; background: #161616; }
+
+.mood-pill-label .pill-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: #333;
+  transition: all 0.14s ease;
+}
+
+.mood-pill-label:hover .pill-dot {
+  background: #555;
+}
+
+.mood-pills input[value="Positive"]:checked + .mood-pill-label {
+  background: rgba(76, 175, 128, 0.08);
+  border-color: rgba(76, 175, 128, 0.35);
+  color: #4caf80;
+}
+.mood-pills input[value="Positive"]:checked + .mood-pill-label .pill-dot {
+  background: #4caf80;
+}
+
+.mood-pills input[value="Negative"]:checked + .mood-pill-label {
+  background: rgba(224, 82, 82, 0.08);
+  border-color: rgba(224, 82, 82, 0.35);
+  color: #e05252;
+}
+.mood-pills input[value="Negative"]:checked + .mood-pill-label .pill-dot {
+  background: #e05252;
+}
+
+.mood-pills input[value="Neutral"]:checked + .mood-pill-label {
+  background: rgba(212, 145, 58, 0.08);
+  border-color: rgba(212, 145, 58, 0.35);
+  color: #d4913a;
+}
+.mood-pills input[value="Neutral"]:checked + .mood-pill-label .pill-dot {
+  background: #d4913a;
+}
+
+/* ── Message container ───────────────────────────────────── */
+#messageContainer {
+  border: 1px solid #1e1e1e;
+  border-top: none;
+  font-size: 13px;
+  line-height: 1.65;
+  padding: 14px 16px;
+  background: #0c0c0c;
+  color: #f0f0f0;
+  min-height: 160px;
+  outline: none;
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  transition: background 0.14s;
+}
+
+#messageContainer:focus-within { background: #0f0f0f; }
+
+.message-input-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #3a3a3a;
+  display: block;
+  padding: 10px 16px;
+  border: 1px solid #1e1e1e;
+  background: #111;
+  border-bottom: none;
+}
+
+#prefixSpan {
+  user-select: none;
+  pointer-events: none;
+  color: #333;
+  font-size: 12px;
+  display: block;
+}
+
+#userSpan {
+  padding: 0; margin: 0;
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: none !important;
+  display: block;
+  width: 100%;
+  color: #f0f0f0;
+  min-height: 80px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 13px;
+  font-family: 'Inter', sans-serif;
+  flex: 1;
+}
+
+#userSpan:focus { outline: none; }
+
+/* ── Note ───────────────────────────────────────────────── */
+.form-note {
+  font-size: 11px;
+  color: #333;
+  margin: 16px 0 20px;
+  line-height: 1.6;
+  padding: 0;
+}
+
+/* ── Submit Button — flat enterprise CTA ────────────────── */
+.submit-btn-wrap { text-align: left; }
+
+button[type="submit"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 24px;
+  background: #f0f0f0;
+  color: #0c0c0c;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background 0.14s ease, color 0.14s ease;
+  position: relative;
+}
+
+button[type="submit"]:hover {
+  background: #cccccc;
+}
+
+button[type="submit"]:active {
+  background: #aaaaaa;
+}
+
+/* ── Response Message ────────────────────────────────────── */
+#responseMessage {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4caf80;
+  padding: 10px 14px;
+  margin-top: 16px;
+  border: 1px solid rgba(76, 175, 128, 0.2);
+  background: rgba(76, 175, 128, 0.06);
+  letter-spacing: 0.02em;
+  display: none;
+}
+
+#responseMessage:not(:empty) { display: block; }
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .feedback-hero { padding: 28px 20px 24px; }
+  #contact-section { padding: 24px 20px 28px; }
+  .input-group { grid-template-columns: 1fr; }
+  .input-group label { border-right: none; border-bottom: 1px solid #1e1e1e; }
+  button[type="submit"] { width: 100%; }
 }
