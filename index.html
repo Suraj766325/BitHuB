@@ -1,773 +1,507 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=1440, user-scalable=yes">
-    <title>BitHuB - Home</title>
-    <link rel="icon" href="bit2.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="card.css">
-    <style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-        .poll-option:hover {
-            transform: scale(1.05);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.4);
-        }
-        .sparks {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-        }
-        .spark {
-            position: absolute;
-            width: 2px;
-            height: 10px;
-            border-radius: 1px;
-            animation: lightning 2s infinite ease-out;
-        }
-        .spark.red {
-            background: linear-gradient(to bottom, #8b0000, #daa520);
-            box-shadow: 0 0 20px #8b0000, 0 0 40px #8b0000;
-        }
-        .spark.blue {
-            background: linear-gradient(to bottom, #00008b, #000000);
-            box-shadow: 0 0 20px #00008b, 0 0 40px #00008b;
-        }
-        @keyframes lightning {
-            0% {
-                opacity: 0;
-                transform: scaleY(0) rotate(0deg);
-                height: 10px;
-            }
-            10% {
-                opacity: 1;
-                transform: scaleY(1) rotate(45deg);
-                height: 10px;
-            }
-            50% {
-                opacity: 1;
-                transform: scaleY(2) rotate(45deg);
-                height: 50px;
-            }
-            100% {
-                opacity: 0;
-                transform: scaleY(0) rotate(45deg) translateX(300px) translateY(-200px);
-                height: 10px;
-            }
-        }
-    
-      /* Professional poll modal styles */
-      #poll-modal { display: none; position: fixed; inset: 0; z-index: 1000; justify-content: center; align-items: center; font-family: 'Inter', sans-serif; }
-      #poll-modal .poll-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); pointer-events: none; }
-      /* Larger, responsive poll modal */
-      .poll-card {
-        position: relative;
-        width: min(1100px, 96%);
-        max-width: 1100px;
-        background: linear-gradient(180deg,#05050a 0%, #0a0320 100%);
-        padding: 28px;
-        border-radius: 12px;
-        box-shadow: 0 12px 30px rgba(0,0,0,0.6);
-        border: 1px solid rgba(255,255,255,0.03);
-        color: #eef1f8;
-        z-index: 2;
-        display: flex;
-        gap: 20px;
-        align-items: center;
-        box-sizing: border-box;
-      }
-      .poll-card::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        border-radius: 12px;
-        pointer-events: none;
-        background-image: radial-gradient(circle at 10% 10%, rgba(142,68,173,0.06), transparent 8%), repeating-linear-gradient(45deg, rgba(255,255,255,0.01) 0 1px, transparent 1px 8px);
-        mix-blend-mode: overlay;
-        opacity: 0.6;
-      }
-      .poll-card h2 { margin: 0 0 8px 0; font-size: clamp(1.25rem, 2.0vw, 1.75rem); font-weight: 700; color: #f6f7fb; letter-spacing: 0.2px; }
-      .poll-desc { margin: 0 0 12px 0; color: #c7d0e0; font-size: clamp(0.95rem, 1.4vw, 1.05rem); max-width: 60ch; }
-      /* Layout the options to take remaining space and scale */
-      .poll-options { display: flex; gap: 12px; justify-content: space-between; flex-wrap: nowrap; flex: 1 1 auto; }
-      .poll-option {
-        background: transparent;
-        color: #eef1f8;
-        border: 1px dotted rgba(142,68,173,0.25);
-        padding: clamp(10px, 1.4vw, 16px) clamp(14px, 2vw, 22px);
-        border-radius: 10px;
-        min-width: 120px;
-        cursor: pointer;
-        font-weight: 600;
-        transition: transform .12s ease, background .12s ease, border-color .12s ease;
-        flex: 1 1 0;
-        text-align: center;
-      }
-      .poll-option:hover { transform: translateY(-4px) scale(1.02); background: rgba(142,68,173,0.08); border-color: rgba(142,68,173,0.45); }
-      .poll-close { position: absolute; right: 12px; top: 10px; background: transparent; border: none; color: #cfd8e3; font-size: 20px; cursor: pointer; padding: 6px; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="BitHuB — Student welfare portal for Birla Institute of Technology, Mesra. Syllabus, events, clubs, transport and more.">
+  <title>BitHuB — Student Portal | BIT Mesra</title>
+  <link rel="icon" href="bit2.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="card.css">
 
-      /* On small screens stack content and allow wrapping of options */
-      @media (max-width: 720px) {
-        .poll-card { flex-direction: column; padding: 18px; width: min(92%, 640px); }
-        .poll-options { flex-wrap: wrap; justify-content: center; gap: 10px; }
-        .poll-option { min-width: 110px; flex: 0 1 auto; }
-      }
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-FTVZQ3QK4Z"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-FTVZQ3QK4Z');
+  </script>
 
-          /* Update details shown as a compact slanted stamp anchored to footer bottom-right */
-          footer#project-contributors-bar { position: relative; }
-          .update-details {
-            display: inline-block;
-            position: absolute;
-            right: 18px;
-            bottom: 18px;
-            transform: rotate(-6deg) scale(0.96);
-            transform-origin: center;
-            padding: 6px 10px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
-            border: 1px solid rgba(0,212,255,0.07);
-            border-radius: 6px;
-            color: #cfeff6;
-            font-size: 11px;
-            line-height: 1.08;
-            max-width: 320px;
-            white-space: normal;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.45);
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            transition: transform .18s cubic-bezier(.2,.9,.2,1), box-shadow .18s ease;
-            text-align: left;
-            z-index: 4;
-          }
+  <style>
+    /* ── Poll Modal — clean black ─────────────────────── */
+    body { animation: none !important; }
 
-          .update-details .ud-title {
-            font-weight: 800;
-            color: #e8ffff;
-            font-size: 11px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-          }
+    #poll-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Inter', sans-serif;
+    }
 
-          .update-details .ud-line { font-size: 11px; color: #bfeef4; }
-          .update-details .ud-key { color: #9fe5ef; font-weight: 600; margin-right: 6px; }
-          .update-details .ud-val { color: #eafefe; font-weight: 500; }
+    .poll-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+    }
 
-          /* Stamp decorative layers */
-          .update-details::before{
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 5px;
-            border: 1.5px dashed rgba(159,229,239,0.12);
-            transform: translate(-2px,2px);
-            pointer-events: none;
-            z-index: 0;
-          }
-          .update-details::after{
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 5px;
-            background: repeating-linear-gradient(135deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 6px);
-            opacity: 0.12;
-            pointer-events: none;
-            mix-blend-mode: overlay;
-            z-index: 1;
-          }
-          .update-details > * { position: relative; z-index: 2; }
+    .poll-card {
+      position: relative;
+      width: min(520px, 94vw);
+      background: #0e0e16;
+      border: 1px solid rgba(107,156,247,0.18);
+      border-radius: 14px;
+      padding: 32px 28px 28px;
+      z-index: 2;
+      animation: modalIn 0.25s cubic-bezier(0.22,1,0.36,1) both;
+      box-shadow:
+        0 0 0 1px rgba(107,156,247,0.08),
+        0 24px 64px rgba(0,0,0,0.6),
+        0 0 80px rgba(107,156,247,0.06);
+    }
 
-          .update-details:hover{ transform: rotate(-8deg) scale(0.985); box-shadow: 0 12px 22px rgba(0,0,0,0.55); }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(-16px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0)   scale(1); }
+    }
 
-          @media (max-width: 900px) {
-            .update-details { display: none; }
-          }
-          @media (max-width: 1200px) {
-            .update-details { transform: rotate(-5deg) scale(0.94); max-width: 260px; }
-            .update-details .ud-line { font-size: 10px; }
-          }
-      </style>
-      <!-- Home entrance animation: used on initial load and when Home is clicked -->
-      <style>
-        /* disable the global page fade for this page (we'll run a more compact entrance) */
-        body { animation: none !important; }
+    /* Top shimmer accent */
+    .poll-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 16px; right: 16px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(107,156,247,0.6), rgba(167,139,250,0.6), transparent);
+      border-radius: 0 0 2px 2px;
+    }
 
-        @keyframes homePop {
-          0% { opacity: 0; transform: translateY(10px) scale(0.995); }
-          60% { opacity: 1; transform: translateY(-6px) scale(1.02); }
-          100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
+    .poll-close {
+      position: absolute;
+      top: 14px; right: 14px;
+      width: 28px; height: 28px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      color: #5a5a78;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s ease;
+      line-height: 1;
+      padding: 0;
+    }
 
-        .home-entrance {
-          animation: homePop 620ms cubic-bezier(.2,.9,.2,1) both;
-          will-change: transform, opacity;
-        }
-      </style>
-     <!-- Google tag start here -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-FTVZQ3QK4Z"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    .poll-close:hover {
+      border-color: rgba(107,156,247,0.3);
+      color: #f0f0fa;
+      background: rgba(107,156,247,0.1);
+      box-shadow: 0 0 10px rgba(107,156,247,0.15);
+    }
 
-  gtag('config', 'G-FTVZQ3QK4Z');
-</script>
-    <!-- Google tag end here -->
+    .poll-eyebrow {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: #6b9cf7;
+      margin-bottom: 10px;
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+    }
+
+    .poll-card h2 {
+      font-family: 'Space Grotesk', 'Inter', sans-serif;
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #f0f0fa;
+      margin: 0 0 6px 0;
+    }
+
+    .poll-desc {
+      font-size: 12px;
+      color: #5a5a78;
+      margin: 0 0 24px 0;
+      line-height: 1.55;
+    }
+
+    .poll-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .poll-option {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      padding: 18px 8px 16px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 7px;
+      font-family: 'Inter', sans-serif;
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .poll-option:hover { transform: translateY(-2px); }
+
+    .poll-option[data-response="Sad"]:hover {
+      border-color: rgba(248,113,113,0.4);
+      background: rgba(248,113,113,0.06);
+      box-shadow: 0 8px 24px rgba(248,113,113,0.12);
+    }
+    .poll-option[data-response="Neutral"]:hover {
+      border-color: rgba(251,191,36,0.4);
+      background: rgba(251,191,36,0.06);
+      box-shadow: 0 8px 24px rgba(251,191,36,0.12);
+    }
+    .poll-option[data-response="Happy"]:hover {
+      border-color: rgba(52,211,153,0.4);
+      background: rgba(52,211,153,0.06);
+      box-shadow: 0 8px 24px rgba(52,211,153,0.12);
+    }
+
+    .poll-emoji { font-size: 24px; line-height: 1; display: block; }
+
+    .poll-option-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #9090b0;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .poll-option-sub {
+      font-size: 10px;
+      color: #3a3a56;
+      letter-spacing: 0.02em;
+    }
+
+    @media (max-width: 480px) {
+      .poll-card { padding: 24px 18px 20px; border-radius: 12px; }
+    }
+
+    /* ── Version stamp ────────────────────────────────────── */
+    .update-details {
+      position: absolute;
+      right: clamp(20px, 4vw, 40px);
+      bottom: clamp(20px, 4vw, 40px);
+      padding: 10px 14px;
+      background: #070709;
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 8px;
+      color: #5a5a78;
+      font-size: 10px;
+      font-family: 'JetBrains Mono','Fira Code',monospace;
+      z-index: 4;
+      transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    }
+    .update-details:hover {
+      border-color: rgba(107,156,247,0.25);
+      box-shadow: 0 0 16px rgba(107,156,247,0.08);
+    }
+    .update-details .ud-title { font-weight: 700; font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: #9090b0; margin-bottom: 4px; }
+    .update-details .ud-line  { font-size: 9px; color: #5a5a78; line-height: 1.7; }
+    .update-details .ud-key   { color: #9090b0; font-weight: 600; margin-right: 4px; }
+    .update-details .ud-val   { color: #5a5a78; }
+    @media (max-width: 900px) { .update-details { display: none; } }
+
+    /* ── Trends toast ─────────────────────────────────────── */
+    #trends-toast {
+      position: fixed; right: 16px; bottom: 16px;
+      background: #0e0e16;
+      border: 1px solid rgba(107,156,247,0.2);
+      border-radius: 8px;
+      color: #9090b0;
+      padding: 8px 14px;
+      z-index: 99999;
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 20px rgba(107,156,247,0.06);
+    }
+  </style>
 </head>
 <body>
-    <div id="main-content">
 
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      const questions = ["How are you feeling today?", "What's your mood right now?", "How's your day going?", "Feeling good?", "What's your current state?"];
-      const timeSlots = [10000, 20000, 15000, 25000, 30000]; // 10s, 20s, 15s, 25s, 30s
-      const randomTime = timeSlots[Math.floor(Math.random() * timeSlots.length)];
-      const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
-      console.log('Poll will appear in', randomTime / 1000, 'seconds with question:', randomQuestion);
+<div id="main-content">
 
-      // ...existing code...
-          setTimeout(() => {
-            console.log('Showing poll modal');
-            const titleEl = document.querySelector('#poll-modal h2');
-            if (titleEl) titleEl.textContent = randomQuestion;
-            const mainContent = document.getElementById('main-content');
-            if (mainContent) {
-              mainContent.style.pointerEvents = 'none';
-              mainContent.style.opacity = '0.45';
-            }
-            const modal = document.getElementById('poll-modal');
-            if (modal) modal.style.display = 'flex';
+  <!-- Poll timing script -->
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const questions = ["How are you feeling today?", "What's your mood right now?", "How's your day going?", "Feeling good?", "What's your current state?"];
+    const timeSlots = [10000, 20000, 15000, 25000, 30000];
+    const randomTime = timeSlots[Math.floor(Math.random() * timeSlots.length)];
+    const randomQuestion = questions[Math.floor(Math.random() * questions.length)];
 
-            // Record shown timestamp in local storage
-            try { localStorage.setItem('pollLastShown', Date.now().toString()); } catch (e) { console.warn('localStorage unavailable', e); }
-          }, randomTime);
-        }
-      } catch (e) {
-        console.warn('Error checking poll suppression:', e);
-        // fallback: show poll normally
+    try {
+      const lastShown = parseInt(localStorage.getItem('pollLastShown') || '0', 10);
+      if (Date.now() - lastShown > 30 * 60 * 1000) {
         setTimeout(() => {
           const titleEl = document.querySelector('#poll-modal h2');
           if (titleEl) titleEl.textContent = randomQuestion;
-          const mainContent = document.getElementById('main-content');
-          if (mainContent) {
-            mainContent.style.pointerEvents = 'none';
-            mainContent.style.opacity = '0.45';
-          }
+          const main = document.getElementById('main-content');
+          if (main) { main.style.pointerEvents = 'none'; main.style.opacity = '0.45'; }
           const modal = document.getElementById('poll-modal');
           if (modal) modal.style.display = 'flex';
+          try { localStorage.setItem('pollLastShown', Date.now().toString()); } catch(e) {}
         }, randomTime);
       }
+    } catch(e) {}
 
-      function closeModal() {
-        const modal = document.getElementById('poll-modal');
-        if (modal) modal.style.display = 'none';
-        const mainContent = document.getElementById('main-content');
-        if (mainContent) {
-          mainContent.style.pointerEvents = '';
-          mainContent.style.opacity = '';
-        }
-      }
+    function closeModal() {
+      const modal = document.getElementById('poll-modal');
+      if (modal) modal.style.display = 'none';
+      const main = document.getElementById('main-content');
+      if (main) { main.style.pointerEvents = ''; main.style.opacity = ''; }
+    }
 
-      function handlePollClick(response) {
-        console.log('Poll button clicked:', response);
-        const currentQuestion = document.querySelector('#poll-modal h2')?.textContent || '';
-        sendPollFeedback(currentQuestion, response);
-        closeModal();
-      }
+    function handlePollClick(response) {
+      const q = document.querySelector('#poll-modal h2')?.textContent || '';
+      sendPollFeedback(q, response);
+      closeModal();
+    }
 
-      // Attach listeners to dynamic elements
-      const attachListeners = () => {
-        const pollOptions = document.querySelectorAll('.poll-option');
-        pollOptions.forEach(button => {
-          button.removeEventListener('click', button._pollHandler);
-          const handler = function() { handlePollClick(this.getAttribute('data-response')); };
-          button.addEventListener('click', handler);
-          button._pollHandler = handler;
-        });
-
-        const closeBtn = document.querySelector('.poll-close');
-        if (closeBtn) {
-          closeBtn.addEventListener('click', function() { handlePollClick('Dismiss'); });
-        }
-      };
-
-      // Wait for modal to be inserted (it exists in DOM below), then attach
-      attachListeners();
-
-      function sendPollFeedback(question, response) {
-        const formData = new FormData();
-        formData.append('name', question);
-        formData.append('roll', '');
-        formData.append('feedback', '');
-        formData.append('message', response);
-
-        const scriptUrl = "https://script.google.com/macros/s/AKfycbzjJr-y91dwvaMEs5iQlUL7Cl-h0A-amLfQz02d5ulrLjiGu4MQ0QVZ92yDcn9xweLWLg/exec";
-
-        fetch(scriptUrl, {
-          method: "POST",
-          body: formData
-        })
-        .then(response => response.text())
-        .then(data => {
-          console.log("Poll feedback sent:", data);
-        })
-        .catch(error => {
-          console.error("Error sending poll feedback:", error);
-        });
-      }
+    document.querySelectorAll('.poll-option').forEach(btn => {
+      btn.addEventListener('click', function() { handlePollClick(this.getAttribute('data-response')); });
     });
-    </script>
+    const closeBtn = document.querySelector('.poll-close');
+    if (closeBtn) closeBtn.addEventListener('click', () => handlePollClick('Dismiss'));
 
-   <!-- nav bar starts here -->
-    <header class="ihead">
-        <nav>
-            <div class="logo1"><img src="bit2.png" alt=""></div>
-            <div class="logo"><b class="bithub1">BitHuB</b></div>
-            <ul style="padding-top: 8px;" class="nav-links">
-                <li><a href="index.html">Home</a></li>                
-                <li><a href="syllabus.html">Syllabus</a></li>
-                <li><a href="clubs.html">Clubs</a></li>
-                <li><a href="transport.html">Transport</a></li>                
-                <li><a href="event.html">Event</a></li> 
-                <li><a href="feedback.html" class="blink-feedback">FeedBack</a></li> 
-                <li><a href="bit.html">BIT</a></li>  
-              </ul>
-            <div class="menu-toggle" id="menu-toggle">&#9776;</div>
-        </nav>
-    </header>
-    <!-- nav bar ends here -->
+    function sendPollFeedback(question, response) {
+      const fd = new FormData();
+      fd.append('name', question); fd.append('roll', ''); fd.append('feedback', ''); fd.append('message', response);
+      fetch("https://script.google.com/macros/s/AKfycbzjJr-y91dwvaMEs5iQlUL7Cl-h0A-amLfQz02d5ulrLjiGu4MQ0QVZ92yDcn9xweLWLg/exec", { method:"POST", body:fd })
+        .then(r=>r.text()).catch(()=>{});
+    }
+  });
+  </script>
 
-    <script>
-      // Home entrance animation runner: runs on initial page load and when Home link is clicked
-      (function(){
-        function runHomeEntrance() {
-          try {
-            const main = document.getElementById('main-content') || document.body;
-            if (!main) return;
-            main.classList.remove('home-entrance');
-            // force reflow to restart animation
-            void main.offsetWidth;
-            main.classList.add('home-entrance');
-          } catch (e) { console.warn('home entrance failed', e); }
-        }
+  <!-- ── Navigation ──────────────────────────────────────── -->
+  <header class="ihead">
+    <nav>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="logo1"><img src="bit2.png" alt="BitHuB"></div>
+        <div class="logo"><b class="bithub1">BitHuB</b></div>
+      </div>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="syllabus.html">Syllabus</a></li>
+        <li><a href="clubs.html">Clubs</a></li>
+        <li><a href="transport.html">Transport</a></li>
+        <li><a href="event.html">Event</a></li>
+        <li><a href="feedback.html" class="blink-feedback">FeedBack</a></li>
+        <li><a href="bit.html">BIT</a></li>
+      </ul>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle navigation">&#9776;</button>
+    </nav>
+  </header>
+  <!-- ── /Navigation ──────────────────────────────────────── -->
 
-        // run shortly after DOM ready so layout is stable (reduced, non-blocking)
-        document.addEventListener('DOMContentLoaded', function(){
-          setTimeout(runHomeEntrance, 120);
-        });
+  <!-- ── Trends / Analytics ──────────────────────────────── -->
+  <div class="slider-container">
+    <div class="slider">
+      <div style="width:100%;height:100%;display:flex;flex-direction:column;">
+        <div class="trends-card-header">
+          <span class="trends-card-title">Hot: In-Demand Subjects</span>
+          <span class="trends-live-badge">
+            <span class="trends-live-dot"></span>
+            Live
+          </span>
+        </div>
+        <div class="trends-card-body" style="flex:1;position:relative;display:flex;flex-direction:column;">
+          <div id="slider-trends" style="width:100%;flex:1;min-height:220px;position:relative;">Loading…</div>
+          <div class="trends-note" style="margin-top:16px;font-size:11px;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:-0.01em;">Updated live from Anurag's Server</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- ── /Trends ──────────────────────────────────────────── -->
 
-        // attach to Home nav links to replay animation when user clicks Home
-        document.addEventListener('click', function(e){
-          const a = e.target.closest && e.target.closest('.nav-links a');
-          if (!a) return;
-          const href = a.getAttribute('href') || '';
-          if (href.endsWith('index.html') || href === './' || href === '/') {
-            // play entrance but do not block navigation
-            runHomeEntrance();
-          }
-        });
-      })();
-    </script>
+  <!-- ── Semester I ───────────────────────────────────────── -->
+  <section class="courses-section">
 
-    <!-- start top padding -->
-<div style="padding-top: 60px;"></div>
-<!-- end top padding -->
+    <div class="section-strip">
+      <span class="section-strip-label">Semester I</span>
+      <span class="section-strip-line"></span>
+    </div>
 
+    <div class="courses-grid">
+      <a href="acl.html"           class="course-card"><span class="course-name">Ac Lab</span><span class="course-credits">4 Credits</span></a>
+      <a href="math1.html"         class="course-card"><span class="course-name">Maths 1</span><span class="course-credits">4 Credits</span></a>
+      <a href="physics.html"       class="course-card"><span class="course-name">Physics</span><span class="course-credits">4 Credits</span></a>
+      <a href="bee.html"           class="course-card"><span class="course-name">BEE</span><span class="course-credits">4 Credits</span></a>
+      <a href="pps.html"           class="course-card"><span class="course-name">PPS</span><span class="course-credits">4 Credits</span></a>
+      <a href="bio.html"           class="course-card"><span class="course-name">Biology</span><span class="course-credits">2 Credits</span></a>
+      <a href="workshop.html"      class="course-card"><span class="course-name">Workshop</span><span class="course-credits">1.5 Credits</span></a>
+      <a href="physicslab.html"    class="course-card"><span class="course-name">Physics Lab</span><span class="course-credits">1.5 Credits</span></a>
+      <a href="communication.html" class="course-card"><span class="course-name">Communication Skills</span><span class="course-credits">1 Credit</span></a>
+      <a href="sptlab.html"        class="course-card"><span class="course-name">Spt Lab</span><span class="course-credits">1 Credit</span></a>
+    </div>
 
-     <!-- background starts here -->
- 
+    <!-- Semester divider -->
+    <div class="crazy-divider" data-label="Semester II"></div>
 
+    <div class="courses-grid">
+      <a href="math2.html"         class="course-card"><span class="course-name">Maths 2</span><span class="course-credits">4 Credits</span></a>
+      <a href="chemistry.html"     class="course-card"><span class="course-name">Chemistry</span><span class="course-credits">4 Credits</span></a>
+      <a href="bme.html"           class="course-card"><span class="course-name">BME</span><span class="course-credits">4 Credits</span></a>
+      <a href="ece.html"           class="course-card"><span class="course-name">ECE</span><span class="course-credits">4 Credits</span></a>
+      <a href="environmental.html" class="course-card"><span class="course-name">Environmental Science</span><span class="course-credits">2 Credits</span></a>
+      <a href="becelab.html"       class="course-card"><span class="course-name">BECE Lab</span><span class="course-credits">1.5 Credits</span></a>
+      <a href="chemistrylab.html"  class="course-card"><span class="course-name">Chemistry Lab</span><span class="course-credits">1.5 Credits</span></a>
+      <a href="nss.html"           class="course-card"><span class="course-name">NSS</span><span class="course-credits">1 Credit</span></a>
+    </div>
 
+  </section>
+  <!-- ── /Courses ─────────────────────────────────────────── -->
 
-     <div class="slider-container">
-      <div class="slider">
-        <!-- Trends hero: replaces image slider. The trends card is sized to perfectly fill this box. -->
-        <div id="slider-trends-wrapper" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:14px;box-sizing:border-box;">
-          <div id="slider-trends-card" style="width:100%;height:100%;max-width:1200px;">
-            <div style="width:100%;height:100%;border-radius:12px;overflow:hidden;box-shadow:0 12px 30px rgba(2,6,23,0.5);border:1px solid rgba(255,255,255,0.03);background:linear-gradient(180deg,#05050a 0%, #0a0320 100%);padding:18px;box-sizing:border-box;">
-              <h3 style="margin:0 0 12px 0;font-size:1.4rem;color:#f6f7fb;font-weight:700;">Hot : In demand subjects</h3>
-              <div id="slider-trends" style="width:100%;height:auto;min-height:260px;position:relative;">Loading trends…</div>
-              <div style="margin-top:8px;font-size:12px;color:#bcdbe4;">Updated live from Anurag's Server</div>
+  <!-- ── Team Footer ──────────────────────────────────────── -->
+  <footer id="project-contributors-bar">
+    <div class="contributors-header">
+      <span class="contributors-title">Team</span>
+      <span class="contributors-subtitle">BitHuB Contributors</span>
+    </div>
+
+    <div class="contributor-list-container">
+
+      <!-- Suraj Kumar -->
+      <div class="contributor-profile" tabindex="0">
+        <div class="contributor-inner">
+          <div class="contributor-front">
+            <span class="founder-badge">Founder</span>
+            <img src="suraj.png" alt="Suraj Kumar" class="profile-picture">
+            <p class="person-name">Suraj Kumar</p>
+            <p class="person-role">Web Developer</p>
+            <p class="person-bio">Passionate developer with a love for creating.</p>
+            <div class="social-links">
+              <a href="https://www.linkedin.com/in/suraj-kumar-167a74300?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-icon" target="_blank" aria-label="LinkedIn"><img src="linkedin.png" alt="LinkedIn" class="social-image"></a>
+              <a href="https://www.instagram.com/_suraj__agrawal__?igsh=MThzcnpldXZpa3ZwNg==" class="social-icon" target="_blank" aria-label="Instagram"><img src="instagram.png" alt="Instagram" class="social-image"></a>
+              <a href="mailto:btech10884.23@bitmesra.ac.in" class="social-icon" target="_blank" aria-label="Email"><img src="email.png" alt="Email" class="social-image"></a>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-
-      <!-- background ends here -->
-
-      <!-- Poll Top Placeholder -->
-      <div id="poll-top"></div>
-
-      <!-- Poll Middle Placeholder -->
-      <div id="poll-middle"></div>
-
-      <!-- main starts here -->
-      <section class="courses-section">
-        <div class="courses-grid">
-          <a href="acl.html" class="course-card">
-            <h3 class="course-name">Ac Lab</h3>
-            <span class="course-credits">4 credits</span>
-          </a>
-          <a href="math1.html" class="course-card">
-            <h3 class="course-name">Maths 1</h3>
-            <span class="course-credits">4 credits</span>
-          </a>
-          <a href="physics.html" class="course-card">
-            <h3 class="course-name">Physics</h3>
-            <span class="course-credits">4 credits</span>
-          </a>
-          <a href="bee.html" class="course-card">
-            <h3 class="course-name">Bee</h3>
-            <span class="course-credits">4 credits</span>
-          </a>
-          <a href="pps.html" class="course-card">
-            <h3 class="course-name">PPS</h3>
-            <span class="course-credits">4 credits</span>
-          </a>
-          <a href="bio.html" class="course-card">
-            <h3 class="course-name">Bio</h3>
-            <span class="course-credits">2 credits</span>
-          </a>
-          <a href="workshop.html" class="course-card">
-            <h3 class="course-name">Workshop</h3>
-            <span class="course-credits">1.5 credits</span>
-          </a>
-          <a href="physicslab.html" class="course-card">
-            <h3 class="course-name">Physics Lab</h3>
-            <span class="course-credits">1.5 credits</span>
-          </a>
-          <a href="communication.html" class="course-card">
-            <h3 class="course-name">Communication</h3>
-            <span class="course-credits">1 credits </span>
-          </a>
-          <a href="sptlab.html" class="course-card">
-            <h3 class="course-name">Spt Lab</h3>
-            <span class="course-credits">1 credits </span>
-          </a>
-        </div>
-
-        <div class="crazy-divider">
-          <div class="wave-container">
-            <div class="wave wave1"></div>
-            <div class="wave wave2"></div>
-            <div class="wave wave3"></div>
-          </div>
-          <!-- floating-shapes removed to eliminate the unwanted flying/rotating block -->
-          <div class="particle-system">
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-          </div>
-        </div>
-
-        <div class="courses-grid">
-          <a href="math2.html" class="course-card">
-            <h3 class="course-name">Maths 2</h3>
-            <span class="course-credits">4 credits</span>
-          </a>
-          <a href="chemistry.html" class="course-card">
-            <h3 class="course-name">Chemistry</h3>
-            <span class="course-credits">4 credits</span>
-          </a>
-          <a href="bme.html" class="course-card">
-            <h3 class="course-name">Bme</h3>
-            <span class="course-credits">4 credits</span>
-          </a>
-          <a href="ece.html" class="course-card">
-            <h3 class="course-name">ece</h3>
-            <span class="course-credits">4 credits</span>
-          </a>
-          <a href="environmental.html" class="course-card">
-            <h3 class="course-name">Environmental Science</h3>
-            <span class="course-credits">2 credits</span>
-          </a>
-          <a href="becelab.html" class="course-card">
-            <h3 class="course-name">Bece Lab</h3>
-            <span class="course-credits">1.5 credits</span>
-          </a>
-          <a href="chemistrylab.html" class="course-card">
-            <h3 class="course-name">Chemistry Lab</h3>
-            <span class="course-credits">1.5 credits</span>
-          </a>
-          <a href="nss.html" class="course-card">
-            <h3 class="course-name">NSS</h3>
-            <span class="course-credits">1 credits</span>
-          </a>
-        </div>
-      </section>
-
-      <!-- main ends here -->
-
-
-
-
-  
-
-
-
-
-
-        
-
-    <!--footer starts here-->
-    <footer id="project-contributors-bar">
-      <div class="contributor-list-container">
-        <div class="contributor-profile">
-          <span class="founder-badge">Founder</span>
-          <img src="suraj.png" alt="Suraj Kumar" class="profile-picture">
-          <h3 class="person-name">Suraj Kumar</h3>
-          <p class="person-role">Web Developer</p>
-          <p class="person-bio">Passionate web developer with a love for creating.</p>
-          <div class="social-links">
-            <a href="https://www.linkedin.com/in/suraj-kumar-167a74300?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-icon" target="_blank">
-              <img src="linkedin.png" alt="LinkedIn" class="social-image">
-            </a>
-            <a href="https://www.instagram.com/_suraj__agrawal__?igsh=MThzcnpldXZpa3ZwNg==" class="social-icon" target="_blank">
-              <img src="instagram.png" alt="Instagram" class="social-image">
-            </a>
-            <a href="mailto:btech10884.23@bitmesra.ac.in" class="social-icon" target="_blank">
-              <img src="email.png" alt="Gmail" class="social-image">
-            </a>
-          </div>
-        </div>
-        <div class="contributor-profile">
-          <span class="active-developer-badge">Active Developer</span>
-          <img src="Anurag.jpg" alt="Anurag Kumar Verma" class="profile-picture">
-          <h3 class="person-name">Anurag Kumar Verma</h3>
-          <p class="person-role">Full-Stack Developer</p>
-          <p class="person-bio">Exploring & Evolving</p>
-          <div class="social-links">
-            <a href="https://www.linkedin.com/in/imanuragkrverma/" class="social-icon" target="_blank">
-              <img src="linkedin.png" alt="LinkedIn" class="social-image">
-            </a>
-            <a href="https://www.instagram.com/imanuragkrverma" class="social-icon" target="_blank">
-              <img src="instagram.png" alt="Instagram" class="social-image">
-            </a>
-            <a href="mailto:btech10173.24@bitmesra.ac.in" class="social-icon" target="_blank">
-              <img src="email.png" alt="Gmail" class="social-image">
-            </a>
-          </div>
-        </div>
-        <div class="contributor-profile">
-          <img src="sudhanshu.jpeg" alt="Sudhanshu Kumar" class="profile-picture">
-          <h3 class="person-name">Sudhanshu Kumar</h3>
-          <p class="person-role">Web Developer</p>
-          <p class="person-bio">Creativity is intelligence having fun.</p>
-          <div class="social-links">
-            <a href="https://www.linkedin.com/in/sudhanshu-kumar-a3ba18281?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-icon" target="_blank">
-              <img src="linkedin.png" alt="LinkedIn" class="social-image">
-            </a>
-            <a href="https://www.instagram.com/k_sudhanshu04?igsh=bGZ3NTdqa2tlaHh5" class="social-icon" target="_blank">
-              <img src="instagram.png" alt="Instagram" class="social-image">
-            </a>
-            <a href="mailto:btech10879.23@bitmesra.ac.in" class="social-icon" target="_blank">
-              <img src="email.png" alt="Gmail" class="social-image">
-            </a>
-          </div>
-        </div>
-        <div class="contributor-profile">
-          <img src="satyam.png" alt="Satyam Kumar" class="profile-picture">
-          <h3 class="person-name">Satyam Kumar</h3>
-          <p class="person-role">Content Manager</p>
-          <p class="person-bio">Everything is theoretically impossible, until it is done.</p>
-          <div class="social-links">
-            <a href="https://www.linkedin.com/in/satyam-kumar-4a7a7a194?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-icon" target="_blank">
-              <img src="linkedin.png" alt="LinkedIn" class="social-image">
-            </a>
-            <a href="https://www.instagram.com/rocksat12m?igsh=MWdpYnJhcWhxc2JiZA==" class="social-icon" target="_blank">
-              <img src="instagram.png" alt="Instagram" class="social-image">
-            </a>
-            <a href="mailto:btech10038.23@bitmesra.ac.in" class="social-icon" target="_blank">
-              <img src="email.png" alt="Gmail" class="social-image">
-            </a>
-          </div>
-        </div>
-        <div class="contributor-profile">
-          <img src="soumyadeep.jpg" alt="Soumyadeep Ghosh" class="profile-picture">
-          <h3 class="person-name">Soumyadeep Ghosh</h3>
-          <p class="person-role">Web Designer</p>
-          <p class="person-bio">Exploring life one day at a time.</p>
-          <div class="social-links">
-            <a href="https://www.linkedin.com/in/soumyadeep-ghosh-0aa16531b?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base_contact_details%3BJL%2BExp4CS16v7JGE4OkhTw%3D%3D" class="social-icon" target="_blank">
-              <img src="linkedin.png" alt="LinkedIn" class="social-image">
-            </a>
-            <a href="https://www.instagram.com/soumyadeep_ghosh_14/" class="social-icon" target="_blank">
-              <img src="instagram.png" alt="Instagram" class="social-image">
-            </a>
-            <a href="mailto:btech10873.23@bitmesra.ac.in" class="social-icon" target="_blank">
-              <img src="email.png" alt="Gmail" class="social-image">
-            </a>
+      <!-- Anurag Kumar Verma -->
+      <div class="contributor-profile" tabindex="0">
+        <div class="contributor-inner">
+          <div class="contributor-front">
+            <span class="active-developer-badge">Active Dev</span>
+            <img src="Anurag.jpg" alt="Anurag Kumar Verma" class="profile-picture">
+            <p class="person-name">Anurag Kumar Verma</p>
+            <p class="person-role">Full-Stack Developer</p>
+            <p class="person-bio">Exploring &amp; Evolving</p>
+            <div class="social-links">
+              <a href="https://www.linkedin.com/in/imanuragkrverma/" class="social-icon" target="_blank" aria-label="LinkedIn"><img src="linkedin.png" alt="LinkedIn" class="social-image"></a>
+              <a href="https://www.instagram.com/imanuragkrverma" class="social-icon" target="_blank" aria-label="Instagram"><img src="instagram.png" alt="Instagram" class="social-image"></a>
+              <a href="mailto:btech10173.24@bitmesra.ac.in" class="social-icon" target="_blank" aria-label="Email"><img src="email.png" alt="Email" class="social-image"></a>
+            </div>
           </div>
         </div>
       </div>
-    <!-- Update Details stamp (moved from header) -->
-    <div class="update-details" aria-label="Version Info">
+
+
+      <!-- Satyam Kumar -->
+      <div class="contributor-profile" tabindex="0">
+        <div class="contributor-inner">
+          <div class="contributor-front">
+            <img src="satyam.png" alt="Satyam Kumar" class="profile-picture">
+            <p class="person-name">Satyam Kumar</p>
+            <p class="person-role">Content Manager</p>
+            <p class="person-bio">Everything impossible, until it's done.</p>
+            <div class="social-links">
+              <a href="https://www.linkedin.com/in/satyam-kumar-4a7a7a194?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-icon" target="_blank" aria-label="LinkedIn"><img src="linkedin.png" alt="LinkedIn" class="social-image"></a>
+              <a href="https://www.instagram.com/rocksat12m?igsh=MWdpYnJhcWhxc2JiZA==" class="social-icon" target="_blank" aria-label="Instagram"><img src="instagram.png" alt="Instagram" class="social-image"></a>
+              <a href="mailto:btech10038.23@bitmesra.ac.in" class="social-icon" target="_blank" aria-label="Email"><img src="email.png" alt="Email" class="social-image"></a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    <div class="update-details">
       <div class="ud-title">Version Info</div>
-      <div class="ud-line"><span class="ud-key">By :</span><span class="ud-val">Anurag Kumar Verma</span></div>
-      <div class="ud-line"><span class="ud-key">Date :</span><span class="ud-val">11th Feb, 2026</span></div>
-      <div class="ud-line"><span class="ud-key">Content Updated (Y/N ) :</span><span class="ud-val">N</span></div>
-      <div class="ud-line"><span class="ud-key">Software Updated (Y/N) :</span><span class="ud-val">Y</span></div>
+      <div class="ud-line"><span class="ud-key">By:</span><span class="ud-val">Anurag Kumar Verma</span></div>
+      <div class="ud-line"><span class="ud-key">Date:</span><span class="ud-val">05th June, 2026</span></div>
+      <div class="ud-line"><span class="ud-key">Content Updated:</span><span class="ud-val">N</span></div>
+      <div class="ud-line"><span class="ud-key">Software Updated:</span><span class="ud-val">Y</span></div>
     </div>
-    </footer>
+  </footer>
 
+  <div class="reserve">
+    <p>&copy; 2025&ndash;2026 Birla Institute of Technology &mdash; Designed &amp; Developed by Team BitHub. All Rights Reserved.</p>
+  </div>
 
+</div><!-- /#main-content -->
 
-
-
-
-
-
-
-
-
-
-
-          <!-- reserve start here -->
-           <div class="reserve">
-        <p> &copy; 2025 - 2026 Birla Institute of Technology | Designed & Developed by Team BitHub, All Rights Reserved. &reg;</p>
-           </div>
-           <!-- reserve end here -->
+<!-- ── Poll Modal ───────────────────────────────────────────── -->
+<div id="poll-modal" aria-hidden="true">
+  <div class="poll-backdrop"></div>
+  <div class="poll-card" role="dialog" aria-modal="true" aria-labelledby="poll-title">
+    <button class="poll-close" aria-label="Close">&times;</button>
+    <p class="poll-eyebrow">Wellness Check</p>
+    <h2 id="poll-title">How are you feeling today?</h2>
+    <p class="poll-desc">Your response helps us improve the student experience.</p>
+    <div class="poll-options">
+      <button class="poll-option" data-response="Sad">
+        <span class="poll-emoji">😔</span>
+        <span class="poll-option-label">Sad</span>
+        <span class="poll-option-sub">Feeling down</span>
+      </button>
+      <button class="poll-option" data-response="Neutral">
+        <span class="poll-emoji">😐</span>
+        <span class="poll-option-label">Neutral</span>
+        <span class="poll-option-sub">It's okay</span>
+      </button>
+      <button class="poll-option" data-response="Happy">
+        <span class="poll-emoji">😊</span>
+        <span class="poll-option-label">Happy</span>
+        <span class="poll-option-sub">Doing great</span>
+      </button>
     </div>
+  </div>
+</div>
 
-    <!-- Poll Modal -->
-    <div id="poll-modal" aria-hidden="true">
-      <div class="poll-backdrop" aria-hidden="true"></div>
-      <div class="poll-card" role="dialog" aria-modal="true" aria-labelledby="poll-title">
-        <button class="poll-close" aria-label="Close poll">&times;</button>
-        <h2 id="poll-title">How are you feeling today?</h2>
-        <p class="poll-desc">Your feedback helps improve this site. Select one option below.</p>
-        <div class="poll-options">
-          <button class="poll-option" data-response="Sad">Sad</button>
-          <button class="poll-option" data-response="Neutral">Neutral</button>
-          <button class="poll-option" data-response="Happy">Happy</button>
-        </div>
-      </div>
-    </div>
-    <!-- End Poll Modal -->
-
-    <script src="script.js"></script>
+<!-- Scripts -->
+<script src="script.js"></script>
 <script src="profile.js"></script>
 
-<!-- Trends click-tracking: sends subject clicks to Apps Script -->
+<!-- Trends click tracking -->
 <script>
 (function(){
   const scriptUrl = "https://script.google.com/macros/s/AKfycbzDXNGtTWpYHsMDSlXFeeVWpepgNEDuvGkRaqBjmwvUGHNAwvJXWznu0BQiTcrqrzOAKg/exec";
-  const COOLDOWN_MS = 20 * 60 * 1000; // 20 minutes
+  const COOLDOWN_MS = 20 * 60 * 1000;
   const LAST_CLICK_KEY = 'trends_last_click_at';
   const CLIENT_ID_KEY = 'trends_client_id';
-
-  function getClientId() {
-    try {
-      let id = localStorage.getItem(CLIENT_ID_KEY);
-      if (!id) {
-        id = 'c_' + Math.random().toString(36).slice(2,10);
-        localStorage.setItem(CLIENT_ID_KEY, id);
-      }
-      return id;
-    } catch (e) { return 'anon'; }
-  }
-  function formatDate(d){ const dd = String(d.getDate()).padStart(2,'0'); const mm = String(d.getMonth()+1).padStart(2,'0'); const yyyy = d.getFullYear(); return dd + '/' + mm + '/' + yyyy; }
-  function formatTime(d){ const hh = String(d.getHours()).padStart(2,'0'); const mm = String(d.getMinutes()).padStart(2,'0'); const ss = String(d.getSeconds()).padStart(2,'0'); return hh + ':' + mm + ':' + ss; }
-
-  function showToast(text){
-    let t = document.getElementById('trends-toast');
-    if (!t){ t = document.createElement('div'); t.id = 'trends-toast'; t.style.position='fixed'; t.style.right='18px'; t.style.bottom='18px'; t.style.background='linear-gradient(90deg,#0b1220,#071029)'; t.style.color='#fff'; t.style.padding='10px 14px'; t.style.borderRadius='10px'; t.style.boxShadow='0 6px 18px rgba(2,6,23,0.6)'; t.style.zIndex=99999; t.style.fontFamily='Inter, sans-serif'; document.body.appendChild(t); }
-    t.textContent = text; t.style.opacity = 1; clearTimeout(t._hideTimer); t._hideTimer = setTimeout(()=>{ t.style.transition='opacity 0.6s'; t.style.opacity = 0; }, 3000);
-  }
-
-  // Developer bypass removed for production.
-
-  function sendClick(subject, href){
-    const now = new Date();
-    const clientId = getClientId();
-    const fd = new FormData();
-    fd.append('subject', subject);
-    fd.append('date', formatDate(now));
-    fd.append('time', formatTime(now));
-    fd.append('clientId', clientId);
-    fd.append('userAgent', navigator.userAgent || '');
-
-    console.log('Trends: sending click', { subject: subject, date: formatDate(now), time: formatTime(now), clientId: clientId });
-
-    // show immediate UI feedback
-    try{ showToast('Recorded: ' + subject); } catch(e){}
-
-    try{
-      if (navigator.sendBeacon){
-        // navigator.sendBeacon is fire-and-forget; log and continue
-        const ok = navigator.sendBeacon(scriptUrl, fd);
-        console.log('sendBeacon ok=', ok);
-        return true;
-      } else {
-        // fallback: fetch then navigate (if href provided)
-        fetch(scriptUrl, { method: 'POST', body: fd })
-          .then(r => r.text())
-          .then(t => console.log('fetch result:', t))
-          .catch(err => console.warn('fetch send failed', err))
-          .finally(()=>{ if (href) window.location = href; });
-        return false;
-      }
-    } catch(e){
-      console.warn('sendClick error', e);
-      try{ fetch(scriptUrl, { method: 'POST', body: fd }).catch(()=>{}); }catch(e2){}
-      return true;
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', function(){
-    const anchors = document.querySelectorAll('a.course-card');
-    anchors.forEach(a => {
-      a.addEventListener('click', function(evt){
-        const last = parseInt(localStorage.getItem(LAST_CLICK_KEY) || '0', 10);
-        const devBypass = localStorage.getItem('trends_dev_bypass') === '1';
-        // If within cooldown, and dev bypass is NOT enabled, do NOT send or record the click — but allow navigation (ignore only)
-        if (!devBypass && (Date.now() - last < COOLDOWN_MS)){
-          // ...existing code... (rate limit logic, but no toast or message)
-          return; // do not prevent navigation; simply ignore sending
-        }
-        // Record last-click timestamp (prevents rapid repeats)
-        try{ localStorage.setItem(LAST_CLICK_KEY, Date.now().toString()); } catch(e){}
-        const subject = (this.querySelector('.course-name') && this.querySelector('.course-name').textContent.trim()) || this.textContent.trim() || 'unknown';
-        const href = this.getAttribute('href');
-        if (navigator.sendBeacon){
-          sendClick(subject, null); // fire-and-forget, navigation proceeds
-        } else {
-          evt.preventDefault(); // block until fetch completes then navigate
-          sendClick(subject, href);
-        }
-      }, { passive: false });
+  function getClientId(){ try{ let id=localStorage.getItem(CLIENT_ID_KEY); if(!id){id='c_'+Math.random().toString(36).slice(2,10);localStorage.setItem(CLIENT_ID_KEY,id);} return id; }catch(e){return 'anon';} }
+  function fmt(d,t){ const p=n=>String(n).padStart(2,'0'); return t?`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`:`${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()}`; }
+  function showToast(text){ let t=document.getElementById('trends-toast'); if(!t){t=document.createElement('div');t.id='trends-toast';document.body.appendChild(t);} t.textContent=text;t.style.opacity='1'; clearTimeout(t._h); t._h=setTimeout(()=>{t.style.transition='opacity 0.4s';t.style.opacity='0';},3000); }
+  function sendClick(subject){ const now=new Date(); const fd=new FormData(); fd.append('subject',subject);fd.append('date',fmt(now,false));fd.append('time',fmt(now,true));fd.append('clientId',getClientId());fd.append('userAgent',navigator.userAgent||''); try{showToast('Tracked: '+subject);}catch(e){} try{if(navigator.sendBeacon){navigator.sendBeacon(scriptUrl,fd);}else{fetch(scriptUrl,{method:'POST',body:fd}).catch(()=>{});}}catch(e){} }
+  document.addEventListener('DOMContentLoaded',function(){
+    document.querySelectorAll('a.course-card').forEach(a=>{
+      a.addEventListener('click',function(){
+        const last=parseInt(localStorage.getItem(LAST_CLICK_KEY)||'0',10);
+        if(Date.now()-last<COOLDOWN_MS) return;
+        try{localStorage.setItem(LAST_CLICK_KEY,Date.now().toString());}catch(e){}
+        const subject=(this.querySelector('.course-name')&&this.querySelector('.course-name').textContent.trim())||'unknown';
+        sendClick(subject);
+      },{passive:true});
     });
-    // create dev toggle for testing
-          // dev toggle removed for production build
   });
-
 })();
 </script>
 
-<!-- Slider trends chart script (renders the same SVG chart used on event.html into #slider-trends) -->
+<!-- Trends chart -->
 <style>
-  /* loader overlay: absolutely positioned so it doesn't change layout or cause scrolling */
-  .trends-loader { position:absolute; inset:0; display:flex;flex-direction:column;align-items:center;justify-content:center;color:#cfeff8; pointer-events:none }
-  .trends-loader .dots { display:flex;gap:8px;margin-top:8px }
-  .trends-loader .dot { width:10px;height:10px;border-radius:50%;background:#00d4ff;opacity:0.15;animation:dotPulse 1s infinite ease-in-out; }
-  .trends-loader .dot:nth-child(2){ animation-delay:0.15s }
-  .trends-loader .dot:nth-child(3){ animation-delay:0.3s }
-  @keyframes dotPulse { 0%{opacity:0.15;transform:translateY(0)}50%{opacity:1;transform:translateY(-6px)}100%{opacity:0.15;transform:translateY(0)} }
+.trends-loader{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#555555;pointer-events:none;gap:8px;font-size:11px;letter-spacing:0.04em;text-transform:uppercase;font-family:'Inter',sans-serif;}
+.trends-loader .dots{display:flex;gap:4px;}
+.trends-loader .dot{width:4px;height:4px;background:#444444;border-radius:50%;opacity:0.4;animation:dotB 1.1s ease-in-out infinite;}
+.trends-loader .dot:nth-child(2){animation-delay:0.15s}
+.trends-loader .dot:nth-child(3){animation-delay:0.3s}
+@keyframes dotB{0%,100%{opacity:0.2;transform:translateY(0)}50%{opacity:0.8;transform:translateY(-3px)}}
 </style>
 <script>
 (function(){
@@ -775,84 +509,67 @@
   if (!container) return;
   const scriptUrl = "https://script.google.com/macros/s/AKfycbzDXNGtTWpYHsMDSlXFeeVWpepgNEDuvGkRaqBjmwvUGHNAwvJXWznu0BQiTcrqrzOAKg/exec";
 
-  function createSVG(tag, attrs){
-    const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
-    for (let k in attrs) el.setAttribute(k, attrs[k]);
-    return el;
-  }
+  function createSVG(tag, attrs){ const el=document.createElementNS('http://www.w3.org/2000/svg',tag); for(let k in attrs) el.setAttribute(k,attrs[k]); return el; }
 
   async function fetchTrends(){
+    container.innerHTML='<div class="trends-loader"><div>Loading data</div><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
     try{
-      container.innerHTML = '<div class="trends-loader"><div>Loading trends</div><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
-      const res = await fetch(scriptUrl);
-      const obj = await res.json();
-      renderChart(obj.results || []);
-    }catch(e){ container.innerHTML = '<div style="color:#ffb3b3">Unable to load trends.</div>'; console.error(e); }
+      const res=await fetch(scriptUrl); const obj=await res.json(); renderChart(obj.results||[]);
+    }catch(e){ container.innerHTML='<div style="color:#555;font-size:11px;padding:16px;letter-spacing:0.04em;text-transform:uppercase;">Unable to load data.</div>'; }
   }
 
   function renderChart(items){
-    container.innerHTML = '';
-    if (!items.length){ container.innerHTML = '<div style="color:#cfeef8">No activity in the last 12 hours.</div>'; return; }
-    const padding = { top: 28, right: 24, bottom: 84, left: 64 };
-    const parentWidth = Math.max(360, container.clientWidth || 800);
-    const containerH = Math.max(260, container.clientHeight || 360);
-    const barCount = items.length;
-    const gap = Math.max(8, Math.round(parentWidth * 0.01));
-    const defaultInnerW = Math.max(300, parentWidth - padding.left - padding.right);
-    let barWidth = Math.floor((defaultInnerW - (barCount + 1) * gap) / barCount);
-    const minBarWidth = 24; const maxBarWidth = 140;
-    if (barWidth > maxBarWidth) barWidth = maxBarWidth; if (barWidth < minBarWidth) barWidth = minBarWidth;
-    const requiredInnerW = (barCount * barWidth) + ((barCount + 1) * gap);
-    const containerW = padding.left + padding.right + Math.max(defaultInnerW, requiredInnerW);
-    const width = containerW - padding.left - padding.right;
-    const height = containerH - padding.top - padding.bottom;
+    container.innerHTML='';
+    if(!items.length){ container.innerHTML='<div style="color:#555;font-size:11px;padding:16px;letter-spacing:0.04em;text-transform:uppercase;">No activity in the last 12 hours.</div>'; return; }
+    const padding={top:24,right:20,bottom:72,left:56};
+    const parentWidth=Math.max(360,container.clientWidth||800);
+    const containerH=Math.max(200,container.clientHeight||280);
+    const barCount=items.length;
+    const gap=Math.max(6,Math.round(parentWidth*0.008));
+    const defaultInnerW=Math.max(300,parentWidth-padding.left-padding.right);
+    let barWidth=Math.floor((defaultInnerW-(barCount+1)*gap)/barCount);
+    if(barWidth>120) barWidth=120; if(barWidth<20) barWidth=20;
+    const reqW=(barCount*barWidth)+((barCount+1)*gap);
+    const containerW=padding.left+padding.right+Math.max(defaultInnerW,reqW);
+    const width=containerW-padding.left-padding.right;
+    const height=containerH-padding.top-padding.bottom;
 
-    const svg = createSVG('svg', { width: containerW, height: containerH, viewBox: `0 0 ${containerW} ${containerH}`, role: 'img', 'aria-label': 'Trending subjects bar chart' });
-    const title = createSVG('title', {}); title.textContent = 'Hot : In demand subjects — last 12 hours'; svg.appendChild(title);
-    const maxClicks = Math.max(...items.map(i=>i.clicks));
-    function niceCeil(v){ if (v <= 5) return 5; if (v <= 10) return Math.ceil(v/5)*5; if (v <= 50) return Math.ceil(v/10)*10; if (v <= 200) return Math.ceil(v/20)*20; if (v <= 1000) return Math.ceil(v/50)*50; var p = Math.pow(10, Math.floor(Math.log10(v))); return Math.ceil(v / p) * p; }
-    const yMax = Math.max(1, niceCeil(maxClicks));
-    const ticks = 5;
-    const g = createSVG('g', { transform: `translate(${padding.left},${padding.top})` });
+    const svg=createSVG('svg',{width:containerW,height:containerH,viewBox:`0 0 ${containerW} ${containerH}`,role:'img','aria-label':'Trending subjects'});
+    const title=createSVG('title',{}); title.textContent='Hot: In demand subjects — last 12 hours'; svg.appendChild(title);
+    const maxClicks=Math.max(...items.map(i=>i.clicks));
+    function niceCeil(v){if(v<=5)return 5;if(v<=10)return Math.ceil(v/5)*5;if(v<=50)return Math.ceil(v/10)*10;if(v<=200)return Math.ceil(v/20)*20;var p=Math.pow(10,Math.floor(Math.log10(v)));return Math.ceil(v/p)*p;}
+    const yMax=Math.max(1,niceCeil(maxClicks));
+    const ticks=4;
+    const g=createSVG('g',{transform:`translate(${padding.left},${padding.top})`});
 
-    for (let t = 0; t <= ticks; t++){
-      const yVal = yMax * (t / ticks);
-      const y = height - (yVal / yMax) * height;
-      const line = createSVG('line', { x1: 0, y1: y, x2: width, y2: y, stroke: 'rgba(255,255,255,0.04)', 'stroke-width': 1 }); g.appendChild(line);
-      const lbl = createSVG('text', { x: -12, y: y + 4, 'text-anchor': 'end', 'font-size': 12, fill: '#cfeff7' }); lbl.textContent = String(Math.round(yVal)); g.appendChild(lbl);
+    for(let t=0;t<=ticks;t++){
+      const yVal=yMax*(t/ticks);
+      const y=height-(yVal/yMax)*height;
+      const line=createSVG('line',{x1:0,y1:y,x2:width,y2:y,stroke:'#1e1e1e','stroke-width':1}); g.appendChild(line);
+      const lbl=createSVG('text',{x:-10,y:y+4,'text-anchor':'end','font-size':10,fill:'#444444','font-family':'Inter,sans-serif'}); lbl.textContent=String(Math.round(yVal)); g.appendChild(lbl);
     }
 
-    const xAxisY = height; const xAxisLine = createSVG('line', { x1: 0, y1: xAxisY, x2: width, y2: xAxisY, stroke: 'rgba(255,255,255,0.06)', 'stroke-width': 1.5 }); g.appendChild(xAxisLine);
-    const barGap = gap;
-    function shortLabel(s){
-      const ss = String(s || '');
-      if (ss.indexOf('Environmental') !== -1) return 'Evs';
-      if (ss.indexOf('Chemistry Lab') !== -1) return 'Che Lab';
-      if (ss.indexOf('Physics Lab') !== -1) return 'Phy Lab';
-      if (ss.indexOf('Communication') !== -1) return 'Com. Skl.';
-      return ss;
-    }
+    const xLine=createSVG('line',{x1:0,y1:height,x2:width,y2:height,stroke:'#222222','stroke-width':1}); g.appendChild(xLine);
+    function shortLabel(s){const ss=String(s||'');if(ss.indexOf('Environmental')!==-1)return 'EVS';if(ss.indexOf('Chemistry Lab')!==-1)return 'Chem Lab';if(ss.indexOf('Physics Lab')!==-1)return 'Phy Lab';if(ss.indexOf('Communication')!==-1)return 'Comm.';if(ss.indexOf('Biology')!==-1)return 'Bio';return ss;}
 
-    items.forEach((it, i) => {
-      const x = barGap + i * (barWidth + barGap);
-      const h = (it.clicks / yMax) * height; const y = height - h;
-      const rect = createSVG('rect', { x: x, y: y, width: barWidth, height: Math.max(2,h), fill: 'rgba(0,212,255,0.18)', rx: 3, ry: 3 }); g.appendChild(rect);
-      const countLabel = createSVG('text', { x: x + barWidth/2, y: y - 6, 'text-anchor': 'middle', 'font-size': 12, fill: '#eaf0f5' }); countLabel.textContent = it.clicks; g.appendChild(countLabel);
-      const raw = shortLabel(it.subject);
-      const subj = raw.length > 18 ? raw.slice(0,18) + '…' : raw;
-      const xLabel = createSVG('text', { x: x + barWidth/2, y: xAxisY + 18, 'text-anchor': 'middle', 'font-size': 12, fill: '#bcdbe4' }); xLabel.textContent = subj; g.appendChild(xLabel);
+    items.forEach((it,i)=>{
+      const x=gap+i*(barWidth+gap);
+      const h=(it.clicks/yMax)*height; const y=height-h;
+      const rect=createSVG('rect',{x,y,width:barWidth,height:Math.max(1,h),fill:'#222222',rx:0,ry:0}); g.appendChild(rect);
+      const topLine=createSVG('rect',{x,y,width:barWidth,height:2,fill:'#555555',rx:0,ry:0}); g.appendChild(topLine);
+      const cntLbl=createSVG('text',{x:x+barWidth/2,y:y-6,'text-anchor':'middle','font-size':10,fill:'#666666','font-family':'Inter,sans-serif','font-weight':'600'}); cntLbl.textContent=it.clicks; g.appendChild(cntLbl);
+      const raw=shortLabel(it.subject);
+      const subj=raw.length>14?raw.slice(0,14)+'…':raw;
+      const xLbl=createSVG('text',{x:x+barWidth/2,y:height+16,'text-anchor':'middle','font-size':10,fill:'#444444','font-family':'Inter,sans-serif'}); xLbl.textContent=subj; g.appendChild(xLbl);
     });
 
-    const yLabel = createSVG('text', { x: -padding.left + 12, y: height/2, transform: `rotate(-90 ${-padding.left+12} ${height/2})`, 'text-anchor': 'middle', 'font-size': 12, fill: '#bcdbe4' }); yLabel.textContent = 'Clicks'; g.appendChild(yLabel);
-    const xLabelAxis = createSVG('text', { x: width/2, y: height + 48, 'text-anchor': 'middle', 'font-size': 12, fill: '#bcdbe4' }); xLabelAxis.textContent = 'Subjects'; g.appendChild(xLabelAxis);
-
+    const yLbl=createSVG('text',{x:-padding.left+10,y:height/2,transform:`rotate(-90 ${-padding.left+10} ${height/2})`,'text-anchor':'middle','font-size':10,fill:'#444444','font-family':'Inter,sans-serif'}); yLbl.textContent='Clicks'; g.appendChild(yLbl);
     svg.appendChild(g);
-    try { const wrap = container.parentElement; wrap.style.overflowX = (containerW > container.parentElement.clientWidth) ? 'auto' : ''; wrap.style.webkitOverflowScrolling = 'touch'; } catch(e){}
+    try{const wrap=container.parentElement;wrap.style.overflowX=(containerW>container.parentElement.clientWidth)?'auto':'';}catch(e){}
     container.appendChild(svg);
   }
 
-  // initial load and periodic refresh
-  fetchTrends(); setInterval(fetchTrends, 120000);
+  fetchTrends(); setInterval(fetchTrends,120000);
 })();
 </script>
 
