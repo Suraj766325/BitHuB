@@ -537,6 +537,8 @@ nav {
   border: none;
   transition: background var(--t);
   height: 100%;
+  position: relative;
+  overflow: hidden;
 }
 
 .contributor-profile:hover .contributor-front { background: var(--bg-elevated); }
@@ -548,18 +550,57 @@ nav {
   width: 48px;
   height: 48px;
   object-fit: cover;
+  object-position: center top;
   border: 1px solid var(--border);
   display: block;
   margin-bottom: var(--sp-4);
-  transition: border-color var(--t);
+  cursor: zoom-in;
+  transition: border-color var(--t), width 0.35s cubic-bezier(0.4,0,0.2,1),
+              height 0.35s cubic-bezier(0.4,0,0.2,1), margin 0.35s cubic-bezier(0.4,0,0.2,1),
+              border-radius 0.35s ease, box-shadow 0.35s ease;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  will-change: width, height;
 }
 
 .contributor-profile:hover .profile-picture { border-color: var(--border-accent); }
 
+
+.contributor-profile.img-expanded .contributor-front::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  z-index: 4;
+  pointer-events: none;
+  animation: backdropFadeIn 0.3s ease forwards;
+}
+
+@keyframes backdropFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Enlarged profile image fills the card */
 .profile-picture.enlarged {
-  transform: none;
-  position: relative;
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  margin: 0 !important;
+  padding: 0;
+  border: none !important;
+  border-radius: 0;
+  object-fit: cover;
+  object-position: center top;
+  cursor: zoom-out;
   z-index: 5;
+  box-shadow: 0 0 0 1px rgba(107,156,247,0.3), 0 8px 40px rgba(0,0,0,0.6);
+  transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: auto;
 }
 
 .person-name {
@@ -937,7 +978,10 @@ body::after, html::after { content: none !important; display: none !important; }
 @media (max-width: 640px) {
 
   /* â”€â”€ Chart / Trends area â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
-  .slider,
+  .slider {
+    min-height: 320px;
+    height: auto;
+  }
   .slider img {
     min-height: 200px;
     height: 200px;
@@ -1107,14 +1151,14 @@ body::after, html::after { content: none !important; display: none !important; }
     padding: 20px 18px 18px;
     background: #111111;
     height: 100%;
-    overflow: visible;
+    overflow: hidden;
+    position: relative;
     border-top: 2px solid #333333;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .contributor-front::before { display: none; }
   .contributor-front::after  { display: none; }
 
   .profile-picture {
