@@ -34,29 +34,55 @@
   letter-spacing: 0.04em;
 }
 
-.transport12 {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  justify-content: space-between;
+.transport-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.transport-table {
+  width: 100%;
+  border-collapse: collapse;
   text-align: center;
-  padding: var(--space-4);
-  color: var(--text-primary);
   font-size: 13px;
-  gap: var(--space-3);
-}
-
-.transport12 a {
-  color: var(--accent-text);
-  font-weight: 500;
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  justify-self: center;
-  transition: color var(--t), border-bottom-color var(--t);
-}
-
-.transport12 a:hover {
   color: var(--text-primary);
-  border-bottom-color: var(--border-accent);
+}
+
+.transport-table th {
+  background: transparent;
+  color: var(--text-primary);
+  font-weight: 600;
+  padding: var(--space-4) var(--space-3);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.transport-table td {
+  padding: var(--space-3) var(--space-3);
+  border-bottom: 1px solid var(--border-soft);
+  font-weight: 400;
+  height: 42px; /* standard height to keep layout consistent */
+}
+
+.transport-table td:empty::before {
+  content: "—";
+  color: var(--text-muted);
+}
+
+.transport-table tbody tr {
+  transition: background var(--t);
+}
+
+.transport-table tbody tr:hover {
+  background: var(--bg-glass);
+}
+
+.transport-table tr:last-child td {
+  border-bottom: none;
 }
 
 @media (max-width: 768px) {
@@ -64,8 +90,15 @@
     padding: var(--space-4) var(--space-4);
     gap: var(--space-4);
   }
-  .transport12 {
-    grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-4) var(--space-2);
+  .transport-table {
+    font-size: 12px;
+  }
+  .transport-table th {
+    padding: var(--space-3) var(--space-2);
+    font-size: 11px;
+  }
+  .transport-table td {
+    padding: var(--space-2) var(--space-2);
+    height: 38px;
   }
 }
