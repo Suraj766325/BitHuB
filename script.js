@@ -35,9 +35,12 @@ document.addEventListener('DOMContentLoaded', () => {
         rootMargin: '0px 0px -40px 0px'
     });
 
-    document.querySelectorAll('.contributor-profile').forEach(el => {
-        revealObserver.observe(el);
-    });
+    // Only observe on desktop. Mobile marquee forces immediate visibility.
+    if (!window.matchMedia('(max-width: 640px)').matches) {
+        document.querySelectorAll('.contributor-profile').forEach(el => {
+            revealObserver.observe(el);
+        });
+    }
 
     // ── Particle effect (kept but subtle) ─────────────────
     createParticles();
@@ -232,7 +235,7 @@ contributorProfiles.forEach(profile => {
     });
 
     // Calculate the pixel width of one full set (card + gap)
-    const cardW = 200;
+    const cardW = 400;
     const gap   = 12;
     const setW  = originals.length * (cardW + gap);
     const speed = originals.length * 4; // seconds — more cards = slower
