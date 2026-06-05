@@ -86,7 +86,7 @@
               required
               aria-label="Roll number"
             >
-            <span class="roll-suffix">/ 25</span>
+            <span class="roll-suffix">/ 26</span>
           </div>
         </div>
 
@@ -117,8 +117,8 @@
           <div class="recipient-input-container">
             <select id="recipient" name="recipient" required aria-label="Recipient">
               <option value="">Select recipient</option>
-              <option value="Suraj Kumar">Suraj Kumar — Founder</option>
-              <option value="Anurag Kumar Verma">Anurag Kumar Verma — Active Developer</option>
+              <option value="Suraj Kumar">Suraj Kumar - Founder</option>
+              <option value="Anurag Kumar Verma">Anurag Kumar Verma - Active Developer</option>
             </select>
           </div>
         </div>
@@ -379,7 +379,7 @@
       
       // Update rollInput value temporarily for submission form data
       const originalRollVal = rollInput.value;
-      rollInput.value = prefixVal + originalRollVal + '/25';
+      rollInput.value = prefixVal + originalRollVal + '/26';
 
       const formData = new FormData(form);
       const scriptUrl = "https://script.google.com/macros/s/AKfycbzjJr-y91dwvaMEs5iQlUL7Cl-h0A-amLfQz02d5ulrLjiGu4MQ0QVZ92yDcn9xweLWLg/exec";
