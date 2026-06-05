@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BitHuB - Event</title>
     <link rel="icon" href="bit2.png">
+  <link rel="preload" href="Anurag.jpg" as="image" fetchpriority="high">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -57,21 +58,12 @@
           </div>
         </div>
       </div>
-
 <script>
 (function(){
-  const widget = document.getElementById('trends-list');
+  const container = document.getElementById('trends-list');
+  if (!container) return;
   const scriptUrl = "https://script.google.com/macros/s/AKfycbzDXNGtTWpYHsMDSlXFeeVWpepgNEDuvGkRaqBjmwvUGHNAwvJXWznu0BQiTcrqrzOAKg/exec";
-
-  async function fetchTrends(){
-    try{
-      // show loader
-      widget.innerHTML = '<div class="trends-loader"><div>Loading data</div><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
-      const res = await fetch(scriptUrl);
-      const obj = await res.json();
-      renderChart(obj.results || []);
-    }catch(e){ widget.innerHTML = '<div style="color:#555;font-size:11px;padding:16px;letter-spacing:0.04em;text-transform:uppercase;">Unable to load data.</div>'; console.error(e); }
-  }
+  let cachedItems = [];
 
   function createSVG(tag, attrs){
     const el = document.createElementNS('http://www.w3.org/2000/svg', tag);
@@ -79,112 +71,240 @@
     return el;
   }
 
+  async function fetchTrends(){
+    container.innerHTML='<div class="trends-loader"><div>Loading data</div><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
+    try{
+      const res = await fetch(scriptUrl); const obj = await res.json();
+      cachedItems = obj.results || [];
+      renderChart(cachedItems);
+    }catch(e){ container.innerHTML='<div style="color:#555;font-size:11px;padding:16px;letter-spacing:0.04em;text-transform:uppercase;">Unable to load data.</div>'; console.error(e); }
+  }
+
   function renderChart(items){
-    widget.innerHTML = '';
-    if (!items.length){ widget.innerHTML = '<div style="color:#555;font-size:11px;padding:16px;letter-spacing:0.04em;text-transform:uppercase;">No activity in the last 12 hours.</div>'; return; }
+    container.innerHTML='';
+    container.style.overflowX='hidden';
+    container.style.overflowY='hidden';
 
-    // chart dimensions
+    if(!items.length){
+      container.innerHTML='<div style="color:#555;font-size:11px;padding:16px;letter-spacing:0.04em;text-transform:uppercase;">No activity in the last 12 hours.</div>';
+      return;
+    }
+
     const padding = { top: 24, right: 20, bottom: 72, left: 56 };
-    const parentWidth = Math.max(360, widget.parentElement.clientWidth || 920);
+    const parentWidth = container.clientWidth || 360;
     const containerH = 320;
-
-    const barCount = items.length;
-    const gap = Math.max(6, Math.round(parentWidth * 0.008));
-    const defaultInnerW = Math.max(300, parentWidth - padding.left - padding.right);
-    let barWidth = Math.floor((defaultInnerW - (barCount + 1) * gap) / barCount);
-    const minBarWidth = 20;
-    const maxBarWidth = 120;
-    if (barWidth > maxBarWidth) barWidth = maxBarWidth;
-    if (barWidth < minBarWidth) barWidth = minBarWidth;
-
-    const requiredInnerW = (barCount * barWidth) + ((barCount + 1) * gap);
-    const containerW = padding.left + padding.right + Math.max(defaultInnerW, requiredInnerW);
-    const width = containerW - padding.left - padding.right;
+    const innerW = parentWidth - padding.left - padding.right;
     const height = containerH - padding.top - padding.bottom;
 
-    const svg = createSVG('svg', { width: containerW, height: containerH, viewBox: `0 0 ${containerW} ${containerH}`, role: 'img', 'aria-label': 'Trending subjects' });
-
-    const title = createSVG('title', {});
-    title.textContent = 'Hot : In demand subjects — last 12 hours';
-    svg.appendChild(title);
-
-    const maxClicks = Math.max(...items.map(i=>i.clicks));
+    const maxClicks = Math.max(...items.map(i => i.clicks));
     function niceCeil(v){
-      if (v <= 5) return 5;
-      if (v <= 10) return Math.ceil(v/5)*5;
-      if (v <= 50) return Math.ceil(v/10)*10;
-      if (v <= 200) return Math.ceil(v/20)*20;
-      var p = Math.pow(10, Math.floor(Math.log10(v)));
-      return Math.ceil(v / p) * p;
+      if(v<=5) return 5;
+      if(v<=10) return Math.ceil(v/5)*5;
+      if(v<=50) return Math.ceil(v/10)*10;
+      if(v<=200) return Math.ceil(v/20)*20;
+      const p=Math.pow(10,Math.floor(Math.log10(v)));
+      return Math.ceil(v/p)*p;
     }
     const yMax = Math.max(1, niceCeil(maxClicks));
     const ticks = 4;
 
-    const g = createSVG('g', { transform: `translate(${padding.left},${padding.top})` });
+    const barWidth = 36;
+    const gap = 12;
+    const barCount = items.length;
+    const singleSetW = barCount * (barWidth + gap);
+    const isScrolling = singleSetW > innerW;
 
-    // Y axis lines and labels
-    for (let t = 0; t <= ticks; t++){
-      const yVal = yMax * (t / ticks);
-      const y = height - (yVal / yMax) * height;
-      const line = createSVG('line', { x1: 0, y1: y, x2: width, y2: y, stroke: '#1e1e1e', 'stroke-width': 1 });
-      g.appendChild(line);
-      const lbl = createSVG('text', { x: -10, y: y + 4, 'text-anchor': 'end', 'font-size': 10, fill: '#444', 'font-family': 'Inter, sans-serif' });
-      lbl.textContent = String(Math.round(yVal));
-      g.appendChild(lbl);
+    const svg = createSVG('svg', {
+      width: '100%',
+      height: containerH,
+      viewBox: `0 0 ${parentWidth} ${containerH}`,
+      role: 'img',
+      'aria-label': 'Trending subjects'
+    });
+    
+    const titleEl = createSVG('title',{});
+    titleEl.textContent = 'Hot: In-demand subjects — last 12 h';
+    svg.appendChild(titleEl);
+
+    // Inject marquee animation styles
+    if (isScrolling) {
+      const styleEl = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+      const scrollDuration = (singleSetW / 40).toFixed(1); // 40px per second
+      styleEl.textContent = `
+        @keyframes chartMarquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-${singleSetW}px); }
+        }
+        .marquee-group {
+          animation: chartMarquee ${scrollDuration}s linear infinite;
+        }
+        .marquee-group:hover {
+          animation-play-state: paused;
+        }
+      `;
+      svg.appendChild(styleEl);
     }
 
-    // X axis line
-    const xAxisY = height;
-    const xAxisLine = createSVG('line', { x1: 0, y1: xAxisY, x2: width, y2: xAxisY, stroke: '#222', 'stroke-width': 1 });
-    g.appendChild(xAxisLine);
+    const defs = createSVG('defs', {});
+    const clipPath = createSVG('clipPath', { id: 'chart-clip' });
+    const clipRect = createSVG('rect', {
+      x: 0,
+      y: -padding.top,
+      width: innerW,
+      height: containerH
+    });
+    clipPath.appendChild(clipRect);
+    defs.appendChild(clipPath);
+    svg.appendChild(defs);
 
-    // bars
-    function shortLabel(s){
-      const ss = String(s || '');
-      if (ss.indexOf('Environmental') !== -1) return 'EVS';
-      if (ss.indexOf('Chemistry Lab') !== -1) return 'Chem Lab';
-      if (ss.indexOf('Physics Lab') !== -1) return 'Phy Lab';
-      if (ss.indexOf('Communication') !== -1) return 'Comm.';
-      if (ss.indexOf('Biology') !== -1) return 'Bio';
-      return ss;
+    // Static Grid + Y axis
+    const staticG = createSVG('g', { transform: `translate(${padding.left},${padding.top})` });
+    for(let t = 0; t <= ticks; t++){
+      const yv = yMax * (t / ticks);
+      const gy = height - (yv / yMax) * height;
+      const gl = createSVG('line',{x1:0,y1:gy,x2:innerW,y2:gy,stroke:'#1e1e1e','stroke-width':1});
+      staticG.appendChild(gl);
+      const gt = createSVG('text',{x:-8,y:gy+4,'text-anchor':'end','font-size':10,fill:'#444444','font-family':'Inter,sans-serif'});
+      gt.textContent = Math.round(yv);
+      staticG.appendChild(gt);
     }
-    items.forEach((it, i) => {
-      const x = gap + i * (barWidth + gap);
-      const h = (it.clicks / yMax) * height;
-      const y = height - h;
 
-      const rect = createSVG('rect', { x: x, y: y, width: barWidth, height: Math.max(1,h), fill: '#2a2a2a', rx: 0, ry: 0 });
-      g.appendChild(rect);
+    // X-axis baseline
+    staticG.appendChild(createSVG('line',{x1:0,y1:height,x2:innerW,y2:height,stroke:'#222222','stroke-width':1}));
 
-      // accent top
-      const topLine = createSVG('rect', { x: x, y: y, width: barWidth, height: 2, fill: '#4a90d9', rx: 0, ry: 0 });
-      g.appendChild(topLine);
+    // Y-axis label
+    const yLbl = createSVG('text',{
+      x: -(padding.left - 10), y: height/2,
+      transform: `rotate(-90 ${-(padding.left-10)} ${height/2})`,
+      'text-anchor':'middle','font-size':10,fill:'#444444','font-family':'Inter,sans-serif'
+    });
+    yLbl.textContent = 'Clicks';
+    staticG.appendChild(yLbl);
+    svg.appendChild(staticG);
 
-      const countLabel = createSVG('text', { x: x + barWidth/2, y: y - 6, 'text-anchor': 'middle', 'font-size': 10, fill: '#666', 'font-family': 'Inter, sans-serif', 'font-weight': '600' });
-      countLabel.textContent = it.clicks;
-      g.appendChild(countLabel);
-
-      const raw = shortLabel(it.subject);
-      const subj = raw.length > 14 ? raw.slice(0,14) + '…' : raw;
-      const xLabel = createSVG('text', { x: x + barWidth/2, y: xAxisY + 16, 'text-anchor': 'middle', 'font-size': 10, fill: '#444', 'font-family': 'Inter, sans-serif' });
-      xLabel.textContent = subj;
-      g.appendChild(xLabel);
+    // Clipped scrolling group
+    const clippedG = createSVG('g', {
+      transform: `translate(${padding.left},${padding.top})`,
+      'clip-path': 'url(#chart-clip)'
     });
 
-    const yLabel = createSVG('text', { x: -padding.left + 10, y: height/2, transform: `rotate(-90 ${-padding.left+10} ${height/2})`, 'text-anchor': 'middle', 'font-size': 10, fill: '#444', 'font-family': 'Inter, sans-serif' });
-    yLabel.textContent = 'Clicks';
-    g.appendChild(yLabel);
+    const marqueeG = createSVG('g', { class: 'marquee-group' });
 
-    svg.appendChild(g);
-    try {
-      const wrap = widget.parentElement;
-      wrap.style.overflowX = (containerW > widget.parentElement.clientWidth) ? 'auto' : '';
-    } catch (e) {}
-    widget.appendChild(svg);
+    function shortLabel(s){
+      const ss = String(s||'');
+      if(ss.includes('Environmental')) return 'EVS';
+      if(ss.includes('Chemistry Lab')) return 'Chem Lab';
+      if(ss.includes('Physics Lab'))   return 'Phy Lab';
+      if(ss.includes('Communication')) return 'Comm.';
+      if(ss.includes('Biology'))       return 'Bio';
+      return ss;
+    }
+
+    function drawBarSet(xOffset) {
+      items.forEach((it, i) => {
+        const x = xOffset + (isScrolling ? 0 : (innerW - singleSetW) / 2) + gap/2 + i * (barWidth + gap);
+        const h = (it.clicks / yMax) * height;
+        const y = height - h;
+        const barH = Math.max(1, h);
+
+        const isHot  = it.clicks >= maxClicks * 0.67 && maxClicks > 1;
+        const barCol = isHot ? '#2a3a5a' : '#222222';
+        const topCol = isHot ? '#4a90d9' : '#555555';
+
+        const barG = createSVG('g', { style: 'cursor: pointer;' });
+
+        const rect = createSVG('rect',{ x, y, width:barWidth, height:barH, fill:barCol, rx:1 });
+        
+        // SMIL growth animation on load
+        const animH = createSVG('animate',{
+          attributeName:'height', from:'0', to:String(barH),
+          dur:'0.55s', begin:`${(i*0.05).toFixed(2)}s`, fill:'freeze',
+          calcMode:'spline', keyTimes:'0;1', keySplines:'0.22 1 0.36 1'
+        });
+        const animY = createSVG('animate',{
+          attributeName:'y', from:String(height), to:String(y),
+          dur:'0.55s', begin:`${(i*0.05).toFixed(2)}s`, fill:'freeze',
+          calcMode:'spline', keyTimes:'0;1', keySplines:'0.22 1 0.36 1'
+        });
+        rect.appendChild(animH);
+        rect.appendChild(animY);
+        barG.appendChild(rect);
+
+        // Accent top cap
+        const cap = createSVG('rect',{ x, y, width:barWidth, height:2, fill:topCol, rx:1 });
+        const capAnimH = createSVG('animate',{
+          attributeName:'opacity', from:'0', to:'1',
+          dur:'0.2s', begin:`${(i*0.05+0.45).toFixed(2)}s`, fill:'freeze'
+        });
+        const capAnimY = createSVG('animate',{
+          attributeName:'y', from:String(height), to:String(y),
+          dur:'0.55s', begin:`${(i*0.05).toFixed(2)}s`, fill:'freeze',
+          calcMode:'spline', keyTimes:'0;1', keySplines:'0.22 1 0.36 1'
+        });
+        cap.appendChild(capAnimH);
+        cap.appendChild(capAnimY);
+        cap.setAttribute('opacity','0');
+        barG.appendChild(cap);
+
+        // Click count label
+        const cnt = createSVG('text',{
+          x: x+barWidth/2, y: Math.max(y - 6, 10),
+          'text-anchor':'middle','font-size':10,
+          fill: isHot ? '#6b9cf7' : '#666666',
+          'font-family':'Inter,sans-serif','font-weight':'600',
+          opacity:'0'
+        });
+        cnt.textContent = it.clicks;
+        const cntAnim = createSVG('animate',{
+          attributeName:'opacity', from:'0', to:String(isHot ? 1 : 0.8),
+          dur:'0.25s', begin:`${(i*0.05+0.5).toFixed(2)}s`, fill:'freeze'
+        });
+        cnt.appendChild(cntAnim);
+        barG.appendChild(cnt);
+
+        // X-axis subject label
+        const raw  = shortLabel(it.subject);
+        const subj = raw.length > 14 ? raw.slice(0,14)+'…' : raw;
+        const xLbl = createSVG('text',{
+          x: x+barWidth/2, y: height+16,
+          'text-anchor':'middle','font-size':10,
+          fill:'#444444','font-family':'Inter,sans-serif', opacity:'0'
+        });
+        xLbl.textContent = subj;
+        const xLblAnim = createSVG('animate',{
+          attributeName:'opacity', from:'0', to:'1',
+          dur:'0.3s', begin:`${(i*0.05+0.35).toFixed(2)}s`, fill:'freeze'
+        });
+        xLbl.appendChild(xLblAnim);
+        
+        if(barWidth < 32){
+          xLbl.setAttribute('transform', `rotate(-35 ${x+barWidth/2} ${height+16})`);
+          xLbl.setAttribute('text-anchor','end');
+        }
+        barG.appendChild(xLbl);
+
+        marqueeG.appendChild(barG);
+      });
+    }
+
+    drawBarSet(0);
+    if (isScrolling) {
+      drawBarSet(singleSetW);
+    }
+
+    clippedG.appendChild(marqueeG);
+    svg.appendChild(clippedG);
+    container.appendChild(svg);
   }
 
   fetchTrends();
   setInterval(fetchTrends, 120000);
+
+  let resizeTimeout;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => { if(cachedItems.length) renderChart(cachedItems); }, 150);
+  });
 })();
 </script>
 
@@ -273,7 +393,7 @@
   </footer>
 
   <div class="reserve">
-    <p>&copy; 2025&ndash;2026 Birla Institute of Technology &mdash; Designed &amp; Developed by Team BitHub. All Rights Reserved.</p>
+    <p>2026&ndash;2027 Birla Institute of Technology | Designed &amp; Developed by Team BitHub. All Rights Reserved.</p>
   </div>
            <!-- reserve end here -->
     <script src="script.js"></script>
