@@ -213,7 +213,7 @@ contributorProfiles.forEach(profile => {
   const MQ = window.matchMedia('(max-width: 640px)');
 
   let applied = false;
-  let reqId = null;
+  let styleEl = null;
 
   function initMarquee() {
     const container = document.querySelector('.contributor-list-container');
@@ -225,7 +225,7 @@ contributorProfiles.forEach(profile => {
       el.classList.add('visible');
     });
 
-    // Clone the cards once to ensure we have enough to fill the screen
+    // Clone the full card set once → seamless infinite loop
     const originals = Array.from(container.querySelectorAll('.contributor-profile'));
     originals.forEach(el => {
       const clone = el.cloneNode(true);
@@ -234,11 +234,13 @@ contributorProfiles.forEach(profile => {
       container.appendChild(clone);
     });
 
+    // Calculate the pixel width of one full set (card + gap)
     const cardW = 400;
-    const gap = 12;
-    const itemWidth = cardW + gap;
-    
-    // Inject structural CSS for the JS marquee
+    const gap   = 12;
+    const setW  = originals.length * (cardW + gap);
+    const speed = originals.length * 4; // seconds — more cards = slower
+
+    // Inject the keyframe + overrides
     styleEl = document.createElement('style');
     styleEl.id = 'contributor-marquee-style';
     styleEl.textContent = `
@@ -251,48 +253,66 @@ contributorProfiles.forEach(profile => {
           gap: ${gap}px !important;
           padding-left: 20px !important;
           padding-right: 20px !important;
+        }
+        @keyframes marqueeRTL {
+          0%   { transform: translate3d(0, 0, 0); }
+          100% { transform: translate3d(-${setW}px, 0, 0); }
+        }
+        .contributor-list-container.marquee-active {
+          animation: marqueeRTL ${speed}s linear infinite;
           width: max-content;
           cursor: default;
           will-change: transform;
         }
         .contributor-list-container.marquee-paused {
-          /* Handled in JS */
+          animation-play-state: paused !important;
+        }
+        
+        /* Remove overflow hidden from profile so the anti-cull hack can expand out */
+        .contributor-list-container.marquee-active .contributor-profile {
+          overflow: visible !important;
+          transition: none !important;
+          transition-delay: 0s !important;
+          opacity: 1 !important;
+          transform: translateZ(0) !important;
+          will-change: transform;
+          backface-visibility: hidden;
+        }
+
+        /* ANTI-CULL HACK: Force mobile browsers to never drop the rasterization 
+           of off-screen cards by artificially expanding their bounding box. */
+        .contributor-list-container.marquee-active .contributor-profile::after {
+          content: '';
+          position: absolute;
+          top: 0;
+          left: -4000px;
+          right: -4000px;
+          height: 1px;
+          pointer-events: none;
+          background: transparent;
+        }
+
+        .contributor-list-container.marquee-active .contributor-front,
+        .contributor-list-container.marquee-active .person-name,
+        .contributor-list-container.marquee-active .person-role,
+        .contributor-list-container.marquee-active .person-bio,
+        .contributor-list-container.marquee-active .social-links,
+        .contributor-list-container.marquee-active .founder-badge,
+        .contributor-list-container.marquee-active .active-developer-badge {
+          transform: translateZ(0);
+          will-change: transform;
+          backface-visibility: hidden;
+        }
+        .contributor-list-container.marquee-active .founder-badge::before,
+        .contributor-list-container.marquee-active .active-developer-badge::before {
+          animation: none !important;
         }
       }
     `;
     document.head.appendChild(styleEl);
 
-    // JS Continuous Loop Variables
-    let currentX = 0;
-    let lastTime = performance.now();
-    const pixelsPerSecond = 100; // Adjust speed as needed
-
-    function tick(now) {
-      if (!applied) return;
-      
-      const dt = (now - lastTime) / 1000;
-      lastTime = now;
-      
-      // Cap dt to prevent massive jumps if tab is inactive
-      const safeDt = Math.min(dt, 0.1);
-
-      if (!container.classList.contains('marquee-paused')) {
-        currentX -= pixelsPerSecond * safeDt;
-        
-        // If the first card has fully moved off-screen to the left
-        if (currentX <= -itemWidth) {
-          currentX += itemWidth;
-          // Move the first element to the end of the container
-          container.appendChild(container.firstElementChild);
-        }
-        
-        container.style.transform = `translate3d(${currentX}px, 0, 0)`;
-      }
-      
-      reqId = requestAnimationFrame(tick);
-    }
-    
-    reqId = requestAnimationFrame(tick);
+    // Start scrolling
+    requestAnimationFrame(() => container.classList.add('marquee-active'));
 
     // Pause on touch, resume on lift
     container.addEventListener('touchstart', () =>
@@ -304,22 +324,10 @@ contributorProfiles.forEach(profile => {
   function destroyMarquee() {
     if (!applied) return;
     applied = false;
-    if (reqId) {
-      cancelAnimationFrame(reqId);
-      reqId = null;
-    }
     const container = document.querySelector('.contributor-list-container');
     if (container) {
-      container.classList.remove('marquee-paused');
-      container.style.transform = '';
+      container.classList.remove('marquee-active', 'marquee-paused');
       container.querySelectorAll('.marquee-clone').forEach(el => el.remove());
-      
-      // Move any original cards back to their initial order (if they got shuffled)
-      // They have no marquee-clone class.
-      const reals = Array.from(container.querySelectorAll('.contributor-profile:not(.marquee-clone)'));
-      // Sort them by checking text content or simply we know their original order was Suraj, Anurag, Satyam
-      // Since it's a fixed list, we can just append them in the order they currently appear.
-      // Actually, to restore exact order, we'd need a data-index. For simplicity, reload or assume they are close enough.
     }
     if (styleEl) { styleEl.remove(); styleEl = null; }
   }
