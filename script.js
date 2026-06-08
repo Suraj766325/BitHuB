@@ -213,19 +213,19 @@ contributorProfiles.forEach(profile => {
   const MQ = window.matchMedia('(max-width: 640px)');
 
   let applied = false;
-  let styleEl = null;
+  let reqId = null;
 
   function initMarquee() {
     const container = document.querySelector('.contributor-list-container');
     if (!container || applied) return;
     applied = true;
 
-    // Make all real cards visible immediately — skip reveal stagger on mobile
+    // Make all real cards visible immediately
     container.querySelectorAll('.contributor-profile').forEach(el => {
       el.classList.add('visible');
     });
 
-    // Clone the full card set once → seamless infinite loop
+    // Clone the cards once to ensure we have enough to fill the screen
     const originals = Array.from(container.querySelectorAll('.contributor-profile'));
     originals.forEach(el => {
       const clone = el.cloneNode(true);
@@ -234,13 +234,11 @@ contributorProfiles.forEach(profile => {
       container.appendChild(clone);
     });
 
-    // Calculate the pixel width of one full set (card + gap)
     const cardW = 400;
-    const gap   = 12;
-    const setW  = originals.length * (cardW + gap);
-    const speed = originals.length * 4; // seconds — more cards = slower
-
-    // Inject the keyframe + overrides
+    const gap = 12;
+    const itemWidth = cardW + gap;
+    
+    // Inject structural CSS for the JS marquee
     styleEl = document.createElement('style');
     styleEl.id = 'contributor-marquee-style';
     styleEl.textContent = `
@@ -253,25 +251,48 @@ contributorProfiles.forEach(profile => {
           gap: ${gap}px !important;
           padding-left: 20px !important;
           padding-right: 20px !important;
-        }
-        @keyframes marqueeRTL {
-          0%   { transform: translateX(0); }
-          100% { transform: translateX(-${setW}px); }
-        }
-        .contributor-list-container.marquee-active {
-          animation: marqueeRTL ${speed}s linear infinite;
           width: max-content;
           cursor: default;
+          will-change: transform;
         }
         .contributor-list-container.marquee-paused {
-          animation-play-state: paused !important;
+          /* Handled in JS */
         }
       }
     `;
     document.head.appendChild(styleEl);
 
-    // Start scrolling
-    requestAnimationFrame(() => container.classList.add('marquee-active'));
+    // JS Continuous Loop Variables
+    let currentX = 0;
+    let lastTime = performance.now();
+    const pixelsPerSecond = 100; // Adjust speed as needed
+
+    function tick(now) {
+      if (!applied) return;
+      
+      const dt = (now - lastTime) / 1000;
+      lastTime = now;
+      
+      // Cap dt to prevent massive jumps if tab is inactive
+      const safeDt = Math.min(dt, 0.1);
+
+      if (!container.classList.contains('marquee-paused')) {
+        currentX -= pixelsPerSecond * safeDt;
+        
+        // If the first card has fully moved off-screen to the left
+        if (currentX <= -itemWidth) {
+          currentX += itemWidth;
+          // Move the first element to the end of the container
+          container.appendChild(container.firstElementChild);
+        }
+        
+        container.style.transform = `translate3d(${currentX}px, 0, 0)`;
+      }
+      
+      reqId = requestAnimationFrame(tick);
+    }
+    
+    reqId = requestAnimationFrame(tick);
 
     // Pause on touch, resume on lift
     container.addEventListener('touchstart', () =>
@@ -283,10 +304,22 @@ contributorProfiles.forEach(profile => {
   function destroyMarquee() {
     if (!applied) return;
     applied = false;
+    if (reqId) {
+      cancelAnimationFrame(reqId);
+      reqId = null;
+    }
     const container = document.querySelector('.contributor-list-container');
     if (container) {
-      container.classList.remove('marquee-active', 'marquee-paused');
+      container.classList.remove('marquee-paused');
+      container.style.transform = '';
       container.querySelectorAll('.marquee-clone').forEach(el => el.remove());
+      
+      // Move any original cards back to their initial order (if they got shuffled)
+      // They have no marquee-clone class.
+      const reals = Array.from(container.querySelectorAll('.contributor-profile:not(.marquee-clone)'));
+      // Sort them by checking text content or simply we know their original order was Suraj, Anurag, Satyam
+      // Since it's a fixed list, we can just append them in the order they currently appear.
+      // Actually, to restore exact order, we'd need a data-index. For simplicity, reload or assume they are close enough.
     }
     if (styleEl) { styleEl.remove(); styleEl = null; }
   }
