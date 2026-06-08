@@ -129,9 +129,9 @@ contributorProfiles.forEach(profile => {
     }
 });
 
-// ── Profile picture: enlarge-to-card + marquee pause ─────
+// ── Profile picture: marquee pause ─────
 (function () {
-  let activeCard = null; // the .contributor-profile with expanded image
+  let pauseTimeout = null;
 
   function getMarqueeContainer() {
     return document.querySelector('.contributor-list-container');
@@ -144,67 +144,21 @@ contributorProfiles.forEach(profile => {
 
   function resumeMarquee() {
     const c = getMarqueeContainer();
-    // Only resume if it's actually animating (marquee-active present)
     if (c && c.classList.contains('marquee-active')) {
       c.classList.remove('marquee-paused');
     }
-  }
-
-  function collapseCard(card) {
-    if (!card) return;
-    const img = card.querySelector('.profile-picture');
-    if (img) img.classList.remove('enlarged');
-    card.classList.remove('img-expanded');
-    activeCard = null;
-    resumeMarquee();
-  }
-
-  function expandCard(card) {
-    // Collapse any previously open card first
-    if (activeCard && activeCard !== card) {
-      collapseCard(activeCard);
-    }
-    const img = card.querySelector('.profile-picture');
-    if (!img) return;
-
-    const isAlreadyExpanded = img.classList.contains('enlarged');
-    if (isAlreadyExpanded) {
-      // Toggle off
-      collapseCard(card);
-      return;
-    }
-
-    img.classList.add('enlarged');
-    card.classList.add('img-expanded');
-    activeCard = card;
-    pauseMarquee();
   }
 
   // Listen on each profile picture
   document.querySelectorAll('.profile-picture').forEach(picture => {
     picture.addEventListener('click', (e) => {
       e.stopPropagation();
-      const card = picture.closest('.contributor-profile');
-      if (card) expandCard(card);
+      pauseMarquee();
+      clearTimeout(pauseTimeout);
+      pauseTimeout = setTimeout(() => {
+        resumeMarquee();
+      }, 4000);
     });
-  });
-
-  // Clicking directly on the card (but NOT on the image) collapses if expanded
-  document.querySelectorAll('.contributor-profile').forEach(card => {
-    card.addEventListener('click', (e) => {
-      // If the click came from the image, handled above
-      if (e.target.classList.contains('profile-picture')) return;
-      // Clicking elsewhere inside an expanded card collapses it
-      if (activeCard === card) {
-        e.stopPropagation();
-        collapseCard(card);
-      }
-    });
-  });
-
-  // Clicking outside any contributor card collapses the active one
-  document.addEventListener('click', () => {
-    if (activeCard) collapseCard(activeCard);
   });
 })();
 

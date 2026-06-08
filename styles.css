@@ -492,10 +492,11 @@ nav {
 .contributor-list-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 0;
+  gap: 24px;
+  justify-content: center;
   max-width: 1440px;
   margin: 0 auto;
-  border: 1px solid var(--border);
+  border: none;
 }
 
 /* â”€â”€ Contributor Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
@@ -515,7 +516,7 @@ nav {
   opacity: 1;
   transform: translate3d(0, 0, 0);
   transition: opacity 0.3s ease;
-  border-right: 1px solid var(--border);
+  border: 1px solid var(--border);
   position: relative;
   min-width: 0;
 }
@@ -577,7 +578,7 @@ nav {
   border: none !important;
   display: block;
   margin-bottom: 0;
-  cursor: zoom-in;
+  cursor: pointer;
   transition: border-color var(--t), width 0.35s cubic-bezier(0.4,0,0.2,1),
               height 0.35s cubic-bezier(0.4,0,0.2,1), margin 0.35s cubic-bezier(0.4,0,0.2,1),
               border-radius 0.35s ease, box-shadow 0.35s ease;
@@ -1350,3 +1351,5 @@ body::after, html::after { content: none !important; display: none !important; }
     color: #333333;
   }
 }
+
+:where(#project-contributors-bar *), :where(#project-contributors-bar *::before), :where(#project-contributors-bar *::after) { box-sizing: border-box; margin: 0; padding: 0; }
