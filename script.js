@@ -214,75 +214,134 @@ contributorProfiles.forEach(profile => {
 
   let applied = false;
   let styleEl = null;
+  let imagesPreloaded = false;
+
+  function preloadAllImages() {
+    return new Promise((resolve) => {
+      const container = document.querySelector('.contributor-list-container');
+      if (!container) {
+        resolve();
+        return;
+      }
+
+      const images = container.querySelectorAll('.profile-picture');
+      let loadedCount = 0;
+      let totalImages = images.length;
+
+      if (totalImages === 0) {
+        resolve();
+        return;
+      }
+
+      // Force images to load and cache
+      images.forEach(img => {
+        const tempImg = new Image();
+        tempImg.onload = () => {
+          loadedCount++;
+          if (loadedCount === totalImages) {
+            imagesPreloaded = true;
+            resolve();
+          }
+        };
+        tempImg.onerror = () => {
+          loadedCount++;
+          if (loadedCount === totalImages) {
+            imagesPreloaded = true;
+            resolve();
+          }
+        };
+        tempImg.src = img.src;
+      });
+
+      // Timeout fallback
+      setTimeout(() => {
+        imagesPreloaded = true;
+        resolve();
+      }, 1500);
+    });
+  }
 
   function initMarquee() {
     const container = document.querySelector('.contributor-list-container');
     if (!container || applied) return;
     applied = true;
 
-    // Make all real cards visible immediately — skip reveal stagger on mobile
-    container.querySelectorAll('.contributor-profile').forEach(el => {
-      el.classList.add('visible');
-    });
+    // Preload all images before starting marquee
+    preloadAllImages().then(() => {
+      // Make all real cards visible immediately — skip reveal stagger on mobile
+      container.querySelectorAll('.contributor-profile').forEach(el => {
+        el.classList.add('visible');
+      });
 
-    // Clone the full card set once → seamless infinite loop
-    const originals = Array.from(container.querySelectorAll('.contributor-profile'));
-    originals.forEach(el => {
-      const clone = el.cloneNode(true);
-      clone.setAttribute('aria-hidden', 'true');
-      clone.classList.add('visible', 'marquee-clone');
-      container.appendChild(clone);
-    });
+      // Clone the full card set multiple times for seamless looping
+      const originals = Array.from(container.querySelectorAll('.contributor-profile:not(.marquee-clone)'));
+      const cloneCount = 2; // Create 2 copies for seamless infinite loop
 
-    // Calculate the pixel width of one full set (card + gap)
-    const cardW = 400;
-    const gap   = 12;
-    const setW  = originals.length * (cardW + gap);
-    const speed = originals.length * 4; // seconds — more cards = slower
-
-    // Inject the keyframe + overrides
-    styleEl = document.createElement('style');
-    styleEl.id = 'contributor-marquee-style';
-    styleEl.textContent = `
-      @media (max-width: 640px) {
-        .contributor-list-container {
-          overflow: hidden !important;
-          -webkit-mask-image: none !important;
-          mask-image: none !important;
-          flex-wrap: nowrap !important;
-          gap: ${gap}px !important;
-          padding-left: 20px !important;
-          padding-right: 20px !important;
-        }
-        @keyframes marqueeRTL {
-          0%   { transform: translateX(0); }
-          100% { transform: translateX(-${setW}px); }
-        }
-        .contributor-list-container.marquee-active {
-          animation: marqueeRTL ${speed}s linear infinite;
-          width: max-content;
-          cursor: default;
-        }
-        .contributor-list-container.marquee-paused {
-          animation-play-state: paused !important;
-        }
+      for (let i = 0; i < cloneCount; i++) {
+        originals.forEach(el => {
+          const clone = el.cloneNode(true);
+          clone.setAttribute('aria-hidden', 'true');
+          clone.classList.add('visible', 'marquee-clone');
+          container.appendChild(clone);
+        });
       }
-    `;
-    document.head.appendChild(styleEl);
 
-    // Start scrolling
-    requestAnimationFrame(() => container.classList.add('marquee-active'));
+      // Calculate the pixel width of one full set (card + gap)
+      const cardW = 400;
+      const gap = 12;
+      const oneSetW = originals.length * (cardW + gap);
+      const speed = originals.length * 4; // seconds — more cards = slower
 
-    // Pause on touch, resume on lift
-    container.addEventListener('touchstart', () =>
-      container.classList.add('marquee-paused'), { passive: true });
-    container.addEventListener('touchend', () =>
-      container.classList.remove('marquee-paused'), { passive: true });
+      // Inject the keyframe + overrides with seamless loop
+      styleEl = document.createElement('style');
+      styleEl.id = 'contributor-marquee-style';
+      styleEl.textContent = `
+        @media (max-width: 640px) {
+          .contributor-list-container {
+            overflow: hidden !important;
+            -webkit-mask-image: none !important;
+            mask-image: none !important;
+            flex-wrap: nowrap !important;
+            gap: ${gap}px !important;
+            padding-left: 20px !important;
+            padding-right: 20px !important;
+          }
+          @keyframes marqueeRTL {
+            0%   { transform: translateX(0); }
+            ${(100 / cloneCount).toFixed(2)}% { transform: translateX(-${oneSetW}px); }
+            100% { transform: translateX(-${oneSetW * cloneCount}px); }
+          }
+          .contributor-list-container.marquee-active {
+            animation: marqueeRTL ${speed * cloneCount}s linear infinite;
+            width: max-content;
+            cursor: default;
+            will-change: transform;
+            transform: translate3d(0, 0, 0);
+          }
+          .contributor-list-container.marquee-paused {
+            animation-play-state: paused !important;
+          }
+        }
+      `;
+      document.head.appendChild(styleEl);
+
+      // Start scrolling after clones are ready
+      requestAnimationFrame(() => {
+        container.classList.add('marquee-active');
+      });
+
+      // Pause on touch, resume on lift
+      container.addEventListener('touchstart', () =>
+        container.classList.add('marquee-paused'), { passive: true });
+      container.addEventListener('touchend', () =>
+        container.classList.remove('marquee-paused'), { passive: true });
+    });
   }
 
   function destroyMarquee() {
     if (!applied) return;
     applied = false;
+    imagesPreloaded = false;
     const container = document.querySelector('.contributor-list-container');
     if (container) {
       container.classList.remove('marquee-active', 'marquee-paused');
