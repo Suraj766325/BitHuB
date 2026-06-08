@@ -234,11 +234,27 @@ contributorProfiles.forEach(profile => {
       container.appendChild(clone);
     });
 
-    // Calculate the pixel width of one full set (card + gap)
     const cardW = 400;
     const gap   = 12;
-    const setW  = originals.length * (cardW + gap);
-    const speed = originals.length * 4; // seconds — more cards = slower
+    const itemW = cardW + gap;
+    const allCards = container.querySelectorAll('.contributor-profile');
+    const N = allCards.length; // 6 cards
+    const speed = N * 4; // 24 seconds
+    const totalDist = N * itemW; // 2472px
+    const startX = totalDist - itemW; // 2060px
+    const endX = -itemW; // -412px
+
+    let delayCSS = '';
+    allCards.forEach((card, index) => {
+      // index 0 gets max negative delay to appear at 0px
+      const delay = -((N - 1 - index) * (speed / N));
+      delayCSS += `
+        .contributor-list-container.marquee-active .contributor-profile:nth-child(${index + 1}) {
+          animation: slideCard ${speed}s linear infinite;
+          animation-delay: ${delay}s;
+        }
+      `;
+    });
 
     // Inject the keyframe + overrides
     styleEl = document.createElement('style');
@@ -249,60 +265,54 @@ contributorProfiles.forEach(profile => {
           overflow: hidden !important;
           -webkit-mask-image: none !important;
           mask-image: none !important;
-          flex-wrap: nowrap !important;
-          gap: ${gap}px !important;
-          padding-left: 20px !important;
-          padding-right: 20px !important;
+          display: block !important;
+          position: relative !important;
+          height: 224px !important; /* 200 card + 24 padding */
+          padding: 0 !important; 
         }
-        @keyframes marqueeRTL {
-          0%   { transform: translate3d(0, 0, 0); }
-          100% { transform: translate3d(-${setW}px, 0, 0); }
+
+        /* Replace expensive alpha mask with performant solid gradients to eliminate friction */
+        .contributor-list-container::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; bottom: 0;
+          width: 30px;
+          background: linear-gradient(90deg, #0c0c0c 0%, transparent 100%);
+          z-index: 10;
+          pointer-events: none;
         }
-        .contributor-list-container.marquee-active {
-          animation: marqueeRTL ${speed}s linear infinite;
-          width: max-content;
-          cursor: default;
-          will-change: transform;
-        }
-        .contributor-list-container.marquee-paused {
-          animation-play-state: paused !important;
+        .contributor-list-container::after {
+          content: '';
+          position: absolute;
+          top: 0; right: 0; bottom: 0;
+          width: 30px;
+          background: linear-gradient(270deg, #0c0c0c 0%, transparent 100%);
+          z-index: 10;
+          pointer-events: none;
         }
         
-        /* Remove overflow hidden from profile so the anti-cull hack can expand out */
         .contributor-list-container.marquee-active .contributor-profile {
-          overflow: visible !important;
+          position: absolute !important;
+          top: 4px !important;
+          left: 0 !important;
+          margin-left: 20px !important; /* Visual padding */
           transition: none !important;
           transition-delay: 0s !important;
           opacity: 1 !important;
-          transform: translateZ(0) !important;
           will-change: transform;
-          backface-visibility: hidden;
         }
 
-        /* ANTI-CULL HACK: Force mobile browsers to never drop the rasterization 
-           of off-screen cards by artificially expanding their bounding box. */
-        .contributor-list-container.marquee-active .contributor-profile::after {
-          content: '';
-          position: absolute;
-          top: 0;
-          left: -4000px;
-          right: -4000px;
-          height: 1px;
-          pointer-events: none;
-          background: transparent;
+        @keyframes slideCard {
+          0%   { transform: translate3d(${startX}px, 0, 0); }
+          100% { transform: translate3d(${endX}px, 0, 0); }
         }
 
-        .contributor-list-container.marquee-active .contributor-front,
-        .contributor-list-container.marquee-active .person-name,
-        .contributor-list-container.marquee-active .person-role,
-        .contributor-list-container.marquee-active .person-bio,
-        .contributor-list-container.marquee-active .social-links,
-        .contributor-list-container.marquee-active .founder-badge,
-        .contributor-list-container.marquee-active .active-developer-badge {
-          transform: translateZ(0);
-          will-change: transform;
-          backface-visibility: hidden;
+        ${delayCSS}
+
+        .contributor-list-container.marquee-paused .contributor-profile {
+          animation-play-state: paused !important;
         }
+        
         .contributor-list-container.marquee-active .founder-badge::before,
         .contributor-list-container.marquee-active .active-developer-badge::before {
           animation: none !important;
