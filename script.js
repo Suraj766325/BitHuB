@@ -213,7 +213,7 @@ contributorProfiles.forEach(profile => {
   const MQ = window.matchMedia('(max-width: 640px)');
 
   let applied = false;
-  let reqId = null;
+  let styleEl = null;
 
   function initMarquee() {
     const container = document.querySelector('.contributor-list-container');
@@ -225,7 +225,7 @@ contributorProfiles.forEach(profile => {
       el.classList.add('visible');
     });
 
-    // Clone the cards once to ensure we have enough to fill the screen
+    // Clone the full card set once → seamless infinite loop
     const originals = Array.from(container.querySelectorAll('.contributor-profile'));
     originals.forEach(el => {
       const clone = el.cloneNode(true);
@@ -235,10 +235,28 @@ contributorProfiles.forEach(profile => {
     });
 
     const cardW = 400;
-    const gap = 12;
-    const itemWidth = cardW + gap;
-    
-    // Inject structural CSS for the JS marquee
+    const gap   = 12;
+    const itemW = cardW + gap;
+    const allCards = container.querySelectorAll('.contributor-profile');
+    const N = allCards.length; // 6 cards
+    const speed = N * 4; // 24 seconds
+    const totalDist = N * itemW; // 2472px
+    const startX = totalDist - itemW; // 2060px
+    const endX = -itemW; // -412px
+
+    let delayCSS = '';
+    allCards.forEach((card, index) => {
+      // index 0 gets max negative delay to appear at 0px
+      const delay = -((N - 1 - index) * (speed / N));
+      delayCSS += `
+        .contributor-list-container.marquee-active .contributor-profile:nth-child(${index + 1}) {
+          animation: slideCard ${speed}s linear infinite;
+          animation-delay: ${delay}s;
+        }
+      `;
+    });
+
+    // Inject the keyframe + overrides
     styleEl = document.createElement('style');
     styleEl.id = 'contributor-marquee-style';
     styleEl.textContent = `
@@ -247,52 +265,64 @@ contributorProfiles.forEach(profile => {
           overflow: hidden !important;
           -webkit-mask-image: none !important;
           mask-image: none !important;
-          flex-wrap: nowrap !important;
-          gap: ${gap}px !important;
-          padding-left: 20px !important;
-          padding-right: 20px !important;
-          width: max-content;
-          cursor: default;
+          display: block !important;
+          position: relative !important;
+          height: 224px !important; /* 200 card + 24 padding */
+          padding: 0 !important; 
+        }
+
+        /* Replace expensive alpha mask with performant solid gradients to eliminate friction */
+        .contributor-list-container::before {
+          content: '';
+          position: absolute;
+          top: 0; left: 0; bottom: 0;
+          width: 30px;
+          background: linear-gradient(90deg, #0c0c0c 0%, transparent 100%);
+          z-index: 10;
+          pointer-events: none;
+        }
+        .contributor-list-container::after {
+          content: '';
+          position: absolute;
+          top: 0; right: 0; bottom: 0;
+          width: 30px;
+          background: linear-gradient(270deg, #0c0c0c 0%, transparent 100%);
+          z-index: 10;
+          pointer-events: none;
+        }
+        
+        .contributor-list-container.marquee-active .contributor-profile {
+          position: absolute !important;
+          top: 4px !important;
+          left: 0 !important;
+          margin-left: 20px !important; /* Visual padding */
+          transition: none !important;
+          transition-delay: 0s !important;
+          opacity: 1 !important;
           will-change: transform;
         }
-        .contributor-list-container.marquee-paused {
-          /* Handled in JS */
+
+        @keyframes slideCard {
+          0%   { transform: translate3d(${startX}px, 0, 0); }
+          100% { transform: translate3d(${endX}px, 0, 0); }
+        }
+
+        ${delayCSS}
+
+        .contributor-list-container.marquee-paused .contributor-profile {
+          animation-play-state: paused !important;
+        }
+        
+        .contributor-list-container.marquee-active .founder-badge::before,
+        .contributor-list-container.marquee-active .active-developer-badge::before {
+          animation: none !important;
         }
       }
     `;
     document.head.appendChild(styleEl);
 
-    // JS Continuous Loop Variables
-    let currentX = 0;
-    let lastTime = performance.now();
-    const pixelsPerSecond = 100; // Adjust speed as needed
-
-    function tick(now) {
-      if (!applied) return;
-      
-      const dt = (now - lastTime) / 1000;
-      lastTime = now;
-      
-      // Cap dt to prevent massive jumps if tab is inactive
-      const safeDt = Math.min(dt, 0.1);
-
-      if (!container.classList.contains('marquee-paused')) {
-        currentX -= pixelsPerSecond * safeDt;
-        
-        // If the first card has fully moved off-screen to the left
-        if (currentX <= -itemWidth) {
-          currentX += itemWidth;
-          // Move the first element to the end of the container
-          container.appendChild(container.firstElementChild);
-        }
-        
-        container.style.transform = `translate3d(${currentX}px, 0, 0)`;
-      }
-      
-      reqId = requestAnimationFrame(tick);
-    }
-    
-    reqId = requestAnimationFrame(tick);
+    // Start scrolling
+    requestAnimationFrame(() => container.classList.add('marquee-active'));
 
     // Pause on touch, resume on lift
     container.addEventListener('touchstart', () =>
@@ -304,22 +334,10 @@ contributorProfiles.forEach(profile => {
   function destroyMarquee() {
     if (!applied) return;
     applied = false;
-    if (reqId) {
-      cancelAnimationFrame(reqId);
-      reqId = null;
-    }
     const container = document.querySelector('.contributor-list-container');
     if (container) {
-      container.classList.remove('marquee-paused');
-      container.style.transform = '';
+      container.classList.remove('marquee-active', 'marquee-paused');
       container.querySelectorAll('.marquee-clone').forEach(el => el.remove());
-      
-      // Move any original cards back to their initial order (if they got shuffled)
-      // They have no marquee-clone class.
-      const reals = Array.from(container.querySelectorAll('.contributor-profile:not(.marquee-clone)'));
-      // Sort them by checking text content or simply we know their original order was Suraj, Anurag, Satyam
-      // Since it's a fixed list, we can just append them in the order they currently appear.
-      // Actually, to restore exact order, we'd need a data-index. For simplicity, reload or assume they are close enough.
     }
     if (styleEl) { styleEl.remove(); styleEl = null; }
   }
