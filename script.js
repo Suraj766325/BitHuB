@@ -35,12 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
         rootMargin: '0px 0px -40px 0px'
     });
 
-    // Only observe on desktop. Mobile marquee forces immediate visibility.
-    if (!window.matchMedia('(max-width: 640px)').matches) {
-        document.querySelectorAll('.contributor-profile').forEach(el => {
-            revealObserver.observe(el);
-        });
-    }
+    // Reveal observer is no longer applied to contributor profiles 
+    // since the marquee runs on all devices now.
 
     // ── Particle effect (kept but subtle) ─────────────────
     createParticles();
@@ -162,10 +158,8 @@ contributorProfiles.forEach(profile => {
   });
 })();
 
-// ── Mobile contributor marquee (right → left, ≤640px only) ──
+// ── Contributor marquee (right → left, all devices) ──
 (function () {
-  const MQ = window.matchMedia('(max-width: 640px)');
-
   let applied = false;
   let styleEl = null;
 
@@ -204,7 +198,6 @@ contributorProfiles.forEach(profile => {
     styleEl = document.createElement('style');
     styleEl.id = 'contributor-marquee-style';
     styleEl.textContent = `
-      @media (max-width: 640px) {
         .contributor-list-container {
           overflow: visible !important; /* Prevent iOS VRAM culling of off-screen elements */
           position: relative !important;
@@ -257,18 +250,21 @@ contributorProfiles.forEach(profile => {
           z-index: 10;
           pointer-events: none;
         }
-      }
     `;
     document.head.appendChild(styleEl);
 
     // Start scrolling
     requestAnimationFrame(() => container.classList.add('marquee-active'));
 
-    // Pause on touch, resume on lift
+    // Pause on touch/mouse, resume on lift/leave
     container.addEventListener('touchstart', () =>
       container.classList.add('marquee-paused'), { passive: true });
     container.addEventListener('touchend', () =>
       container.classList.remove('marquee-paused'), { passive: true });
+    container.addEventListener('mouseenter', () =>
+      container.classList.add('marquee-paused'));
+    container.addEventListener('mouseleave', () =>
+      container.classList.remove('marquee-paused'));
   }
 
   function destroyMarquee() {
@@ -292,10 +288,44 @@ contributorProfiles.forEach(profile => {
     if (styleEl) { styleEl.remove(); styleEl = null; }
   }
 
-  function handleMQ(e) {
-    e.matches ? initMarquee() : destroyMarquee();
+  // Initialize unconditionally
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMarquee);
+  } else {
+    initMarquee();
   }
+})();
 
-  handleMQ(MQ);
-  MQ.addEventListener('change', handleMQ);
+// ── Version Info Toggle ──────────────────────────────────
+(function() {
+    const infoBtn = document.querySelector('.update-info-btn');
+    const updateDetails = document.querySelector('.update-details');
+    let hideTimeout;
+
+    if (infoBtn && updateDetails) {
+        infoBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isActive = updateDetails.classList.contains('active');
+            
+            if (isActive) {
+                updateDetails.classList.remove('active');
+                clearTimeout(hideTimeout);
+            } else {
+                updateDetails.classList.add('active');
+                // Automatically hide after 10 seconds
+                clearTimeout(hideTimeout);
+                hideTimeout = setTimeout(() => {
+                    updateDetails.classList.remove('active');
+                }, 10000);
+            }
+        });
+
+        // Close when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!updateDetails.contains(e.target) && !infoBtn.contains(e.target)) {
+                updateDetails.classList.remove('active');
+                clearTimeout(hideTimeout);
+            }
+        });
+    }
 })();

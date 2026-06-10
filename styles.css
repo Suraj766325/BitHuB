@@ -790,11 +790,38 @@ nav {
 â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 footer#project-contributors-bar { position: relative; }
 
+.update-info-btn {
+  position: absolute;
+  right: clamp(var(--sp-5), 4vw, var(--sp-10));
+  bottom: clamp(var(--sp-5), 4vw, var(--sp-10));
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--bg-void);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--t);
+}
+
+.update-info-btn:hover {
+  border-color: var(--border-glow);
+  box-shadow: 0 0 16px rgba(107,156,247,0.08);
+  color: var(--text-primary);
+}
+
 .update-details {
   display: inline-block;
   position: absolute;
   right: clamp(var(--sp-5), 4vw, var(--sp-10));
-  bottom: clamp(var(--sp-5), 4vw, var(--sp-10));
+  bottom: calc(clamp(var(--sp-5), 4vw, var(--sp-10)) + 36px);
   padding: var(--sp-3) var(--sp-4);
   background: var(--bg-void);
   border: 1px solid var(--border);
@@ -803,7 +830,16 @@ footer#project-contributors-bar { position: relative; }
   font-size: 10px;
   font-family: var(--font-mono);
   z-index: 4;
-  transition: border-color var(--t), box-shadow var(--t);
+  transition: all var(--t);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+}
+
+.update-details.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 
 .update-details:hover {
@@ -824,12 +860,15 @@ footer#project-contributors-bar { position: relative; }
 .update-details .ud-key  { color: var(--text-secondary); font-weight: 600; margin-right: 4px; }
 .update-details .ud-val  { color: var(--text-muted); }
 
-@media (max-width: 900px) { .update-details { display: none; } }
+@media (max-width: 900px) { 
+  .update-info-btn, .update-details { display: none; } 
+}
 
 /* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    COPYRIGHT BAR
 â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .reserve {
+  position: relative;
   background: var(--bg-body);
   padding: var(--sp-5) var(--sp-8);
   border-top: 1px solid var(--border);
