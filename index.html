@@ -359,8 +359,8 @@
     <div class="crazy-divider" data-label="Departments"></div>
 
     <div class="courses-grid">
-      <a href="dept_ece.html" class="course-card"><span class="course-name">Dept. ECE</span><span class="course-credits">Sem V & VI</span></a>
-      <a href="dept_cheme.html" class="course-card"><span class="course-name">Dept. of Chem Eng</span><span class="course-credits">Sem III - VI</span></a>
+      <a href="dept_ece.html" class="course-card untracked"><span class="course-name">Dept. ECE</span><span class="course-credits">Sem V & VI</span></a>
+      <a href="dept_cheme.html" class="course-card untracked"><span class="course-name">Dept. of Chem Eng</span><span class="course-credits">Sem III - VI</span></a>
     </div>
 
   </section>
@@ -526,7 +526,7 @@
   function showToast(text){ let t=document.getElementById('trends-toast'); if(!t){t=document.createElement('div');t.id='trends-toast';document.body.appendChild(t);} t.textContent=text;t.style.opacity='1'; clearTimeout(t._h); t._h=setTimeout(()=>{t.style.transition='opacity 0.4s';t.style.opacity='0';},3000); }
   function sendClick(subject){ const now=new Date(); const fd=new FormData(); fd.append('subject',subject);fd.append('date',fmt(now,false));fd.append('time',fmt(now,true));fd.append('clientId',getClientId());fd.append('userAgent',navigator.userAgent||''); try{showToast('Tracked: '+subject);}catch(e){} try{if(navigator.sendBeacon){navigator.sendBeacon(scriptUrl,fd);}else{fetch(scriptUrl,{method:'POST',body:fd}).catch(()=>{});}}catch(e){} }
   document.addEventListener('DOMContentLoaded',function(){
-    document.querySelectorAll('a.course-card').forEach(a=>{
+    document.querySelectorAll('a.course-card:not(.untracked)').forEach(a=>{
       a.addEventListener('click',function(){
         const last=parseInt(localStorage.getItem(LAST_CLICK_KEY)||'0',10);
         if(Date.now()-last<COOLDOWN_MS) return;
