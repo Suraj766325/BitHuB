@@ -1,0 +1,1 @@
+var e=`https://13.63.62.68.nip.io`;export{e as t};

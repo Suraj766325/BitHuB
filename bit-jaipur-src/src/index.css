@@ -1,4 +1,4 @@
-/* ----- Google Font Import (must be first) ----- */
+﻿/* ----- Google Font Import (must be first) ----- */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* ============================================================
@@ -2130,6 +2130,7 @@ body::after {
   padding: 2.5rem;
   display: flex;
   flex-direction: column;
+  min-width: 0;
   justify-content: space-between;
   gap: 2rem;
   overflow-y: auto;
@@ -4869,3 +4870,5 @@ body::after {
 
 
 
+.question-render-area .katex { white-space: normal !important; }
+.question-render-area .katex .base { white-space: normal !important; display: inline !important; }

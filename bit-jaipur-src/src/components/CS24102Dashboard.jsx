@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import OnlineJudge from './OnlineJudge';
 import { API_BASE } from '../config';
+import OnlineJudge from './OnlineJudge';
 import './LabDashboard.css';
 
 const CS24102Dashboard = ({ theme, onBack }) => {
@@ -9,7 +9,7 @@ const CS24102Dashboard = ({ theme, onBack }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`${API_BASE}/api/cs-problems`)
+    fetch(API_BASE + '/api/cs-problems')
       .then(res => res.json())
       .then(data => {
         setProblems(data.problems || []);
@@ -52,7 +52,7 @@ const CS24102Dashboard = ({ theme, onBack }) => {
             ) : problems.length === 0 ? (
               <div style={{padding: '2rem', textAlign: 'center', color: 'var(--dash-text-color)'}}>No problems found.</div>
             ) : (
-              <div className="subjects-button-list" style={{display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0 1.5rem 1.5rem', overflowY: 'auto', flex: 1}}>
+              <div className="subjects-button-list" style={{display: 'flex', flexDirection: 'column', gap: '1rem', padding: '0 0.5rem 1rem', overflowY: 'auto', flex: 1}}>
                 {problems.map(prob => (
                   <button 
                     key={prob.problem_id}
@@ -67,7 +67,7 @@ const CS24102Dashboard = ({ theme, onBack }) => {
                         </svg>
                       </div>
                       <div className="btn-content-left">
-                        <span className="btn-primary-title" style={{ fontSize: '1.2rem', textAlign: 'left', whiteSpace: 'normal', lineHeight: '1.3' }}>
+                        <span className="btn-primary-title" style={{ fontSize: '1.05rem', textAlign: 'left', whiteSpace: 'normal', lineHeight: '1.3' }}>
                           Q{prob.question_number}: {prob.title || "Programming Task"}
                         </span>
                       </div>

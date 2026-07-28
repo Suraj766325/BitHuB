@@ -17,10 +17,8 @@ export default defineConfig({
   base: './',
 
   build: {
-    /* Output to ../bit-jaipur directory for GitHub Pages */
-    /* Output to bit-jaipur/ directory at the root */
-    outDir: '../bit-jaipur',
-    emptyOutDir: true,
+    /* Output to dist/ directory */
+    outDir: 'dist',
 
     /* Inline assets smaller than 4KB */
     assetsInlineLimit: 4096,
@@ -56,7 +54,7 @@ export default defineConfig({
   server: {
     /* Dev server port */
     port: 3000,
-    host: '127.0.0.1',
+    host: '0.0.0.0',
     open: true,
     allowedHosts: true,
     /* Proxy backend requests to bypass PNA popup and CORS */

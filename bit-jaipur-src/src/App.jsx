@@ -8,18 +8,28 @@
  */
 
 import { useState, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
+import CampusCard from './components/CampusCard';
+import Toast from './components/Toast';
 
 const SubjectSelector = lazy(() => import('./components/SubjectSelector'));
 const JaipurDashboard = lazy(() => import('./components/JaipurDashboard'));
 const LabDashboard = lazy(() => import('./components/LabDashboard'));
 import confetti from 'canvas-confetti';
 
+/* Import campus images from the images directory */
+import jaipurImg from '../images/jaipur.png';
+import mesraImg from '../images/mesra.png';
+// import mananImg from '../ProfilePics/mananonhisweddingnight.jpg'; // BACKUP 69 EASTER EGG
+
 function App() {
-  const [view, setView] = useState('subject-selector'); // 'landing', 'subject-selector', 'subject-dashboard'
+  const [view, setView] = useState('landing'); // 'landing', 'subject-selector', 'subject-dashboard'
   const [theme, setTheme] = useState('light'); // 'light', 'dark'
   const [selectedSubjectCode, setSelectedSubjectCode] = useState(null);
   
   const [isMobileMode, setIsMobileMode] = useState(false);
+  const [toastVisible, setToastVisible] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const timerRef = useRef(null);
   const wobbleTimeoutRef = useRef(null);
 
   /* Synchronize html theme attribute with React state */
@@ -43,6 +53,25 @@ function App() {
   /* Toggle Light / Dark Mode globally */
   const toggleTheme = useCallback(() => {
     setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
+  }, []);
+
+  /* Show a toast notification when a disabled campus is clicked */
+  const handleDisabledClick = useCallback((campusName) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+
+    setToastMessage(`${campusName} campus is coming soon!`);
+    setToastVisible(true);
+
+    timerRef.current = setTimeout(() => {
+      setToastVisible(false);
+    }, 2500);
+  }, []);
+
+  /* Cleanup timer on unmount */
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
   }, []);
 
   /* Easter egg: listen for '67' to trigger confetti and wobbly page tilt */
@@ -189,7 +218,7 @@ function App() {
           </Suspense>
         );
       }
-    } else {
+    } else if (view === 'subject-selector') {
       content = (
         <Suspense fallback={<div className="practice-loader-container"><div className="practice-spinner"></div></div>}>
           <SubjectSelector
@@ -199,11 +228,63 @@ function App() {
               setSelectedSubjectCode(code);
               setView('subject-dashboard');
             }}
-            onBackToLanding={() => {
-              window.location.href = '../index.html';
-            }}
+            onBackToLanding={() => setView('landing')}
           />
         </Suspense>
+      );
+    } else {
+      content = (
+        <main className="landing-page" id="landing-page">
+          {/* Light/Dark Toggle Switch on landing page top right */}
+          <div className="landing-theme-toggle-wrapper">
+            <button 
+              className="theme-toggle-btn" 
+              onClick={toggleTheme}
+              title={`Switch to ${theme === 'light' ? 'Dark' : 'Light'} Mode`}
+              aria-label="Toggle theme mode"
+              id="landing-theme-toggle"
+            >
+              {theme === 'light' ? (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="toggle-icon">
+                  <circle cx="12" cy="12" r="4" />
+                  <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+                </svg>
+              ) : (
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="toggle-icon">
+                  <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                </svg>
+              )}
+              <span className="theme-toggle-slider">
+                <span className="theme-toggle-knob" />
+              </span>
+            </button>
+          </div>
+
+          <h1 className="landing-title" id="bithub-title">BitHub</h1>
+          <p className="landing-subtitle" id="campus-subtitle">Select your campus</p>
+
+          <div className="campus-grid" id="campus-grid">
+            <CampusCard
+              name="JAIPUR"
+              image={jaipurImg}
+              href="#"
+              disabled={false}
+              onClick={() => setView('subject-selector')}
+            />
+            <CampusCard
+              name="MESRA"
+              image={mesraImg}
+              href="/dev-root/index.html"
+              disabled={false}
+            />
+          </div>
+
+          <Toast message={toastMessage} visible={toastVisible} />
+
+          <footer className="landing-footer" id="landing-footer">
+            © 2025–2026 Birla Institute of Technology | Team BitHub
+          </footer>
+        </main>
       );
     }
 
