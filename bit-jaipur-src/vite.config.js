@@ -17,8 +17,9 @@ export default defineConfig({
   base: './',
 
   build: {
-    /* Output to dist/ directory */
-    outDir: 'dist',
+    /* Output to bit-jaipur/ directory at root */
+    outDir: '../bit-jaipur',
+    emptyOutDir: true,
 
     /* Inline assets smaller than 4KB */
     assetsInlineLimit: 4096,
