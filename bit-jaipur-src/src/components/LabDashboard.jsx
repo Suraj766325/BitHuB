@@ -1,14 +1,13 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { API_BASE } from '../config';
 import CreatorsSection from './CreatorsSection';
 import CS24102Dashboard from './CS24102Dashboard';
-import { API_BASE } from '../config';
-
 import Toast from './Toast';
 import './LabDashboard.css';
 
 const SEM1_LABS = {
   "ME24102": { name: "Engineering Drawing", icon: "pencil" },
-  "EC24102": { name: "Electronics Lab", icon: "chip" },
+  "EC24102": { name: "Electrical Engineering", icon: "chip" },
   "CH24102": { name: "Chemistry Lab", icon: "flask" },
   "PE24102": { name: "Engineering Workshop", icon: "wrench" }
 };
@@ -34,12 +33,7 @@ const shopFiles = {
   ],
   "Fitting": [
     "2025-11-08 13-11-53.pdf",
-    "WhatsApp Unknown 2025-12-04 at 8.04.59 PM.zip",
-    "2025-09-18 15-51-42.pdf",
-    "2025-10-09 15-13-34.pdf",
-    "2025-10-30 15-12-55.pdf",
-    "fitting 1st.zip",
-    "fitting 2nd .zip"
+    "WhatsApp Unknown 2025-12-04 at 8.04.59 PM.zip"
   ],
   "Carpentry": [
     "carpentry .pdf",
@@ -382,12 +376,12 @@ const LabDashboard = ({ subjectCode, theme, onToggleTheme, onBack }) => {
                   <p className="card-title-sub">PDF materials for Engineering Drawing</p>
                 </div>
               </div>
-              <div className="subjects-button-list" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem'}}>
-                {["1. Engg. Drawing Notes .pdf", "2. Drawing Notes.pdf", "3. Proj of Solid.pdf", "ACAD_Basic_Commands.pdf", "autocad-commands.pdf", "isometric.pdf"].map((pdf, idx) => (
+              <div className="subjects-button-list" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '1.5rem'}}>
+                {["1. Engg. Drawing Notes .pdf", "2. Drawing Notes.pdf", "3. Proj of Solid.pdf"].map((pdf, idx) => (
                   <button 
                     key={idx}
                     className="subject-selection-btn"
-                    onClick={() => window.open(`${API_BASE}/study-material/ME24102/${encodeURIComponent(pdf)}`, '_blank')}
+                    onClick={() => window.open(`${API_BASE}/study-material/ME24102/${pdf}`, '_blank')}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1.2rem' }}>
                       {renderFileIcon(false)}
@@ -410,7 +404,7 @@ const LabDashboard = ({ subjectCode, theme, onToggleTheme, onBack }) => {
                   <p className="card-title-sub">Visual examples by topic</p>
                 </div>
               </div>
-              <div className="subjects-button-list" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem'}}>
+              <div className="subjects-button-list" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))', gap: '1.5rem'}}>
                 {meTopics.map((topic, idx) => (
                   <button 
                     key={idx}
@@ -443,7 +437,7 @@ const LabDashboard = ({ subjectCode, theme, onToggleTheme, onBack }) => {
                   <p className="card-title-sub">Select a shop to view its manuals and files</p>
                 </div>
               </div>
-              <div className="subjects-button-list" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem'}}>
+              <div className="subjects-button-list" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 350px), 1fr))', gap: '1.5rem'}}>
                 {Object.keys(shopFiles).map(shop => (
                   <button 
                     key={shop}
@@ -481,7 +475,7 @@ const LabDashboard = ({ subjectCode, theme, onToggleTheme, onBack }) => {
                   <p className="card-title-sub">Official guide for the laboratory</p>
                 </div>
               </div>
-              <div className="subjects-button-list" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem'}}>
+              <div className="subjects-button-list" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 350px), 1fr))', gap: '1.5rem'}}>
                 <button 
                   className="subject-selection-btn"
                   onClick={() => window.open(`${API_BASE}/study-material/PH24102/physics_lab.pdf`, '_blank')}
@@ -518,7 +512,7 @@ const LabDashboard = ({ subjectCode, theme, onToggleTheme, onBack }) => {
                   <p className="card-title-sub">Select an experiment to view the manual pages</p>
                 </div>
               </div>
-              <div className="subjects-button-list" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem'}}>
+              <div className="subjects-button-list" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 350px), 1fr))', gap: '1.5rem'}}>
                 {eeExperiments.map((exp, idx) => (
                   <button 
                     key={idx}
@@ -557,7 +551,7 @@ const LabDashboard = ({ subjectCode, theme, onToggleTheme, onBack }) => {
                   <p className="card-title-sub">Official guide for the laboratory</p>
                 </div>
               </div>
-              <div className="subjects-button-list" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem'}}>
+              <div className="subjects-button-list" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 350px), 1fr))', gap: '1.5rem'}}>
                 <button 
                   className="subject-selection-btn"
                   onClick={() => window.open(`${API_BASE}/study-material/${selectedLab}/${isEC ? 'ece_lab.pdf' : 'chemistry_lab.pdf'}`, '_blank')}
@@ -691,7 +685,6 @@ const LabDashboard = ({ subjectCode, theme, onToggleTheme, onBack }) => {
                     for(let i = 1; i <= 10; i++) {
                       const link = document.createElement('a');
                       link.href = `/study-material/EE24102/${activeEEModal}/${i}.jpg`;
-                      link.href = `${API_BASE}/study-material/EE24102/${activeEEModal}/${i}.jpg`;
                       link.download = `${activeEEModal}_Page_${i}.jpg`;
                       document.body.appendChild(link);
                       link.click();
@@ -721,7 +714,6 @@ const LabDashboard = ({ subjectCode, theme, onToggleTheme, onBack }) => {
                 <div key={i} style={{marginBottom: '1rem'}}>
                   <img 
                     src={`/study-material/EE24102/${activeEEModal}/${i + 1}.jpg`} 
-                    src={`${API_BASE}/study-material/EE24102/${activeEEModal}/${i + 1}.jpg`} 
                     alt={`Page ${i + 1}`}
                     style={{maxWidth: '100%', objectFit: 'contain', border: '1px solid #333', boxShadow: '0 4px 20px rgba(0,0,0,0.5)'}}
                     onError={(e) => {

@@ -104,9 +104,6 @@ function SubjectSelector({ onSelectSubject, onBackToLanding, theme, onToggleThem
                 <div className="campus-dropdown-item" onClick={() => { onBackToLanding(); }}>
                   Change Campus
                 </div>
-                <div className="campus-dropdown-item" onClick={() => window.location.href = '../bit-mesra/index.html'}>
-                  Mesra Campus
-                </div>
               </div>
             )}
           </div>

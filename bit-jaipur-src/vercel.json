@@ -11,15 +11,6 @@
     {
       "source": "/study-material/(.*)",
       "destination": "https://9d81-223-181-41-31.ngrok-free.app/study-material/$1"
-      "destination": "https://bithub-jaipur.onrender.com/dev-root/$1"
-    },
-    {
-      "source": "/api/(.*)",
-      "destination": "https://bithub-jaipur.onrender.com/api/$1"
-    },
-    {
-      "source": "/study-material/(.*)",
-      "destination": "https://bithub-jaipur.onrender.com/study-material/$1"
     },
     {
       "source": "/(.*)",

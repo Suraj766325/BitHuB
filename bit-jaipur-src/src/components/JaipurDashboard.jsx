@@ -1,8 +1,7 @@
 import { useState, useCallback, useRef, useEffect, lazy, Suspense } from 'react';
+import { API_BASE } from '../config';
 const PracticeMode = lazy(() => import('./PracticeMode'));
 import CreatorsSection from './CreatorsSection';
-import { API_BASE } from '../config';
-
 
 // ============================================================
 // LOCAL REFERENCE BOOKS REGISTRY (MANUAL HIGH-FIDELITY BOOK DATA)
@@ -156,8 +155,7 @@ const REFERENCE_BOOKS_REGISTRY = {
 // SUBJECTS REGISTRY & DATA INTEGRATION ENDPOINTS
 // ============================================================
 // Future developers can connect this registry object to backend API fetches
-// (e.g. fetch(`${import.meta.env.VITE_API_BASE_URL || ''}/api/subjects/${code}`).then(res => res.json()))
-// (e.g. fetch(`/api/subjects/${code}`).then(res => res.json()))
+// (e.g. fetch(`${API_BASE}/api/subjects/${code}`).then(res => res.json()))
 
 const SUBJECTS_REGISTRY = {
   "MA24101": {
@@ -646,11 +644,11 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
   const handleDownloadPaper = (filename) => {
     // Use the actual QPA folder name from backend (handles MAQPA for MA24103)
     const qpaFolder = subjectFiles?.qpaFolder || 'QPA';
-    window.open(`${API_BASE}/study-material/${subjectCode}/${encodeURIComponent(qpaFolder)}/${encodeURIComponent(filename)}`, '_blank');
+    window.open(`${API_BASE}/study-material/${subjectCode}/${qpaFolder}/${filename}`, '_blank');
   };
 
   const handleDownloadBook = (filename) => {
-    window.open(`${API_BASE}/study-material/${subjectCode}/${encodeURIComponent(filename)}`, '_blank');
+    window.open(`${API_BASE}/study-material/${subjectCode}/${filename}`, '_blank');
   };
 
   const handleResetFilters = () => {
@@ -747,7 +745,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
                     className="mobile-module-row-btn"
                     onClick={() => {
                       if (modFiles.length === 1) {
-                        window.open(`${API_BASE}/study-material/${subjectCode}/${modKey}/${encodeURIComponent(modFiles[0])}`, '_blank');
+                        window.open(`${API_BASE}/study-material/${subjectCode}/${modKey}/${modFiles[0]}`, '_blank');
                       } else if (modFiles.length > 1) {
                         setActiveNotesModal({
                           modKey,
@@ -788,7 +786,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
               className="mobile-syllabus-main-btn"
               onClick={() => {
                 if (subjectFiles?.syllabus) {
-                  window.open(`${API_BASE}/study-material/${subjectCode}/${encodeURIComponent(subjectFiles.syllabus)}`, '_blank');
+                  window.open(`${API_BASE}/study-material/${subjectCode}/${subjectFiles.syllabus}`, '_blank');
                 } else {
                   showToast("Syllabus PDF not found on server.");
                 }
@@ -1165,7 +1163,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
                       key={idx} 
                       className="note-card-item mobile-note-card"
                       onClick={() => {
-                        window.open(`${API_BASE}/study-material/${subjectCode}/${activeNotesModal.modKey}/${encodeURIComponent(file)}`, '_blank');
+                        window.open(`${API_BASE}/study-material/${subjectCode}/${activeNotesModal.modKey}/${file}`, '_blank');
                         setActiveNotesModal(null);
                       }}
                     >
@@ -1263,7 +1261,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
             {campusDropdownOpen && (
               <div className="campus-dropdown-menu" id="campus-dropdown-menu">
                 <div className="campus-dropdown-item active">Jaipur Campus (Active)</div>
-                <div className="campus-dropdown-item" onClick={() => window.location.href = "../bit-mesra/index.html"}>
+                <div className="campus-dropdown-item" onClick={() => window.location.href = "/dev-root/index.html"}>
                   Mesra Campus
                 </div>
               </div>
@@ -1312,7 +1310,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
                   onClick={() => {
                     setActiveModule(mod.id);
                     if (modFiles.length === 1) {
-                      window.open(`${API_BASE}/study-material/${subjectCode}/${modKey}/${encodeURIComponent(modFiles[0])}`, '_blank');
+                      window.open(`${API_BASE}/study-material/${subjectCode}/${modKey}/${modFiles[0]}`, '_blank');
                     } else if (modFiles.length > 1) {
                       setActiveNotesModal({
                         modKey,
@@ -1348,7 +1346,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
             className="syllabus-btn" 
             onClick={() => {
               if (subjectFiles?.syllabus) {
-                window.open(`${API_BASE}/study-material/${subjectCode}/${encodeURIComponent(subjectFiles.syllabus)}`, '_blank');
+                window.open(`${API_BASE}/study-material/${subjectCode}/${subjectFiles.syllabus}`, '_blank');
               } else {
                 showToast("Syllabus PDF not found on server.");
               }
@@ -1872,7 +1870,7 @@ function JaipurDashboard({ subjectCode, theme, onToggleTheme, onBack }) {
                   <div 
                     key={idx} 
                     className="note-card-item"
-                    onClick={() => window.open(`${API_BASE}/study-material/${subjectCode}/${activeNotesModal.modKey}/${encodeURIComponent(file)}`, '_blank')}
+                    onClick={() => window.open(`${API_BASE}/study-material/${subjectCode}/${activeNotesModal.modKey}/${file}`, '_blank')}
                   >
                     <div className="note-card-top">
                       <div className="note-card-icon">
