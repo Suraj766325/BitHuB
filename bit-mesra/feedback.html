@@ -420,6 +420,7 @@
       rollInput.value = prefixVal + originalRollVal + '/26';
 
       const formData = new FormData(form);
+      const params = new URLSearchParams(formData);
       const scriptUrl = "https://script.google.com/macros/s/AKfycbzjJr-y91dwvaMEs5iQlUL7Cl-h0A-amLfQz02d5ulrLjiGu4MQ0QVZ92yDcn9xweLWLg/exec";
 
       // Show submitting state
@@ -427,7 +428,7 @@
       submitBtn.disabled = true;
       submitBtn.innerHTML = 'Sending...';
 
-      fetch(scriptUrl, { method: 'POST', body: formData })
+      fetch(scriptUrl, { method: 'POST', body: params, mode: 'no-cors' })
         .then(() => {
           sessionStorage.setItem('feedbackMessage', 'Thank you for your feedback. Your message has been sent.');
           form.reset();
