@@ -272,10 +272,9 @@
     if (closeBtn) closeBtn.addEventListener('click', () => handlePollClick('Dismiss'));
 
     function sendPollFeedback(question, response) {
-      const params = new URLSearchParams();
-      params.append('name', question); params.append('roll', ''); params.append('feedback', ''); params.append('message', response);
-      fetch("https://script.google.com/macros/s/AKfycbzjJr-y91dwvaMEs5iQlUL7Cl-h0A-amLfQz02d5ulrLjiGu4MQ0QVZ92yDcn9xweLWLg/exec", { method:"POST", body:params, mode:"no-cors" })
-        .then(r=>r.text()).catch(()=>{});
+      // NOTE: App Script integration temporarily paused due to key compromise.
+      // Deployment URL and key stored in .env.local
+      console.warn("BitHuB: Poll feedback submission is temporarily paused.");
     }
   });
   </script>
@@ -517,24 +516,22 @@
 <!-- Trends click tracking -->
 <script>
 (function(){
-  const scriptUrl = "https://script.google.com/macros/s/AKfycby7tN8ZXZ2ruqzk3jtFJRxFWKWDVMaQlhM3rWjv3YOlwoAqrsCw_WCN3l8m-XiGGPWUwQ/exec";
+  // NOTE: App Script click tracking temporarily paused due to key compromise.
+  // Deployment URL and key stored in .env.local
+  const APPS_SCRIPT_PAUSED = true;
+  const scriptUrl = null;
   const COOLDOWN_MS = 20 * 60 * 1000;
   const LAST_CLICK_KEY = 'trends_last_click_at';
   const CLIENT_ID_KEY = 'trends_client_id';
   function getClientId(){ try{ let id=localStorage.getItem(CLIENT_ID_KEY); if(!id){id='c_'+Math.random().toString(36).slice(2,10);localStorage.setItem(CLIENT_ID_KEY,id);} return id; }catch(e){return 'anon';} }
   function fmt(d,t){ const p=n=>String(n).padStart(2,'0'); return t?`${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`:`${p(d.getDate())}/${p(d.getMonth()+1)}/${d.getFullYear()}`; }
   function showToast(text){ let t=document.getElementById('trends-toast'); if(!t){t=document.createElement('div');t.id='trends-toast';document.body.appendChild(t);} t.textContent=text;t.style.opacity='1'; clearTimeout(t._h); t._h=setTimeout(()=>{t.style.transition='opacity 0.4s';t.style.opacity='0';},3000); }
-  function sendClick(subject){ const now=new Date(); const params=new URLSearchParams(); params.append('subject',subject);params.append('date',fmt(now,false));params.append('time',fmt(now,true));params.append('clientId',getClientId());params.append('userAgent',navigator.userAgent||''); try{showToast('Tracked: '+subject);}catch(e){} try{if(navigator.sendBeacon){navigator.sendBeacon(scriptUrl,params);}else{fetch(scriptUrl,{method:'POST',body:params,mode:'no-cors'}).catch(()=>{});}}catch(e){} }
+  function sendClick(subject){
+    if (APPS_SCRIPT_PAUSED || !scriptUrl) return;
+    const now=new Date(); const params=new URLSearchParams(); params.append('subject',subject);params.append('date',fmt(now,false));params.append('time',fmt(now,true));params.append('clientId',getClientId());params.append('userAgent',navigator.userAgent||''); try{showToast('Tracked: '+subject);}catch(e){} try{if(navigator.sendBeacon){navigator.sendBeacon(scriptUrl,params);}else{fetch(scriptUrl,{method:'POST',body:params,mode:'no-cors'}).catch(()=>{});}}catch(e){}
+  }
   document.addEventListener('DOMContentLoaded',function(){
-    document.querySelectorAll('a.course-card:not(.untracked)').forEach(a=>{
-      a.addEventListener('click',function(){
-        const last=parseInt(localStorage.getItem(LAST_CLICK_KEY)||'0',10);
-        if(Date.now()-last<COOLDOWN_MS) return;
-        try{localStorage.setItem(LAST_CLICK_KEY,Date.now().toString());}catch(e){}
-        const subject=(this.querySelector('.course-name')&&this.querySelector('.course-name').textContent.trim())||'unknown';
-        sendClick(subject);
-      },{passive:true});
-    });
+    // Inactive while paused
   });
 })();
 </script>
@@ -543,7 +540,10 @@
 (function(){
   const container = document.getElementById('slider-trends');
   if (!container) return;
-  const scriptUrl = "https://script.google.com/macros/s/AKfycby7tN8ZXZ2ruqzk3jtFJRxFWKWDVMaQlhM3rWjv3YOlwoAqrsCw_WCN3l8m-XiGGPWUwQ/exec";
+  // NOTE: App Script analytics temporarily paused due to key compromise.
+  // Deployment URL and key stored in .env.local
+  const APPS_SCRIPT_PAUSED = true;
+  const scriptUrl = null;
   let cachedItems = [];
 
   function createSVG(tag, attrs){
@@ -553,6 +553,10 @@
   }
 
   async function fetchTrends(){
+    if (APPS_SCRIPT_PAUSED || !scriptUrl) {
+      container.innerHTML='<div style="color:#666;font-size:12px;padding:32px 16px;text-align:center;letter-spacing:0.02em;">Live analytics is temporarily paused for maintenance.</div>';
+      return;
+    }
     container.innerHTML='<div class="trends-loader"><div>Loading data</div><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
     try{
       const res=await fetch(scriptUrl); const obj=await res.json();
@@ -779,7 +783,9 @@
   }
 
   fetchTrends();
-  setInterval(fetchTrends, 120000);
+  if (!APPS_SCRIPT_PAUSED && scriptUrl) {
+    setInterval(fetchTrends, 120000);
+  }
 
   let resizeTimer;
   window.addEventListener('resize', () => {

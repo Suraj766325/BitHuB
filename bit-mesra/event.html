@@ -62,7 +62,10 @@
 (function(){
   const container = document.getElementById('trends-list');
   if (!container) return;
-  const scriptUrl = "https://script.google.com/macros/s/AKfycby7tN8ZXZ2ruqzk3jtFJRxFWKWDVMaQlhM3rWjv3YOlwoAqrsCw_WCN3l8m-XiGGPWUwQ/exec";
+  // NOTE: Apps Script analytics temporarily paused due to key compromise.
+  // Deployment URL and key stored in .env.local
+  const APPS_SCRIPT_PAUSED = true;
+  const scriptUrl = null;
   let cachedItems = [];
 
   function createSVG(tag, attrs){
@@ -72,6 +75,10 @@
   }
 
   async function fetchTrends(){
+    if (APPS_SCRIPT_PAUSED || !scriptUrl) {
+      container.innerHTML='<div style="color:#666;font-size:12px;padding:32px 16px;text-align:center;letter-spacing:0.02em;">Live analytics is temporarily paused for maintenance.</div>';
+      return;
+    }
     container.innerHTML='<div class="trends-loader"><div>Loading data</div><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
     try{
       const res = await fetch(scriptUrl); const obj = await res.json();
@@ -298,7 +305,9 @@
   }
 
   fetchTrends();
-  setInterval(fetchTrends, 120000);
+  if (!APPS_SCRIPT_PAUSED && scriptUrl) {
+    setInterval(fetchTrends, 120000);
+  }
 
   let resizeTimeout;
   window.addEventListener('resize', () => {
