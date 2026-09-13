@@ -342,6 +342,11 @@
       } catch(err) { e.preventDefault(); return; }
     });
 
+    // App Script Integration Configuration
+    // NOTE: Temporarily paused due to key compromise. URL and key stored in .env.local
+    const APPS_SCRIPT_PAUSED = true;
+    const scriptUrl = null;
+
     document.addEventListener('DOMContentLoaded', () => {
       const saved = sessionStorage.getItem('feedbackMessage');
       if (saved) {
@@ -350,11 +355,34 @@
         sessionStorage.removeItem('feedbackMessage');
       }
       updateMessage();
+
+      if (APPS_SCRIPT_PAUSED) {
+        const resp = document.getElementById("responseMessage");
+        if (resp) {
+          resp.innerText = "Feedback submissions are temporarily paused for scheduled maintenance and security updates. Please check back later.";
+          resp.style.display = 'block';
+          resp.style.color = '#f59e0b';
+          resp.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+          resp.style.background = 'rgba(245, 158, 11, 0.08)';
+        }
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerText = 'Service Temporarily Paused';
+          submitBtn.style.opacity = '0.6';
+          submitBtn.style.cursor = 'not-allowed';
+        }
+      }
     });
 
     const form = document.getElementById("feedbackForm");
     form.addEventListener("submit", function(e) {
       e.preventDefault();
+
+      if (APPS_SCRIPT_PAUSED || !scriptUrl) {
+        showError('Feedback submissions are temporarily paused for maintenance. Please check back soon.');
+        return;
+      }
       
       const resp = document.getElementById("responseMessage");
       if (resp) {
@@ -421,7 +449,6 @@
 
       const formData = new FormData(form);
       const params = new URLSearchParams(formData);
-      const scriptUrl = "https://script.google.com/macros/s/AKfycbzjJr-y91dwvaMEs5iQlUL7Cl-h0A-amLfQz02d5ulrLjiGu4MQ0QVZ92yDcn9xweLWLg/exec";
 
       // Show submitting state
       const submitBtn = document.getElementById('submitBtn');

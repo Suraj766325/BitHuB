@@ -1,3 +1,10 @@
 case_study.md
 ref/
 BitHuB Jaipur
+
+# Environment & secret files
+.env
+.env.local
+.env.*.local
+*.env
+
