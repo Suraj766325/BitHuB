@@ -21,6 +21,7 @@
     gtag('js', new Date());
     gtag('config', 'G-FTVZQ3QK4Z');
   </script>
+  <script src="env-config.js"></script>
 </head>
 <body>
 
@@ -342,10 +343,31 @@
       } catch(err) { e.preventDefault(); return; }
     });
 
-    // App Script Integration Configuration
-    // NOTE: Temporarily paused due to key compromise. URL and key stored in .env.local
-    const APPS_SCRIPT_PAUSED = true;
-    const scriptUrl = null;
+    // App Script Integration Configuration (loaded from env-config.js)
+    const ENV = window.__BITHUB_ENV__ || {};
+    const APPS_SCRIPT_PAUSED = Boolean(ENV.APPS_SCRIPT_PAUSED);
+    const scriptUrl = ENV.APPS_SCRIPT_FEEDBACK_URL || null;
+
+    const FEEDBACK_FALLBACK_MSG = "Feedback submissions are temporarily paused for scheduled maintenance and security updates. Please check back later.";
+
+    function showFeedbackFallback() {
+      const resp = document.getElementById("responseMessage");
+      if (resp) {
+        resp.innerText = FEEDBACK_FALLBACK_MSG;
+        resp.style.display = 'block';
+        resp.style.color = '#f59e0b';
+        resp.style.borderColor = 'rgba(245, 158, 11, 0.3)';
+        resp.style.background = 'rgba(245, 158, 11, 0.08)';
+        resp.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+      const submitBtn = document.getElementById('submitBtn');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Service Temporarily Paused';
+        submitBtn.style.opacity = '0.6';
+        submitBtn.style.cursor = 'not-allowed';
+      }
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
       const saved = sessionStorage.getItem('feedbackMessage');
@@ -356,22 +378,8 @@
       }
       updateMessage();
 
-      if (APPS_SCRIPT_PAUSED) {
-        const resp = document.getElementById("responseMessage");
-        if (resp) {
-          resp.innerText = "Feedback submissions are temporarily paused for scheduled maintenance and security updates. Please check back later.";
-          resp.style.display = 'block';
-          resp.style.color = '#f59e0b';
-          resp.style.borderColor = 'rgba(245, 158, 11, 0.3)';
-          resp.style.background = 'rgba(245, 158, 11, 0.08)';
-        }
-        const submitBtn = document.getElementById('submitBtn');
-        if (submitBtn) {
-          submitBtn.disabled = true;
-          submitBtn.innerText = 'Service Temporarily Paused';
-          submitBtn.style.opacity = '0.6';
-          submitBtn.style.cursor = 'not-allowed';
-        }
+      if (APPS_SCRIPT_PAUSED || !scriptUrl) {
+        showFeedbackFallback();
       }
     });
 
@@ -380,7 +388,7 @@
       e.preventDefault();
 
       if (APPS_SCRIPT_PAUSED || !scriptUrl) {
-        showError('Feedback submissions are temporarily paused for maintenance. Please check back soon.');
+        showFeedbackFallback();
         return;
       }
       
@@ -462,10 +470,8 @@
           window.location.reload();
         })
         .catch(() => {
-          // fallback if error, but reload anyway or show success
-          sessionStorage.setItem('feedbackMessage', 'Thank you for your feedback. Your message has been sent.');
-          form.reset();
-          window.location.reload();
+          rollInput.value = originalRollVal;
+          showFeedbackFallback();
         });
     });
 

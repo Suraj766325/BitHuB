@@ -113,6 +113,16 @@ To prevent production build failures and runtime bugs, all contributors must che
 ### 4. Check for Duplicate Object Keys
 * Double-check JavaScript object literals for duplicate keys (e.g. duplicating key definitions in database maps or layouts). JavaScript will silently overwrite preceding values with the last key, which can hide files or render components incorrectly.
 
+### 5. Environment Variables, Apps Script Security & Fallbacks (BIT Mesra & Vercel)
+* **Never Hardcode Keys or URLs:** Do not hardcode Google Apps Script `/exec` URLs or API keys inside `bit-mesra/index.html`, `bit-mesra/event.html`, `bit-mesra/feedback.html`, or any committed file.
+* **Use `.env.local` and `generate-env.js`:**
+  1. Copy `.env.example` to `.env.local` (which is git-ignored) and fill in `APPS_SCRIPT_ANALYTICS_URL`, `APPS_SCRIPT_FEEDBACK_URL`, and `APPS_SCRIPT_PAUSED=false`.
+  2. Run `node generate-env.js` at the repository root to generate the git-ignored `bit-mesra/env-config.js` runtime file.
+  3. On **Vercel**, select **`BitHuB (root)`** as the Root Directory and configure those environment variables in the Vercel Dashboard; `vercel.json` runs `node generate-env.js` automatically during deployment.
+* **Preserve Maintenance Fallbacks:** When the API is paused, unconfigured, or unreachable, the UI must gracefully display:
+  - Analytics (`index.html`, `event.html`): `"Live analytics is temporarily paused for maintenance."`
+  - Feedback (`feedback.html`): `"Feedback submissions are temporarily paused for scheduled maintenance and security updates. Please check back later."`
+
 ---
 
 Thank you for contributing to BitHub! Your efforts help make campus resources more accessible for everyone. If you run into issues, please open an issue or reach out to the project maintainer.

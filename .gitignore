@@ -7,4 +7,7 @@ BitHuB Jaipur
 .env.local
 .env.*.local
 *.env
+!.env.example
 
+# Generated runtime config containing env variables
+bit-mesra/env-config.js

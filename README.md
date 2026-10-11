@@ -6,14 +6,22 @@ Welcome to the official repository for **BitHub** (available at [bithub.co.in](h
 
 ## 📁 Repository Map
 
-This repository is structured as a unified static site served via **GitHub Pages**. Below is an overview of the key folders and files:
+This repository is structured as a unified multi-directory site served from the root Campus Selector portal via **Vercel** and **GitHub Pages**. Below is an overview of the key folders and files:
 
 ```
 BitHuB/
 ├── index.html            # Main campus selection portal (Mesra vs. Jaipur)
+├── vercel.json           # Root Vercel configuration (runs generate-env.js & serves root)
+├── .vercelignore         # Excludes uncompiled source/dev folders from static bundle
+├── generate-env.js       # Build script: injects env vars into bit-mesra/env-config.js
+├── .env.example          # Template for required Google Apps Script environment variables
+├── .env.local            # Local secret environment variables (GIT-IGNORED)
 │
 ├── bit-mesra/            # BIT Mesra static site
-│   ├── index.html        # Mesra homepage
+│   ├── index.html        # Mesra homepage (courses, wellness poll, live trends chart)
+│   ├── event.html        # Live Analytics dashboard for subject demand
+│   ├── feedback.html     # Student feedback portal with maintenance fallback
+│   ├── env-config.js     # Auto-generated runtime config (GIT-IGNORED)
 │   ├── styles.css        # Stylesheet for Mesra resources
 │   └── (modules/assets)  # Notes, PDFs, and curriculum resources
 │
@@ -31,6 +39,29 @@ BitHuB/
 
 ---
 
+## 🏗️ System Architecture
+
+### 1. Unified Multi-Campus Routing (Root Entrypoint)
+- **Entrypoint (`/index.html`):** All traffic starts at the root Campus Selector page, which links to `bit-mesra/index.html` and `bit-jaipur/index.html`.
+- **Vercel Root Configuration (`vercel.json`):** Explicitly sets `"framework": null` and `"outputDirectory": "."` at the repository root so Vercel does not misidentify `bit-jaipur-src/` as the sole project root.
+
+### 2. Zero-Hardcoded Environment Pipeline (`generate-env.js`)
+- **No Hardcoded Keys:** Google Apps Script URLs and deployment keys are **never** hardcoded in HTML or committed to Git.
+- **Build-Time Injection:** Running `node generate-env.js` reads variables from `.env.local` (locally) or `process.env` (on Vercel) and generates `bit-mesra/env-config.js` (`window.__BITHUB_ENV__`), which is strictly git-ignored.
+- **Endpoints Configured:**
+  - `APPS_SCRIPT_ANALYTICS_URL`: Powers course card click tracking (`POST`) and live subject trends charts (`GET`) in `bit-mesra/index.html` and `bit-mesra/event.html`.
+  - `APPS_SCRIPT_FEEDBACK_URL`: Powers the student feedback form (`POST`) in `bit-mesra/feedback.html` and the Wellness Check popup poll (`POST`) in `bit-mesra/index.html`.
+  - `APPS_SCRIPT_PAUSED`: Boolean toggle (`true` / `false`) to pause all Apps Script integrations globally.
+
+### 3. Graceful Maintenance Fallbacks
+When an Apps Script endpoint is paused (`APPS_SCRIPT_PAUSED=true`), unconfigured (`env-config.js` missing), or unreachable (network/HTTP/payload error):
+- **Live Analytics Fallback (`bit-mesra/index.html` & `bit-mesra/event.html`):**
+  Displays: *"Live analytics is temporarily paused for maintenance."*
+- **Feedback Form Fallback (`bit-mesra/feedback.html`):**
+  Displays an amber status banner: *"Feedback submissions are temporarily paused for scheduled maintenance and security updates. Please check back later."* and disables the submit button (`Service Temporarily Paused`).
+
+---
+
 ## 🛠️ Contribution Guidelines
 
 We welcome contributions to improve student resources for both campuses! 
@@ -38,15 +69,23 @@ We welcome contributions to improve student resources for both campuses!
 - If you are contributing to the **BIT Jaipur** dashboard (React + Vite), please consult the detailed instructions in [CONTRIBUTING.md](file:///c:/Superceed_vscode/OPEN%20Source%20Contribution/BitHuB/CONTRIBUTING.md).
 - **Core Contribution Rule for Jaipur:** 
   Always branch off and name your branch `bit_jaipur`. You must edit the files in `bit-jaipur-src/` and run `npm run build` so that the compiled production files in `bit-jaipur/` are updated. Commit both directories before submitting your pull request.
+- **Core Contribution Rule for Mesra Analytics/Feedback:**
+  Copy `.env.example` to `.env.local`, populate your Apps Script URLs, and run `node generate-env.js`. Never hardcode Apps Script URLs in HTML files.
 
 ---
 
-## 🚀 Technical Requirements
+## 🚀 Technical Requirements & Deployment
 
-- **Node.js**: v16.0 or higher (recommended for compiling Jaipur assets)
+- **Node.js**: v16.0 or higher (for running `node generate-env.js` and compiling Jaipur assets)
 - **File Encoding**: UTF-8 encoding is strictly required for all code and configuration files. Do not commit files in UTF-16LE.
-- **Build Verification**: Run `npm run build` locally inside `bit-jaipur-src/` to verify compiler integrity before committing.
-- **Deployment**: Any updates merged into the main/master branch are automatically deployed to [bithub.co.in](https://bithub.co.in) via GitHub Pages.
+- **Vercel Deployment**:
+  1. Select **`BitHuB (root)`** as the Root Directory when importing the project.
+  2. In **Project Settings → Environment Variables**, configure:
+     - `APPS_SCRIPT_ANALYTICS_URL`
+     - `APPS_SCRIPT_FEEDBACK_URL`
+     - `APPS_SCRIPT_PAUSED` (`false`)
+  3. Vercel automatically runs `node generate-env.js` via `vercel.json` and serves the site starting from the root Campus Selector page.
+- **GitHub Pages Deployment**: Any updates merged into the `main`/`master` branch are automatically deployed to [bithub.co.in](https://bithub.co.in).
 
 ---
 

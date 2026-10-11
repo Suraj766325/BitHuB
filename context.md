@@ -1,86 +1,90 @@
-# BitHuB Workspace Context & Guide
+# BitHuB Workspace Context & System Architecture Guide
 
-Welcome, future agents! This document serves as the ultimate map for understanding the architecture, repositories, and workflows for the BitHuB project, specifically for the **BitHuB Jaipur** campus. 
+Welcome, future agents! This document serves as the ultimate map for understanding the architecture, repositories, security model, and workflows for the **BitHuB** project across both **BIT Mesra** and **BIT Jaipur** campuses.
 
 Read this carefully before making architectural changes or pushing code.
 
 ---
 
-## 1. Directory Structure & Repository Roles
+## 1. Unified Repository & Multi-Directory Architecture
 
-The local environment consists of three distinct side-by-side directories, each mapping perfectly to a single environment and GitHub repository. 
+The root repository (`BitHuB/`) hosts the unified production frontend served at `bithub.co.in` (via GitHub Pages and Vercel):
 
-### `NEW BITHUB\BitHub-Frontend-Official` (The Upstream Fork)
-- **Role:** This repository hosts the final production frontends for both the Mesra and Jaipur campuses via GitHub Pages. It is a fork of the official project, used exclusively to track the frontend and submit PRs.
-- **Key Folders:**
-  - `bit-jaipur-src/`: The uncompiled React+Vite source code for the Jaipur frontend.
-  - `bit-jaipur/`: The compiled, optimized static assets (HTML/CSS/JS) for the Jaipur frontend. GitHub Pages serves the live site directly from this folder.
-- **Remotes:**
-  - `origin`: `https://github.com/Suraj766325/BitHuB` (Upstream, no direct write access).
-  - `fork`: `https://github.com/ananttheacharya/BitHubv2.git` (Personal fork used to submit Pull Requests).
+- **`index.html` (Root Entrypoint):** The main **Campus Selector** landing page where users choose between **BIT Mesra** (`bit-mesra/index.html`) and **BIT Jaipur** (`bit-jaipur/index.html`).
+- **`bit-mesra/`:** Static HTML/CSS/JS portal for the BIT Mesra campus, including syllabus pages, course modules, the **Live Analytics** subject demand tracker (`event.html` & `index.html`), the **Wellness Check Poll** (`index.html`), and the **Feedback Portal** (`feedback.html`).
+- **`bit-jaipur/`:** Compiled, optimized static assets (HTML/CSS/JS) for the BIT Jaipur React dashboard. **Do not edit directly.**
+- **`bit-jaipur-src/`:** Uncompiled React + Vite source code for the Jaipur frontend (`npm run build` outputs directly to `../bit-jaipur`).
 
-### `NEW BITHUB\BitHub-Jaipur-Development` (The Dev Environment)
-- **Role:** This is the primary sandbox for prototyping, fixing bugs, and testing new changes to both the backend and frontend. It connects to the Render dev environments. It is completely isolated from production.
-- **Key Folders:**
-  - `Front-End New/`: The active development folder for the React frontend (deploys to static site).
-  - `Backend/`: The Node/Express backend codebase.
-- **Remote:**
-  - `origin`: `https://github.com/ananttheacharya/BitHuB-Jaipur-backup.git`
-
-### `NEW BITHUB\BitHub-Jaipur-Production` (The Prod Backend Environment)
-- **Role:** This represents the stable production backend that powers the live production frontend. Changes merged into `main` here instantly affect the live production systems.
-- **Remote:**
-  - `origin`: `https://github.com/ananttheacharya/BitHub-Jaipur.git`
+### Vercel Multi-Directory Deployment (`vercel.json` & `.vercelignore`)
+- Because `bit-jaipur-src/` contains a `package.json` with Vite, Vercel's auto-detector will mistakenly try to deploy `bit-jaipur-src` as a standalone root if unconfigured.
+- **Root `vercel.json`:** Forces `"framework": null`, `"buildCommand": "node generate-env.js"`, and `"outputDirectory": "."` so Vercel always deploys from `BitHuB (root)` starting at the Campus Selector page (`index.html`).
+- **Root `.vercelignore`:** Excludes `bit-jaipur-src/`, `ref/`, `BitHuB Jaipur/`, and `.env*` from the static upload bundle.
 
 ---
 
-## 2. Environment & Infrastructure
+## 2. Environment Variable Pipeline & Fallback Architecture (BIT Mesra)
+
+### Zero-Hardcoded Keys Policy
+- **CRITICAL SECURITY RULE:** Never hardcode Google Apps Script `/exec` URLs, deployment IDs, or API keys in `bit-mesra/*.html` or any Git-tracked file.
+- **`.env.local` (Git-Ignored):** Stores the live credentials locally:
+  - `APPS_SCRIPT_FEEDBACK_KEY` / `APPS_SCRIPT_FEEDBACK_URL` (Feedback form & Wellness Check poll `POST` endpoint)
+  - `APPS_SCRIPT_ANALYTICS_KEY` / `APPS_SCRIPT_ANALYTICS_URL` (Course click tracker `POST` & Live Trends chart `GET` endpoint)
+  - `APPS_SCRIPT_PAUSED` (`false` when active, `true` to force maintenance mode)
+- **`.env.example` (Tracked):** Committed template documenting the required variables without exposing real keys.
+- **`generate-env.js`:** Zero-dependency Node script run locally (`node generate-env.js`) and during Vercel builds. It reads `.env.local` (or `process.env` on Vercel) and writes `bit-mesra/env-config.js` (`window.__BITHUB_ENV__`), which is git-ignored.
+
+### Graceful API Fallbacks
+When `APPS_SCRIPT_PAUSED=true`, `env-config.js` is missing, or `fetch()` encounters a network/HTTP/JSON failure:
+1. **Live Analytics (`bit-mesra/index.html` & `bit-mesra/event.html`):**
+   Renders: `"Live analytics is temporarily paused for maintenance."`
+2. **Feedback Form (`bit-mesra/feedback.html`):**
+   Renders the amber maintenance banner: `"Feedback submissions are temporarily paused for scheduled maintenance and security updates. Please check back later."` and disables `#submitBtn` (`Service Temporarily Paused`).
+
+---
+
+## 3. Side-by-Side Jaipur Environments (External Repos)
+
+### `NEW BITHUB\BitHub-Frontend-Official` (The Upstream Fork)
+- **Role:** Tracks the official frontend and submits PRs.
+- **Remotes:**
+  - `origin`: `https://github.com/MichaelSpeaksTruth/BitHuB.git`
+  - `upstream`: `https://github.com/Suraj766325/BitHuB.git`
+
+### `NEW BITHUB\BitHub-Jaipur-Development` (The Dev Environment)
+- **Role:** Primary sandbox for prototyping, fixing bugs, and testing new changes to both the backend (`Backend/`) and frontend (`Front-End New/`). Connects to Render dev environments.
+- **Remote:** `https://github.com/ananttheacharya/BitHuB-Jaipur-backup.git`
+
+### `NEW BITHUB\BitHub-Jaipur-Production` (The Prod Backend Environment)
+- **Role:** Stable production backend powering the live production frontend.
+- **Remote:** `https://github.com/ananttheacharya/BitHub-Jaipur.git`
+
+---
+
+## 4. Environment & Infrastructure URLs
 
 ### Production Systems
-- **Live Website (Frontend):** `https://bithub.co.in` (served from `Suraj766325/BitHuB`)
-- **Live Backend API:** `https://bithub-jaipur.onrender.com`
+- **Live Website (Frontend):** `https://bithub.co.in`
+- **Live Backend API (Jaipur):** `https://bithub-jaipur.onrender.com` / `https://13.63.62.68.nip.io`
 
 ### Development Systems
 - **Dev Frontend Site:** `https://bithub-jaipur-development-front.onrender.com/`
 - **Dev Backend API:** `https://bithub-jaipur-development.onrender.com`
 
-### Databases
-- The project uses MySQL databases hosted on cloud providers (Aiven, Railway).
-- Database scripts sometimes require SSH tunneling (e.g., using `megahacker@100.125.3.111`).
-- **CRITICAL RULE:** *Never hardcode passwords or secrets in the codebase.* Always read them from `.env` files.
-
 ---
 
-## 3. Workflows and Execution Commands
+## 5. Workflows and Execution Commands
 
-### Workflow A: Everyday Dev & Testing (BitHub-Jaipur-Development)
-When writing new features, modifying the backend, or fixing the frontend:
-1. Work inside the `BitHub-Jaipur-Development` folder.
-2. Commit your changes and push to `origin`.
-   - **Mid-Development**: Push to a branch like `bit_jaipur`.
-   - **Ready for Dev Deploy**: Merge or push to `main`. This triggers the Render dev environment to auto-deploy the frontend and backend within 50-120 seconds.
+### Workflow A: Updating BIT Mesra Analytics / Feedback / Static Pages
+1. Copy `.env.example` to `.env.local` (if not already present) and set your Apps Script URLs.
+2. Run `node generate-env.js` to generate `bit-mesra/env-config.js` for local testing.
+3. Verify that `git status` does **not** include `.env.local` or `bit-mesra/env-config.js`, and commit your changes.
 
-### Workflow B: Pushing to Production Backend (BitHub-Jaipur-Production)
-When the backend code is stable and tested in Dev:
-1. Sync or copy your changes from Development into `BitHub-Jaipur-Production/Backend`.
-2. Commit and push to `origin` (`main` branch). This triggers Render to update the live production backend.
-
-### Workflow C: Publishing Frontend Changes to the Main Website (BitHub-Frontend-Official)
-When the frontend features are complete in Dev and you want to publish them to `bithub.co.in`:
-1. Copy the source code: Copy `BitHub-Jaipur-Development/Front-End New` into `BitHub-Frontend-Official/bit-jaipur-src`.
-2. Navigate to `BitHub-Frontend-Official/bit-jaipur-src` and compile the frontend:
+### Workflow B: Publishing BIT Jaipur Frontend Changes
+1. Edit React source files inside `bit-jaipur-src/`.
+2. Compile the frontend into `../bit-jaipur/`:
    ```bash
+   cd bit-jaipur-src
    npm install
    npm run build
    ```
-   *(This outputs the compiled UI directly into `../bit-jaipur/`).*
-3. Check out the `bit_jaipur` branch, stage, commit, and push to the **FORK**:
-   ```bash
-   cd ..
-   git checkout bit_jaipur
-   git add bit-jaipur-src/ bit-jaipur/
-   git commit -m "feat(jaipur): update frontend"
-   git push -f fork bit_jaipur
-   ```
-4. Open a Pull Request on GitHub from `ananttheacharya/BitHubv2` to `Suraj766325/BitHuB`.
-
+3. Stage both `bit-jaipur-src/` and `bit-jaipur/`, commit, and push.

@@ -43,6 +43,7 @@
     </nav>
 </header>
 <!-- nav bar ends here -->
+<script src="env-config.js"></script>
 
       <!-- Trends card placed below the header for clean layout -->
       <div class="trends-wrapper" style="margin-top:24px;display:flex;justify-content:center;padding:0 var(--space-8);">
@@ -62,10 +63,9 @@
 (function(){
   const container = document.getElementById('trends-list');
   if (!container) return;
-  // NOTE: Apps Script analytics temporarily paused due to key compromise.
-  // Deployment URL and key stored in .env.local
-  const APPS_SCRIPT_PAUSED = true;
-  const scriptUrl = null;
+  const ENV = window.__BITHUB_ENV__ || {};
+  const APPS_SCRIPT_PAUSED = Boolean(ENV.APPS_SCRIPT_PAUSED);
+  const scriptUrl = ENV.APPS_SCRIPT_ANALYTICS_URL || null;
   let cachedItems = [];
 
   function createSVG(tag, attrs){
@@ -74,17 +74,24 @@
     return el;
   }
 
+  function showAnalyticsFallback(){
+    container.innerHTML='<div style="color:#666;font-size:12px;padding:32px 16px;text-align:center;letter-spacing:0.02em;">Live analytics is temporarily paused for maintenance.</div>';
+  }
+
   async function fetchTrends(){
     if (APPS_SCRIPT_PAUSED || !scriptUrl) {
-      container.innerHTML='<div style="color:#666;font-size:12px;padding:32px 16px;text-align:center;letter-spacing:0.02em;">Live analytics is temporarily paused for maintenance.</div>';
+      showAnalyticsFallback();
       return;
     }
     container.innerHTML='<div class="trends-loader"><div>Loading data</div><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
     try{
-      const res = await fetch(scriptUrl); const obj = await res.json();
-      cachedItems = obj.results || [];
+      const res = await fetch(scriptUrl);
+      if (!res.ok) throw new Error('API error');
+      const obj = await res.json();
+      if (!obj || !Array.isArray(obj.results)) throw new Error('Invalid payload');
+      cachedItems = obj.results;
       renderChart(cachedItems);
-    }catch(e){ container.innerHTML='<div style="color:#555;font-size:11px;padding:16px;letter-spacing:0.04em;text-transform:uppercase;">Unable to load data.</div>'; console.error(e); }
+    }catch(e){ showAnalyticsFallback(); }
   }
 
   function renderChart(items){
