@@ -23,6 +23,7 @@
     gtag('js', new Date());
     gtag('config', 'G-FTVZQ3QK4Z');
   </script>
+  <script src="env-config.js"></script>
 
   <style>
     /* ── Poll Modal — clean black ─────────────────────── */
@@ -272,9 +273,12 @@
     if (closeBtn) closeBtn.addEventListener('click', () => handlePollClick('Dismiss'));
 
     function sendPollFeedback(question, response) {
-      // NOTE: App Script integration temporarily paused due to key compromise.
-      // Deployment URL and key stored in .env.local
-      console.warn("BitHuB: Poll feedback submission is temporarily paused.");
+      const ENV = window.__BITHUB_ENV__ || {};
+      if (ENV.APPS_SCRIPT_PAUSED || !ENV.APPS_SCRIPT_FEEDBACK_URL) return;
+      const params = new URLSearchParams();
+      params.append('name', question); params.append('roll', ''); params.append('feedback', ''); params.append('message', response);
+      fetch(ENV.APPS_SCRIPT_FEEDBACK_URL, { method:"POST", body:params, mode:"no-cors" })
+        .then(r=>r.text()).catch(()=>{});
     }
   });
   </script>
@@ -516,10 +520,9 @@
 <!-- Trends click tracking -->
 <script>
 (function(){
-  // NOTE: App Script click tracking temporarily paused due to key compromise.
-  // Deployment URL and key stored in .env.local
-  const APPS_SCRIPT_PAUSED = true;
-  const scriptUrl = null;
+  const ENV = window.__BITHUB_ENV__ || {};
+  const APPS_SCRIPT_PAUSED = Boolean(ENV.APPS_SCRIPT_PAUSED);
+  const scriptUrl = ENV.APPS_SCRIPT_ANALYTICS_URL || null;
   const COOLDOWN_MS = 20 * 60 * 1000;
   const LAST_CLICK_KEY = 'trends_last_click_at';
   const CLIENT_ID_KEY = 'trends_client_id';
@@ -531,7 +534,15 @@
     const now=new Date(); const params=new URLSearchParams(); params.append('subject',subject);params.append('date',fmt(now,false));params.append('time',fmt(now,true));params.append('clientId',getClientId());params.append('userAgent',navigator.userAgent||''); try{showToast('Tracked: '+subject);}catch(e){} try{if(navigator.sendBeacon){navigator.sendBeacon(scriptUrl,params);}else{fetch(scriptUrl,{method:'POST',body:params,mode:'no-cors'}).catch(()=>{});}}catch(e){}
   }
   document.addEventListener('DOMContentLoaded',function(){
-    // Inactive while paused
+    document.querySelectorAll('a.course-card:not(.untracked)').forEach(a=>{
+      a.addEventListener('click',function(){
+        const last=parseInt(localStorage.getItem(LAST_CLICK_KEY)||'0',10);
+        if(Date.now()-last<COOLDOWN_MS) return;
+        try{localStorage.setItem(LAST_CLICK_KEY,Date.now().toString());}catch(e){}
+        const subject=(this.querySelector('.course-name')&&this.querySelector('.course-name').textContent.trim())||'unknown';
+        sendClick(subject);
+      },{passive:true});
+    });
   });
 })();
 </script>
@@ -540,10 +551,9 @@
 (function(){
   const container = document.getElementById('slider-trends');
   if (!container) return;
-  // NOTE: App Script analytics temporarily paused due to key compromise.
-  // Deployment URL and key stored in .env.local
-  const APPS_SCRIPT_PAUSED = true;
-  const scriptUrl = null;
+  const ENV = window.__BITHUB_ENV__ || {};
+  const APPS_SCRIPT_PAUSED = Boolean(ENV.APPS_SCRIPT_PAUSED);
+  const scriptUrl = ENV.APPS_SCRIPT_ANALYTICS_URL || null;
   let cachedItems = [];
 
   function createSVG(tag, attrs){
@@ -552,17 +562,24 @@
     return el;
   }
 
+  function showAnalyticsFallback(){
+    container.innerHTML='<div style="color:#666;font-size:12px;padding:32px 16px;text-align:center;letter-spacing:0.02em;">Live analytics is temporarily paused for maintenance.</div>';
+  }
+
   async function fetchTrends(){
     if (APPS_SCRIPT_PAUSED || !scriptUrl) {
-      container.innerHTML='<div style="color:#666;font-size:12px;padding:32px 16px;text-align:center;letter-spacing:0.02em;">Live analytics is temporarily paused for maintenance.</div>';
+      showAnalyticsFallback();
       return;
     }
     container.innerHTML='<div class="trends-loader"><div>Loading data</div><div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
     try{
-      const res=await fetch(scriptUrl); const obj=await res.json();
-      cachedItems = obj.results || [];
+      const res=await fetch(scriptUrl);
+      if (!res.ok) throw new Error('API error');
+      const obj=await res.json();
+      if (!obj || !Array.isArray(obj.results)) throw new Error('Invalid payload');
+      cachedItems = obj.results;
       renderChart(cachedItems);
-    }catch(e){ container.innerHTML='<div style="color:#555;font-size:11px;padding:16px;letter-spacing:0.04em;text-transform:uppercase;">Unable to load data.</div>'; }
+    }catch(e){ showAnalyticsFallback(); }
   }
 
   function renderChart(items){
