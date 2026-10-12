@@ -3,7 +3,6 @@
   "installCommand": "",
   "buildCommand": "node generate-env.js",
   "outputDirectory": ".",
-  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/HungryBirds",
