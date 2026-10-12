@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BitHub x HungryBirds.food — Exclusive student food collaboration at BIT Mesra.">
+    <title>BitHub x HungryBirds.food — BIT Mesra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #070708;
+            --surface: #101012;
+            --surface-elevated: #161619;
+            --border: #242428;
+            --border-hover: #3e3e46;
+            --text-primary: #f4f4f6;
+            --text-secondary: #9a9aa4;
+            --text-muted: #64646e;
+            --accent-orange: #f59e0b;
+            --accent-amber: #d97706;
+            --accent-red: #ef4444;
+            --success: #10b981;
+        }
+
+        html, body {
+            min-height: 100%;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg);
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 4vw, 2rem);
+        }
+
+        /* ── Top Bar / Nav ── */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem clamp(1.25rem, 4vw, 2.5rem);
+            background: rgba(7, 7, 8, 0.75);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 50;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: var(--text-primary);
+            transform: translateX(-2px);
+        }
+
+        .nav-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            padding: 0.35rem 0.75rem;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .nav-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
+        }
+
+        /* ── Main Container ── */
+        .page-wrap {
+            width: 100%;
+            max-width: 680px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: clamp(3.5rem, 8vh, 5rem);
+            margin-bottom: 3.5rem;
+        }
+
+        /* ── Deal Showcase Poster ── */
+        .showcase-card {
+            width: 100%;
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            box-shadow:
+                0 0 0 1px rgba(255, 255, 255, 0.03),
+                0 24px 60px rgba(0, 0, 0, 0.6),
+                0 0 80px rgba(245, 158, 11, 0.08);
+            margin-bottom: 2rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .showcase-card:hover {
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .showcase-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-orange), var(--accent-red), transparent);
+            z-index: 2;
+        }
+
+        .showcase-img {
+            display: block;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            vertical-align: middle;
+        }
+
+        /* ── Content Card ── */
+        .info-card {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: clamp(1.75rem, 5vw, 2.5rem);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* ── Brand Title Row ── */
+        .brand-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding-bottom: 1.25rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand-logo-frame {
+            width: 56px;
+            height: 56px;
+            border-radius: 12px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #000;
+            border: 1px solid var(--border-hover);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand-logo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .brand-eyebrow {
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--accent-orange);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .brand-title {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-size: clamp(1.25rem, 3.5vw, 1.65rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .collab-x {
+            color: var(--text-muted);
+            font-weight: 400;
+            font-size: 0.85em;
+            margin: 0 0.25rem;
+        }
+
+        .brand-highlight {
+            color: #fff;
+            background: linear-gradient(135deg, #fff 0%, #ffc107 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* ── Details Grid ── */
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            padding: 0.85rem 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 10px;
+            font-size: 0.875rem;
+            gap: 1rem;
+        }
+
+        .detail-label {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .detail-val {
+            font-weight: 600;
+            color: var(--text-primary);
+            text-align: right;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .campus-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.25rem 0.65rem;
+            background: rgba(245, 158, 11, 0.12);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 6px;
+            color: #fbbf24;
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+        }
+
+        /* ── Mobile Data Note ── */
+        .data-notice {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.85rem;
+            padding: 1rem 1.15rem;
+            background: rgba(245, 158, 11, 0.06);
+            border: 1px solid rgba(245, 158, 11, 0.22);
+            border-radius: 10px;
+        }
+
+        .notice-icon {
+            font-size: 1.25rem;
+            line-height: 1;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+
+        .notice-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+
+        .notice-title {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #fbbf24;
+        }
+
+        .notice-body {
+            font-size: 0.85rem;
+            color: #d4d4d8;
+            line-height: 1.45;
+        }
+
+        .notice-emphasis {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        /* ── Primary Action Button ── */
+        .btn-visit {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.85rem;
+            width: 100%;
+            padding: 1.15rem 2rem;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            color: #000;
+            text-decoration: none;
+            font-size: 1.05rem;
+            font-weight: 700;
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            letter-spacing: 0.02em;
+            box-shadow:
+                0 8px 24px rgba(245, 158, 11, 0.25),
+                0 0 0 1px rgba(245, 158, 11, 0.2) inset;
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .btn-visit::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: 0.5s;
+        }
+
+        .btn-visit:hover::before {
+            left: 100%;
+        }
+
+        .btn-visit:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            box-shadow:
+                0 12px 32px rgba(245, 158, 11, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+        }
+
+        .btn-visit:active {
+            transform: translateY(0);
+        }
+
+        .btn-logo {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #000;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-arrow {
+            font-size: 1.25rem;
+            line-height: 1;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-visit:hover .btn-arrow {
+            transform: translateX(4px);
+        }
+
+        /* ── Footer ── */
+        .page-footer {
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.72rem;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .page-footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .page-footer a:hover {
+            color: var(--text-primary);
+        }
+
+        @media (max-width: 480px) {
+            .brand-header {
+                align-items: flex-start;
+            }
+            .brand-logo-frame {
+                width: 48px;
+                height: 48px;
+            }
+            .detail-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.35rem;
+            }
+            .detail-val {
+                text-align: left;
+            }
+            .btn-visit {
+                padding: 1rem 1.25rem;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <header class="top-nav">
+        <a href="index.html" class="back-link">
+            <span>&larr;</span>
+            <span>Back to Campus Selector</span>
+        </a>
+        <div class="nav-pill">
+            <span class="nav-dot"></span>
+            <span>Live Partnership</span>
+        </div>
+    </header>
+
+    <main class="page-wrap">
+
+        <!-- Deal Showcase Banner -->
+        <div class="showcase-card">
+            <img 
+                src="assets/hungrybirds/bithub-x-hungrybirds-deal.png" 
+                alt="BitHub x Hungry Birds Food Deal - 60% Off on Food" 
+                class="showcase-img"
+                width="2087" 
+                height="753"
+            >
+        </div>
+
+        <!-- Details & Action Card -->
+        <div class="info-card">
+
+            <!-- Collab Brand Header -->
+            <div class="brand-header">
+                <div class="brand-logo-frame">
+                    <img src="assets/hungrybirds/hungrybirds-logo.jpeg" alt="HungryBirds Logo">
+                </div>
+                <div class="brand-text">
+                    <span class="brand-eyebrow">Exclusive Partnership</span>
+                    <h1 class="brand-title">
+                        BitHub <span class="collab-x">&times;</span> <span class="brand-highlight">HungryBirds.food</span>
+                    </h1>
+                </div>
+            </div>
+
+            <!-- Availability Details -->
+            <div class="details-grid">
+                <div class="detail-row">
+                    <span class="detail-label">Availability</span>
+                    <span class="detail-val">
+                        <span class="campus-badge">BIT Mesra Campus</span>
+                    </span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Exclusive Offer</span>
+                    <span class="detail-val" style="color: #fbbf24;">Up to 60% Off on Food</span>
+                </div>
+            </div>
+
+            <!-- Mobile Data Only Note -->
+            <div class="data-notice">
+                <div class="notice-icon">&#9888;</div>
+                <div class="notice-content">
+                    <span class="notice-title">Network Requirement Note</span>
+                    <p class="notice-body">
+                        This link is <span class="notice-emphasis">available on mobile data only</span>. If you are connected to campus Wi-Fi or local proxy networks, switch to mobile cellular data to access the store page.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Big Primary Visit Button -->
+            <a href="http://hungrybirds.food" class="btn-visit" target="_blank" rel="noopener noreferrer">
+                <span class="btn-logo">
+                    <img src="assets/hungrybirds/hungrybirds-logo.jpeg" alt="HungryBirds">
+                </span>
+                <span>Visit HungryBirds Store</span>
+                <span class="btn-arrow">&rarr;</span>
+            </a>
+
+        </div>
+
+        <footer class="page-footer">
+            2026&ndash;2027 BitHub &nbsp;&bull;&nbsp; Birla Institute of Technology, Mesra
+        </footer>
+
+    </main>
+
+</body>
+</html>
