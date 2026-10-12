@@ -180,25 +180,22 @@
             margin-top: 1.25rem;
             display: block;
             text-decoration: none;
-            border-radius: 12px;
             overflow: hidden;
             border: 1px solid var(--border);
             background-color: var(--surface);
             position: relative;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-            transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+            transition: border-color 0.25s ease, background-color 0.25s ease;
         }
 
         .collab-banner:hover {
-            border-color: rgba(245, 158, 11, 0.4);
-            transform: translateY(-2px);
-            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6), 0 0 24px rgba(245, 158, 11, 0.12);
+            border-color: var(--border-hover);
+            background-color: #161616;
         }
 
         .collab-img-wrap {
             position: relative;
             width: 100%;
-            background: #0d0d0f;
+            background: #0c0c0c;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -217,28 +214,36 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0.75rem 1.15rem;
-            background: #131316;
+            padding: 0.75rem 1.25rem;
+            background: var(--surface);
             border-top: 1px solid var(--border);
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: var(--text-secondary);
+            transition: background-color 0.25s ease;
+        }
+
+        .collab-banner:hover .collab-footer-bar {
+            background: #161616;
         }
 
         .collab-tag {
             display: inline-flex;
             align-items: center;
             gap: 0.4rem;
+            font-size: 0.65rem;
             font-weight: 600;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.16em;
             text-transform: uppercase;
-            color: #fbbf24;
+            color: var(--text-secondary);
         }
 
         .collab-badge {
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
-            font-weight: 500;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
             color: var(--text-primary);
         }
 
@@ -246,13 +251,16 @@
             display: inline-flex;
             align-items: center;
             gap: 0.35rem;
-            color: var(--text-primary);
+            color: var(--text-secondary);
             font-weight: 600;
-            transition: transform 0.2s ease, color 0.2s ease;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-size: 0.68rem;
+            transition: transform 0.25s ease, color 0.25s ease;
         }
 
         .collab-banner:hover .collab-action {
-            color: #fbbf24;
+            color: var(--text-primary);
             transform: translateX(3px);
         }
 
