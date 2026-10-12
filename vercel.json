@@ -3,10 +3,15 @@
   "installCommand": "",
   "buildCommand": "node generate-env.js",
   "outputDirectory": ".",
+  "cleanUrls": true,
   "rewrites": [
     {
       "source": "/HungryBirds",
       "destination": "/HungryBirds.html"
+    },
+    {
+      "source": "/assets/:path*",
+      "destination": "/bit-jaipur/assets/:path*"
     }
   ]
 }
