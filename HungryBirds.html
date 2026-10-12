@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BitHub x HungryBirds.food — Student venture showcase at BIT Mesra.">
+    <title>BitHub x HungryBirds.food — BIT Mesra</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #080808;
+            --surface: #111111;
+            --surface-alt: #0c0c0c;
+            --surface-hover: #161616;
+            --border: #242424;
+            --border-strong: #383838;
+            --border-hover: #555555;
+            --text-primary: #f0f0f0;
+            --text-secondary: #888888;
+            --text-muted: #555555;
+        }
+
+        html {
+            min-height: 100%;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg);
+            background-image:
+                linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+            background-size: 48px 48px;
+            color: var(--text-primary);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: clamp(1.25rem, 3.5vh, 2.5rem) clamp(1rem, 4vw, 2rem);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ── Top Navigation Bar ── */
+        .top-bar {
+            width: 100%;
+            max-width: 620px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.75rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: var(--text-primary);
+            transform: translateX(-3px);
+        }
+
+        .eyebrow-badge {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+            padding: 0.3rem 0.75rem;
+            background: var(--surface);
+        }
+
+        /* ── Main Architectural Container ── */
+        .dossier {
+            position: relative;
+            width: 100%;
+            max-width: 620px;
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            margin: auto 0;
+        }
+
+        /* Signature BitHub top-right corner notch */
+        .dossier::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 32px 32px 0;
+            border-color: transparent var(--border-strong) transparent transparent;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        /* ── Brand Collaboration Header ── */
+        .dossier-header {
+            padding: clamp(1.5rem, 3.5vh, 2.25rem) clamp(1.5rem, 4vw, 2.25rem);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .brand-mark {
+            width: 56px;
+            height: 56px;
+            border: 1px solid var(--border-strong);
+            background: #000;
+            padding: 3px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .brand-mark img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .brand-copy {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .brand-kicker {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+
+        .brand-title {
+            font-size: clamp(1.35rem, 3.5vw, 1.85rem);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: var(--text-primary);
+            line-height: 1.1;
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+        }
+
+        .brand-sep {
+            font-weight: 300;
+            color: var(--text-muted);
+            font-size: 0.85em;
+        }
+
+        /* ── Structured Specification Table (matches bit-mesra/feedback.css) ── */
+        .spec-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .spec-cell {
+            padding: 1rem clamp(1.25rem, 3.5vw, 2.25rem);
+            background: var(--surface-alt);
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .spec-cell:first-child {
+            border-right: 1px solid var(--border);
+        }
+
+        .spec-label {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .spec-value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--text-primary);
+        }
+
+        /* ── Connected Advisory Rows ── */
+        .spec-row {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .spec-row-key {
+            padding: 1rem 1.25rem;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: flex-start;
+            padding-top: 1.1rem;
+        }
+
+        .spec-row-val {
+            padding: 1rem 1.5rem;
+            background: var(--surface-alt);
+            font-size: 0.82rem;
+            line-height: 1.55;
+            color: var(--text-secondary);
+        }
+
+        .spec-row-val strong {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .spec-row-val a {
+            color: var(--text-primary);
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            decoration-color: var(--border-strong);
+            transition: color 0.2s ease;
+        }
+
+        .spec-row-val a:hover {
+            color: #ffffff;
+        }
+
+        /* ── Prominent Destination Redirect Portal ── */
+        .redirect-zone {
+            padding: clamp(1.25rem, 3vh, 1.75rem) clamp(1.5rem, 4vw, 2.25rem);
+            background: var(--surface);
+        }
+
+        .redirect-card {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.25rem;
+            padding: 1.15rem 1.35rem;
+            background: var(--surface-alt);
+            border: 1px solid var(--border-strong);
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: border-color 0.25s ease, background-color 0.25s ease, transform 0.2s ease;
+        }
+
+        .redirect-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 20px 20px 0;
+            border-color: transparent var(--border-strong) transparent transparent;
+            transition: border-color 0.25s ease;
+        }
+
+        .redirect-card:hover {
+            background: var(--surface-hover);
+            border-color: var(--text-primary);
+        }
+
+        .redirect-card:hover::before {
+            border-color: transparent var(--text-primary) transparent transparent;
+        }
+
+        .redirect-identity {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 0;
+        }
+
+        .redirect-logo {
+            width: 44px;
+            height: 44px;
+            border: 1px solid var(--border-strong);
+            background: #000;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .redirect-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .redirect-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+            min-width: 0;
+        }
+
+        .redirect-domain {
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+        }
+
+        .redirect-heading {
+            font-size: clamp(0.95rem, 2.2vw, 1.1rem);
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .redirect-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.7rem 1.15rem;
+            background: var(--text-primary);
+            color: var(--bg);
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            flex-shrink: 0;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .redirect-arrow {
+            font-size: 0.95rem;
+            line-height: 1;
+            transition: transform 0.25s ease;
+        }
+
+        .redirect-card:hover .redirect-cta {
+            background: #ffffff;
+        }
+
+        .redirect-card:hover .redirect-arrow {
+            transform: translate(3px, -3px);
+        }
+
+        /* ── Footer ── */
+        .footer {
+            width: 100%;
+            max-width: 620px;
+            padding-top: 1rem;
+            text-align: center;
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            color: #383838;
+            text-transform: uppercase;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 540px) {
+            .spec-grid {
+                grid-template-columns: 1fr;
+            }
+            .spec-cell:first-child {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+            .spec-row {
+                grid-template-columns: 1fr;
+            }
+            .spec-row-key {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 0.65rem 1.25rem;
+            }
+            .spec-row-val {
+                padding: 0.85rem 1.25rem;
+            }
+            .redirect-card {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+            .redirect-cta {
+                justify-content: center;
+                padding: 0.85rem 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="top-bar">
+        <a href="index.html" class="back-link">
+            <span>&larr;</span>
+            <span>Campus Selector</span>
+        </a>
+        <span class="eyebrow-badge">Student Initiative</span>
+    </header>
+
+    <main class="dossier">
+
+        <!-- Collaboration Title Block -->
+        <div class="dossier-header">
+            <div class="brand-mark">
+                <img src="assets/hungrybirds/hungrybirds-logo.jpeg" alt="HungryBirds Logo">
+            </div>
+            <div class="brand-copy">
+                <span class="brand-kicker">Campus Venture Collaboration</span>
+                <h1 class="brand-title">
+                    <span>BitHub</span>
+                    <span class="brand-sep">&times;</span>
+                    <span>HungryBirds.food</span>
+                </h1>
+            </div>
+        </div>
+
+        <!-- Availability & Offer Specification -->
+        <div class="spec-grid">
+            <div class="spec-cell">
+                <span class="spec-label">Availability</span>
+                <span class="spec-value">BIT Mesra Campus</span>
+            </div>
+            <div class="spec-cell">
+                <span class="spec-label">Student Offer</span>
+                <span class="spec-value">Up to 60% Off on Food</span>
+            </div>
+        </div>
+
+        <!-- Network Requirement Row -->
+        <div class="spec-row">
+            <div class="spec-row-key">Network Note</div>
+            <div class="spec-row-val">
+                <strong>Mobile Data Required:</strong> Accessible via mobile cellular data only. If connected to campus Wi-Fi, switch to mobile data to access the site.
+            </div>
+        </div>
+
+        <!-- Ownership & Entrepreneurship Disclosure Row -->
+        <div class="spec-row">
+            <div class="spec-row-key">Disclosure</div>
+            <div class="spec-row-val">
+                BitHub does not own or operate HungryBirds (<a href="http://hungrybirds.food" target="_blank" rel="noopener noreferrer">hungrybirds.food</a>). This is an independent, free-of-cost promotion to encourage student entrepreneurial vigor on campus.
+            </div>
+        </div>
+
+        <!-- Prominent Link Redirect Dock -->
+        <div class="redirect-zone">
+            <a href="http://hungrybirds.food" class="redirect-card" target="_blank" rel="noopener noreferrer">
+                <div class="redirect-identity">
+                    <div class="redirect-logo">
+                        <img src="assets/hungrybirds/hungrybirds-logo.jpeg" alt="HungryBirds">
+                    </div>
+                    <div class="redirect-meta">
+                        <span class="redirect-domain">hungrybirds.food &bull; External Portal</span>
+                        <span class="redirect-heading">Visit HungryBirds Page</span>
+                    </div>
+                </div>
+                <div class="redirect-cta">
+                    <span>Open Site</span>
+                    <span class="redirect-arrow">&#8599;</span>
+                </div>
+            </a>
+        </div>
+
+    </main>
+
+    <footer class="footer">
+        2026&ndash;2027 Birla Institute of Technology, Mesra &nbsp;|&nbsp; Designed &amp; Developed by Team BitHub
+    </footer>
+
+</body>
+</html>

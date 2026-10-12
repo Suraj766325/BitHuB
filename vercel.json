@@ -2,5 +2,12 @@
   "framework": null,
   "installCommand": "",
   "buildCommand": "node generate-env.js",
-  "outputDirectory": "."
+  "outputDirectory": ".",
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/HungryBirds",
+      "destination": "/HungryBirds.html"
+    }
+  ]
 }

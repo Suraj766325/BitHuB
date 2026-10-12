@@ -10,14 +10,19 @@ Read this carefully before making architectural changes or pushing code.
 
 The root repository (`BitHuB/`) hosts the unified production frontend served at `bithub.co.in` via **Vercel**:
 
-- **`index.html` (Root Entrypoint):** The main **Campus Selector** landing page where users choose between **BIT Mesra** (`bit-mesra/index.html`) and **BIT Jaipur** (`bit-jaipur/index.html`).
+- **`index.html` (Root Entrypoint):** The main **Campus Selector** landing page where users choose between **BIT Mesra** (`bit-mesra/index.html`) and **BIT Jaipur** (`bit-jaipur/index.html`), and view the active campus venture promotion banner linking to `HungryBirds.html` (`/HungryBirds`).
+- **`HungryBirds.html` (`/HungryBirds`):** Dedicated campus venture collaboration page (`BitHub x HungryBirds.food`) redirecting users to `http://hungrybirds.food`.
+  - **Promotion Validity:** Active until **15th Nov, 2026**.
+  - **Scope & Network Note:** Exclusive to **BIT Mesra Campus**; accessible via mobile cellular data only (users on campus Wi-Fi must switch to mobile data to access the site).
+  - **Disclosure:** BitHub does not own or operate HungryBirds (`hungrybirds.food`); this is an independent, free-of-cost promotion to encourage student entrepreneurial vigor on campus.
+- **`assets/hungrybirds/`:** Static image assets (`bithub-x-hungrybirds-deal.png` and `hungrybirds-logo.jpeg`) used by `index.html` and `HungryBirds.html`.
 - **`bit-mesra/`:** Static HTML/CSS/JS portal for the BIT Mesra campus, including syllabus pages, course modules, the **Live Analytics** subject demand tracker (`event.html` & `index.html`), the **Wellness Check Poll** (`index.html`), and the **Feedback Portal** (`feedback.html`).
 - **`bit-jaipur/`:** Compiled, optimized static assets (HTML/CSS/JS) for the BIT Jaipur React dashboard. **Do not edit directly.**
 - **`bit-jaipur-src/`:** Uncompiled React + Vite source code for the Jaipur frontend (`npm run build` outputs directly to `../bit-jaipur`).
 
 ### Vercel Multi-Directory Deployment (`vercel.json` & `.vercelignore`)
 - Because `bit-jaipur-src/` contains a `package.json` with Vite, Vercel's auto-detector will mistakenly try to deploy `bit-jaipur-src` as a standalone root if unconfigured.
-- **Root `vercel.json`:** Forces `"framework": null`, `"buildCommand": "node generate-env.js"`, and `"outputDirectory": "."` so Vercel always deploys from `BitHuB (root)` starting at the Campus Selector page (`index.html`).
+- **Root `vercel.json`:** Forces `"framework": null`, `"buildCommand": "node generate-env.js"`, `"outputDirectory": "."`, `"cleanUrls": true`, and rewrites `/HungryBirds` to `/HungryBirds.html` so Vercel always deploys from `BitHuB (root)` starting at the Campus Selector page (`index.html`).
 - **Root `.vercelignore`:** Excludes `bit-jaipur-src/`, `ref/`, `BitHuB Jaipur/`, and `.env*` from the static upload bundle.
 
 ---

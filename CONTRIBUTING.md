@@ -1,12 +1,12 @@
-# Contributing to BitHub 🚀
+# Contributing to BitHub
 
-Welcome to the **BitHub** project! This repository contains student resources for Birla Institute of Technology campuses (Mesra and Jaipur). 
+Welcome to the **BitHub** project. This repository contains student resources for Birla Institute of Technology campuses (Mesra and Jaipur). 
 
 This guide details the contribution procedures and protocols specifically for working on the **BIT Jaipur** portion of the project. Please follow these protocols to ensure a smooth, clean, and effective collaboration.
 
 ---
 
-## 🛠️ Step-by-Step Contribution Workflow
+## Step-by-Step Contribution Workflow
 
 ### 1. Clone the Repository
 Start by cloning the repository to your local system and navigating into the project directory:
@@ -49,7 +49,7 @@ This build command compiles your React source files into optimized, production-r
 
 ---
 
-## 📦 Why is a Build Necessary? (Vercel Static Deployment)
+## Why is a Build Necessary? (Vercel Static Deployment)
 
 The live site `bithub.co.in` is deployed on **Vercel** from the repository root.
 - **Static Serving from Root:** Vercel serves the root Campus Selector (`index.html`), `bit-mesra/`, and the pre-compiled `bit-jaipur/` folder directly as static assets.
@@ -61,11 +61,11 @@ The live site `bithub.co.in` is deployed on **Vercel** from the repository root.
 
 ---
 
-## 🤝 Protocols for Working Effectively
+## Protocols for Working Effectively
 
 To maintain code quality and avoid development bottlenecks, all contributors must adhere to these standards:
 
-### 🔄 Keep Your Branch Up to Date
+### Keep Your Branch Up to Date
 Before starting any new work, pull the latest changes from the upstream repository to avoid git conflicts:
 ```bash
 # Fetch and merge updates from the main upstream branch
@@ -75,13 +75,13 @@ git checkout bit_jaipur
 git merge master
 ```
 
-### 🚫 Never Manually Modify the Build Folder
+### Never Manually Modify the Build Folder
 **Do not** edit files inside the `bit-jaipur/` directory directly. Any manual changes in `bit-jaipur/` will be permanently overwritten the next time the project is built. Always make your modifications inside `bit-jaipur-src/` and run `npm run build`.
 
-### 🧪 Verify the Build Locally
+### Verify the Build Locally
 Before staging your changes, run `npm run build` to ensure the compilation completes without syntax or compiler errors. Use the local server or preview (`npm run preview`) to verify the production build runs cleanly.
 
-### 📝 Write Clean Commits & PRs
+### Write Clean Commits & PRs
 1. **Stage both the source and build output:**
    ```bash
    git add bit-jaipur/ bit-jaipur-src/
@@ -94,7 +94,7 @@ Before staging your changes, run `npm run build` to ensure the compilation compl
 
 ---
 
-## ⚠️ Common Pitfalls & Code Quality Standards
+## Common Pitfalls & Code Quality Standards
 
 To prevent production build failures and runtime bugs, all contributors must check their changes against these guidelines before submitting a pull request:
 
