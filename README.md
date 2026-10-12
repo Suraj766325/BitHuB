@@ -6,7 +6,7 @@ Welcome to the official repository for **BitHub** (available at [bithub.co.in](h
 
 ## 📁 Repository Map
 
-This repository is structured as a unified multi-directory site served from the root Campus Selector portal via **Vercel** and **GitHub Pages**. Below is an overview of the key folders and files:
+This repository is structured as a unified multi-directory site served from the root Campus Selector portal via **Vercel**. Below is an overview of the key folders and files:
 
 ```
 BitHuB/
@@ -84,8 +84,7 @@ We welcome contributions to improve student resources for both campuses!
      - `APPS_SCRIPT_ANALYTICS_URL`
      - `APPS_SCRIPT_FEEDBACK_URL`
      - `APPS_SCRIPT_PAUSED` (`false`)
-  3. Vercel automatically runs `node generate-env.js` via `vercel.json` and serves the site starting from the root Campus Selector page.
-- **GitHub Pages Deployment**: Any updates merged into the `main`/`master` branch are automatically deployed to [bithub.co.in](https://bithub.co.in).
+  3. Vercel automatically runs `node generate-env.js` via `vercel.json` and serves the site starting from the root Campus Selector page at [bithub.co.in](https://bithub.co.in).
 
 ---
 
