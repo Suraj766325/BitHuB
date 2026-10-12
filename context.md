@@ -8,7 +8,7 @@ Read this carefully before making architectural changes or pushing code.
 
 ## 1. Unified Repository & Multi-Directory Architecture
 
-The root repository (`BitHuB/`) hosts the unified production frontend served at `bithub.co.in` (via GitHub Pages and Vercel):
+The root repository (`BitHuB/`) hosts the unified production frontend served at `bithub.co.in` via **Vercel**:
 
 - **`index.html` (Root Entrypoint):** The main **Campus Selector** landing page where users choose between **BIT Mesra** (`bit-mesra/index.html`) and **BIT Jaipur** (`bit-jaipur/index.html`).
 - **`bit-mesra/`:** Static HTML/CSS/JS portal for the BIT Mesra campus, including syllabus pages, course modules, the **Live Analytics** subject demand tracker (`event.html` & `index.html`), the **Wellness Check Poll** (`index.html`), and the **Feedback Portal** (`feedback.html`).

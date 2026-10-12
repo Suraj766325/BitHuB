@@ -49,10 +49,10 @@ This build command compiles your React source files into optimized, production-r
 
 ---
 
-## 📦 Why is a Build Necessary? (GitHub Pages Hosting)
+## 📦 Why is a Build Necessary? (Vercel Static Deployment)
 
-The live site `bithub.co.in` is hosted using **GitHub Pages**.
-- **Static Hosting:** GitHub Pages is a static file hosting service. It does not run a Node.js server, nor does it compile React code (JSX, ES6 Modules, etc.) dynamically. It can only serve standard HTML, CSS, JavaScript, and asset files.
+The live site `bithub.co.in` is deployed on **Vercel** from the repository root.
+- **Static Serving from Root:** Vercel serves the root Campus Selector (`index.html`), `bit-mesra/`, and the pre-compiled `bit-jaipur/` folder directly as static assets.
 - **Serving Path:** The Jaipur campus website is served directly from the `bit-jaipur/` folder at the root of this repository.
 - **The Compilation Step:** Running `npm run build` inside `bit-jaipur-src/` compiles the React project and outputs the files directly into `bit-jaipur/`. 
 - **Mandatory Commits:** If you only modify files in the `bit-jaipur-src/` directory but do not compile them, your changes will **not** appear on the live site. You must run `npm run build` and commit the updated files in both directories:
