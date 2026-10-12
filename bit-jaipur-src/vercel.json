@@ -1,0 +1,20 @@
+{
+  "rewrites": [
+    {
+      "source": "/dev-root/(.*)",
+      "destination": "https://9d81-223-181-41-31.ngrok-free.app/dev-root/$1"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "https://9d81-223-181-41-31.ngrok-free.app/api/$1"
+    },
+    {
+      "source": "/study-material/(.*)",
+      "destination": "https://9d81-223-181-41-31.ngrok-free.app/study-material/$1"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
