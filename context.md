@@ -22,7 +22,7 @@ The root repository (`BitHuB/`) hosts the unified production frontend served at 
 
 ### Vercel Multi-Directory Deployment (`vercel.json` & `.vercelignore`)
 - Because `bit-jaipur-src/` contains a `package.json` with Vite, Vercel's auto-detector will mistakenly try to deploy `bit-jaipur-src` as a standalone root if unconfigured.
-- **Root `vercel.json`:** Forces `"framework": null`, `"buildCommand": "node generate-env.js"`, `"outputDirectory": "."`, `"cleanUrls": true`, and rewrites `/HungryBirds` to `/HungryBirds.html` so Vercel always deploys from `BitHuB (root)` starting at the Campus Selector page (`index.html`).
+- **Root `vercel.json`:** Forces `"framework": null`, `"buildCommand": "node generate-env.js"`, `"outputDirectory": "."`, and rewrites `/HungryBirds` to `/HungryBirds.html` so Vercel always deploys from `BitHuB (root)` starting at the Campus Selector page (`index.html`).
 - **Root `.vercelignore`:** Excludes `bit-jaipur-src/`, `ref/`, `BitHuB Jaipur/`, and `.env*` from the static upload bundle.
 
 ---

@@ -12,7 +12,7 @@ This repository is structured as a unified multi-directory site served from the 
 BitHuB/
 ├── index.html            # Main campus selection portal (Mesra, Jaipur, and Partner Banner)
 ├── HungryBirds.html      # BitHub x HungryBirds.food student venture collaboration portal
-├── vercel.json           # Root Vercel configuration (env build, cleanUrls, /HungryBirds route)
+├── vercel.json           # Root Vercel configuration (env build and /HungryBirds route)
 ├── .vercelignore         # Excludes uncompiled source/dev folders from static bundle
 ├── generate-env.js       # Build script: injects env vars into bit-mesra/env-config.js
 ├── .env.example          # Template for required Google Apps Script environment variables
@@ -46,7 +46,7 @@ BitHuB/
 
 ### 1. Unified Multi-Campus Routing (Root Entrypoint)
 - **Entrypoint (`/index.html`):** All traffic starts at the root Campus Selector page, which links to `bit-mesra/index.html`, `bit-jaipur/index.html`, and the student venture spotlight (`/HungryBirds`).
-- **Vercel Root Configuration (`vercel.json`):** Explicitly sets `"framework": null`, `"outputDirectory": "."`, `"cleanUrls": true`, and a URL rewrite from `/HungryBirds` to `/HungryBirds.html` at the repository root so Vercel does not misidentify `bit-jaipur-src/` as the sole project root.
+- **Vercel Root Configuration (`vercel.json`):** Explicitly sets `"framework": null`, `"outputDirectory": "."`, and a URL rewrite from `/HungryBirds` to `/HungryBirds.html` at the repository root so Vercel does not misidentify `bit-jaipur-src/` as the sole project root.
 
 ### 2. Zero-Hardcoded Environment Pipeline (`generate-env.js`)
 - **No Hardcoded Keys:** Google Apps Script URLs and deployment keys are **never** hardcoded in HTML or committed to Git.
