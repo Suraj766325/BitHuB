@@ -1,10 +1,10 @@
-# BitHub 🎓
+# BitHub
 
 Welcome to the official repository for **BitHub** (available at [bithub.co.in](https://bithub.co.in)). BitHub is a student-run resource hub providing notes, previous year question papers, syllabus resources, and dashboards for Birla Institute of Technology (BIT) campuses.
 
 ---
 
-## 📁 Repository Map
+## Repository Map
 
 This repository is structured as a unified multi-directory site served from the root Campus Selector portal via **Vercel**. Below is an overview of the key folders and files:
 
@@ -39,7 +39,7 @@ BitHuB/
 
 ---
 
-## 🏗️ System Architecture
+## System Architecture
 
 ### 1. Unified Multi-Campus Routing (Root Entrypoint)
 - **Entrypoint (`/index.html`):** All traffic starts at the root Campus Selector page, which links to `bit-mesra/index.html` and `bit-jaipur/index.html`.
@@ -62,7 +62,7 @@ When an Apps Script endpoint is paused (`APPS_SCRIPT_PAUSED=true`), unconfigured
 
 ---
 
-## 🛠️ Contribution Guidelines
+## Contribution Guidelines
 
 We welcome contributions to improve student resources for both campuses! 
 
@@ -74,13 +74,13 @@ We welcome contributions to improve student resources for both campuses!
 
 ---
 
-## 🚀 Technical Requirements & Deployment
+## Technical Requirements & Deployment
 
 - **Node.js**: v16.0 or higher (for running `node generate-env.js` and compiling Jaipur assets)
 - **File Encoding**: UTF-8 encoding is strictly required for all code and configuration files. Do not commit files in UTF-16LE.
 - **Vercel Deployment**:
   1. Select **`BitHuB (root)`** as the Root Directory when importing the project.
-  2. In **Project Settings → Environment Variables**, configure:
+  2. In **Project Settings -> Environment Variables**, configure:
      - `APPS_SCRIPT_ANALYTICS_URL`
      - `APPS_SCRIPT_FEEDBACK_URL`
      - `APPS_SCRIPT_PAUSED` (`false`)
