@@ -16,7 +16,8 @@ import confetti from 'canvas-confetti';
 
 function App() {
   const [view, setView] = useState('subject-selector'); // Land directly on subject-selector for Jaipur campus
-  const [theme, setTheme] = useState('light'); // 'light', 'dark'
+  // ?theme=dark keeps the theme when coming back from the DSD lab simulator
+  const [theme, setTheme] = useState(() => (new URLSearchParams(window.location.search).get('theme') === 'dark' ? 'dark' : 'light')); // 'light', 'dark'
   const [selectedSubjectCode, setSelectedSubjectCode] = useState(null);
   
   const [isMobileMode, setIsMobileMode] = useState(false);

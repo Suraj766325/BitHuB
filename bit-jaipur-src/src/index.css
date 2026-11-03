@@ -1883,6 +1883,51 @@ body::after {
   }
 }
 
+/* DSD lab simulator entry (bottom of the Jaipur page, above the team credits) */
+.dsd-entry-section {
+  width: 100%;
+  max-width: 760px;
+  margin: 1rem auto 0;
+}
+
+.dsd-entry-btn {
+  text-decoration: none;
+  color: inherit;
+  justify-content: flex-start;
+  gap: 1.2rem;
+  padding: 20px 24px;
+  border-radius: 20px;
+}
+
+.dsd-entry-btn .btn-arrow-right {
+  margin-left: auto;
+}
+
+.dsd-entry-icon {
+  width: 52px;
+  height: 52px;
+  flex: none;
+  border-radius: 14px;
+  background: var(--dash-active-module-bg);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 16px rgba(198, 85, 117, 0.25);
+}
+
+.dsd-entry-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+.dsd-entry-title {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  letter-spacing: 1px;
+  line-height: 1;
+}
+
 .change-campus-btn {
   background: var(--dash-panel-bg);
   border: 1px solid var(--dash-panel-border);
