@@ -280,7 +280,8 @@ function SubjectSelector({ onSelectSubject, onBackToLanding, theme, onToggleThem
         <section className="dsd-entry-section" id="dsd-entry-section">
           <a
             className="subject-selection-btn labs-btn-accent dsd-entry-btn"
-            href={`./dsd/?from=bithub&theme=${theme}`}
+            // page may be served as /bit-jaipur (clean URL, no slash), so "./dsd/" would resolve to /dsd/
+            href={`${window.location.pathname.replace(/(\/index\.html)?\/?$/, '')}/dsd/?from=bithub&theme=${theme}`}
             id="btn-dsd-lab"
           >
             <div className="dsd-entry-icon" aria-hidden="true">
