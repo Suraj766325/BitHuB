@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <script>
+    /* Hosts with clean URLs (Vercel "cleanUrls") serve this folder as ".../dsa" without the slash, and relative paths
+     * would then point at the parent folder. Restore the slash first, and only then add the page's own files: they are
+     * written by script, so the browser does not request them early from the wrong folder. */
+    window.DSA_BOOT = /\/$|\.html$/.test(location.pathname);
+    if (!DSA_BOOT) location.replace(location.pathname + '/' + location.search + location.hash);
+    else document.write(["vendor/codemirror/codemirror.css", "css/dsa.css"].map(function (h) { return '<link rel="stylesheet" href="' + h + '">'; }).join(''));
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DSA · BitHub</title>
+  <meta name="description" content="Data Structures and Algorithms (CS24201) on BitHub: animated slides and visualizers for every module, previous year questions with answers, coding problems with an online compiler, and all class notes.">
+  <meta name="theme-color" content="#4A0E0E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23c65575'/%3E%3Cg fill='none' stroke='%23fff' stroke-width='2'%3E%3Ccircle cx='16' cy='9' r='3.2'/%3E%3Ccircle cx='9' cy='22' r='3.2'/%3E%3Ccircle cx='23' cy='22' r='3.2'/%3E%3Cpath d='M14.300 11.800 10.600 19.200M17.700 11.800l3.700 7.400'/%3E%3C/g%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app"></div>
+  <noscript><p style="padding:2rem;font-family:sans-serif">BitHub DSA needs JavaScript.</p></noscript>
+
+  <script>
+    /* the page's scripts, in order (see the note in <head>); add new data files here */
+    if (window.DSA_BOOT) document.write([
+      "vendor/codemirror/codemirror.js",
+      "vendor/codemirror/clike.js",
+      "vendor/codemirror/python.js",
+      "vendor/codemirror/matchbrackets.js",
+      "vendor/codemirror/closebrackets.js",
+      "js/env.js",
+      "js/util.js",
+      "js/stage.js",
+      "js/viz/core.js",
+      "js/viz/m1.js",
+      "js/viz/m2.js",
+      "js/viz/m3.js",
+      "js/viz/m4.js",
+      "js/viz/m5.js",
+      "js/data/modules.js",
+      "js/data/slides.js",
+      "js/data/slides2.js",
+      "js/data/slides3.js",
+      "js/data/slides4.js",
+      "js/data/lib1.js",
+      "js/data/lib2.js",
+      "js/data/lib3.js",
+      "js/data/lib4.js",
+      "js/data/lib5.js",
+      "js/data/lib6.js",
+      "js/data/lib7.js",
+      "js/data/questions.js",
+      "js/data/questions2.js",
+      "js/data/quiz.js",
+      "js/data/problems.js",
+      "js/data/notes.js",
+      "js/data/studynotes1.js",
+      "js/data/studynotes2.js",
+      "js/data/studynotes3.js",
+      "js/data/studynotes4.js",
+      "js/compiler.js",
+      "js/app.js"
+    ].map(function (s) { return '<script src="' + s + '"><\/script>'; }).join(''));
+  </script>
+</body>
+</html>
