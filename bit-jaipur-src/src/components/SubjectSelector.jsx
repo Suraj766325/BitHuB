@@ -276,8 +276,31 @@ function SubjectSelector({ onSelectSubject, onBackToLanding, theme, onToggleThem
           </div>
         )}
 
-        {/* DSD lab simulator (static site served from public/dsd) */}
+        {/* DSA (CS24201) learning site and DSD lab simulator: static sites served from public/dsa and public/dsd */}
         <section className="dsd-entry-section" id="dsd-entry-section">
+          <a
+            className="subject-selection-btn labs-btn-accent dsd-entry-btn"
+            // same clean-URL reasoning as the DSD link below; the DSA site reads its backend address from dsa/js/env.js (see vite.config.js)
+            href={`${window.location.pathname.replace(/(\/index\.html)?\/?$/, '')}/dsa/?from=bithub&theme=${theme}`}
+            id="btn-dsa"
+          >
+            <div className="dsd-entry-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="5" r="2.5" />
+                <circle cx="5.5" cy="18" r="2.5" />
+                <circle cx="18.5" cy="18" r="2.5" />
+                <path d="M10.8 7.2 6.8 15.8M13.2 7.2l4 8.6" />
+              </svg>
+            </div>
+            <div className="btn-content-left">
+              <span className="btn-primary-title dsd-entry-title">DSA</span>
+              <span className="btn-secondary-code">Data Structures &amp; Algorithms · slides, visualizers, notes, past papers &amp; practice</span>
+            </div>
+            <div className="labs-indicator-dot" />
+            <svg className="btn-arrow-right" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <polyline points="9 18 15 12 9 6" />
+            </svg>
+          </a>
           <a
             className="subject-selection-btn labs-btn-accent dsd-entry-btn"
             // page may be served as /bit-jaipur (clean URL, no slash), so "./dsd/" would resolve to /dsd/
