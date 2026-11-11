@@ -2,7 +2,14 @@
 <html lang="en" data-theme="light">
 <head>
   <meta charset="utf-8">
-  <script>/* hosts with clean URLs serve this folder as ".../dsd": restore the slash so relative paths resolve */ if (!/\/$|\.html$/.test(location.pathname)) location.replace(location.pathname + "/" + location.search + location.hash);</script>
+  <script>
+    /* Hosts with clean URLs (Vercel "cleanUrls") serve this folder as ".../dsd" without the slash, and relative paths
+     * would then point at the parent folder. Restore the slash first, and only then add the page's own files: they are
+     * written by script, so the browser does not request them early from the wrong folder. */
+    window.DSD_BOOT = /\/$|\.html$/.test(location.pathname);
+    if (!DSD_BOOT) location.replace(location.pathname + '/' + location.search + location.hash);
+    else document.write('<link rel="stylesheet" href="css/dsd.css">');
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>DSD Lab Simulator · BitHub</title>
   <meta name="description" content="Breadboard and trainer-kit simulator for the Digital System Design lab: build every experiment of the lab manual on a virtual breadboard with real IC models, a 555 transient solver and a Xilinx ISE Verilog workflow.">
@@ -11,28 +18,32 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/dsd.css">
 </head>
 <body>
   <div id="app" class="dsd-app"></div>
   <noscript><p style="padding:2rem;font-family:sans-serif">The DSD lab simulator needs JavaScript.</p></noscript>
 
-  <script src="core/logic.js"></script>
-  <script src="core/ics.js"></script>
-  <script src="core/board.js"></script>
-  <script src="core/sim.js"></script>
-  <script src="core/analog.js"></script>
-  <script src="core/refbuild.js"></script>
-  <script src="core/experiments.js"></script>
-  <script src="core/checks.js"></script>
-  <script src="core/verilog.js"></script>
-  <script src="web/util.js"></script>
-  <script src="web/kit.js"></script>
-  <script src="web/sheets.js"></script>
-  <script src="web/scope.js"></script>
-  <script src="web/manual.js"></script>
-  <script src="web/ise.js"></script>
-  <script src="web/tour.js"></script>
-  <script src="web/app.js"></script>
+  <script>
+    /* the simulator's scripts, in order (see the note in <head>) */
+    if (window.DSD_BOOT) document.write([
+      "core/logic.js",
+      "core/ics.js",
+      "core/board.js",
+      "core/sim.js",
+      "core/analog.js",
+      "core/refbuild.js",
+      "core/experiments.js",
+      "core/checks.js",
+      "core/verilog.js",
+      "web/util.js",
+      "web/kit.js",
+      "web/sheets.js",
+      "web/scope.js",
+      "web/manual.js",
+      "web/ise.js",
+      "web/tour.js",
+      "web/app.js"
+    ].map(function (s) { return '<script src="' + s + '"><\/script>'; }).join(''));
+  </script>
 </body>
 </html>
