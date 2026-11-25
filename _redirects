@@ -1,0 +1,14 @@
+# ==============================================================================
+# BitHuB Cloudflare Pages Redirects & Rewrites
+# ==============================================================================
+
+# 1. Campus Venture Collaboration Route (/HungryBirds -> /HungryBirds.html)
+/HungryBirds    /HungryBirds.html    200
+
+# 2. Assets rewrite for BIT Jaipur frontend assets
+# Note: Root assets (such as /assets/hungrybirds/*) exist as physical files and
+# are served directly by Cloudflare Pages before rewrite rules are evaluated.
+/assets/*    /bit-jaipur/assets/:splat    200
+
+# 3. BIT Jaipur React SPA client-side fallback
+/bit-jaipur/*    /bit-jaipur/index.html    200
