@@ -11,4 +11,4 @@
 /assets/*    /bit-jaipur/assets/:splat    200
 
 # 3. BIT Jaipur React SPA client-side fallback
-/bit-jaipur/*    /bit-jaipur/index.html    200
+# /bit-jaipur/*    /bit-jaipur/index.html    200
