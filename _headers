@@ -1,0 +1,33 @@
+# ==============================================================================
+# BitHuB Cloudflare Pages HTTP Headers
+# ==============================================================================
+
+# Global security headers for all routes
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# Immutable static assets (hashed JS, CSS, and fonts)
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+/bit-jaipur/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+  Access-Control-Allow-Origin: *
+
+# Academic material PDFs: cache for 7 days with background revalidation
+/*.pdf
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+
+/bit-mesra/*.pdf
+  Cache-Control: public, max-age=604800, stale-while-revalidate=86400
+
+# HTML pages: always revalidate so deployments and campaign changes are instant
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/bit-mesra/*.html
+  Cache-Control: public, max-age=0, must-revalidate

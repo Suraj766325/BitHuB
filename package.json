@@ -1,0 +1,13 @@
+{
+  "name": "bithub",
+  "version": "1.0.0",
+  "private": true,
+  "description": "BitHuB — Student resource hub for BIT Mesra and BIT Jaipur campuses",
+  "scripts": {
+    "build": "node build-pages.js",
+    "generate-env": "node generate-env.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

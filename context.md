@@ -8,7 +8,7 @@ Read this carefully before making architectural changes or pushing code.
 
 ## 1. Unified Repository & Multi-Directory Architecture
 
-The root repository (`BitHuB/`) hosts the unified production frontend served at `bithub.co.in` via **Vercel**:
+The root repository (`BitHuB/`) hosts the unified production frontend served at `bithub.co.in` via **Cloudflare Pages** (migrated from Vercel):
 
 - **`index.html` (Root Entrypoint):** The main **Campus Selector** landing page where users choose between **BIT Mesra** (`bit-mesra/index.html`) and **BIT Jaipur** (`bit-jaipur/index.html`), and view the active campus venture promotion banner linking to `HungryBirds.html` (`/HungryBirds`).
 - **`HungryBirds.html` (`/HungryBirds`):** Dedicated campus venture collaboration page (`BitHub x HungryBirds.food`) redirecting users to `http://hungrybirds.food`.
@@ -20,7 +20,21 @@ The root repository (`BitHuB/`) hosts the unified production frontend served at 
 - **`bit-jaipur/`:** Compiled, optimized static assets (HTML/CSS/JS) for the BIT Jaipur React dashboard. **Do not edit directly.**
 - **`bit-jaipur-src/`:** Uncompiled React + Vite source code for the Jaipur frontend (`npm run build` outputs directly to `../bit-jaipur`).
 
-### Vercel Multi-Directory Deployment (`vercel.json` & `.vercelignore`)
+### Cloudflare Pages Deployment (`_redirects`, `_headers`, & `build-pages.js`)
+- **Build Output Directory:** `dist`
+- **Build Command:** `node build-pages.js` (or `npm run build`)
+- **Root `_redirects`:** Provides Cloudflare Pages routing rules:
+  - `/HungryBirds` -> `/HungryBirds.html` (200 rewrite)
+  - `/assets/*` -> `/bit-jaipur/assets/:splat` (200 rewrite)
+  - `/bit-jaipur/*` -> `/bit-jaipur/index.html` (200 rewrite for React SPA fallback)
+- **Root `_headers`:** Defines global security headers (X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy) and caching headers:
+  - Hashed JS/CSS/Fonts: `max-age=31536000, immutable`
+  - Academic PDFs: `max-age=604800, stale-while-revalidate=86400`
+  - HTML pages: `max-age=0, must-revalidate`
+- **`build-pages.js`:** Zero-dependency Node script that runs `generate-env.js`, prepares a clean `dist/` directory, copies all production assets, safely excludes dev/reference directories (`ref/`, `bit-jaipur-src/`, `BitHuB Jaipur/`), and verifies all assets comply with Cloudflare's 25 MiB file size limit.
+- **25 MiB Single-Asset Limit Compliance:** Cloudflare Pages enforces a hard 25 MiB limit per asset. Scanned PDF modules in `bit-mesra/` are optimized using `compress-pdfs.py` to keep them well below 25 MiB.
+
+### Legacy Vercel Multi-Directory Deployment (`vercel.json` & `.vercelignore`)
 - Because `bit-jaipur-src/` contains a `package.json` with Vite, Vercel's auto-detector will mistakenly try to deploy `bit-jaipur-src` as a standalone root if unconfigured.
 - **Root `vercel.json`:** Forces `"framework": null`, `"buildCommand": "node generate-env.js"`, `"outputDirectory": "."`, and rewrites `/HungryBirds` to `/HungryBirds.html` so Vercel always deploys from `BitHuB (root)` starting at the Campus Selector page (`index.html`).
 - **Root `.vercelignore`:** Excludes `bit-jaipur-src/`, `ref/`, `BitHuB Jaipur/`, and `.env*` from the static upload bundle.

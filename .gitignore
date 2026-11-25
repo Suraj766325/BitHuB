@@ -9,5 +9,9 @@ BitHuB Jaipur
 *.env
 !.env.example
 
+# Build output directory
+dist/
+*.tmp
+
 # Generated runtime config containing env variables
 bit-mesra/env-config.js
